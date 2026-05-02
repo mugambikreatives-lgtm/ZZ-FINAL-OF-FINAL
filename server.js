@@ -17,12 +17,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
+app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_SECRET || 'zenithzoom-secret-2024',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom' }),
-  cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { 
+    secure: false,
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax'
+  }
 }));
 
 // TEMPORARY password reset route - remove after use
