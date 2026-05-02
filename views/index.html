@@ -1109,7 +1109,7 @@ function getSampleCourses() {
 const catIcons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀', default:'📄' };
 
 function renderCourses(list) {
-  const grid = document.getElementById('resource-grid');
+  const grid = document.getElementById('course-grid');
   if (!list.length) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📂</div><p>No courses found.</p></div>';
     return;
