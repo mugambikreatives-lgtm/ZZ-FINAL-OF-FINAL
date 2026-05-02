@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zenith Zoom — Empowering Growth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #00C2D4;
+  --teal-dark: #009BAB;
+  --teal-glow: rgba(0,194,212,0.12);
+  --dark: #070B14;
+  --dark2: #0D1525;
+  --dark3: #141E32;
+  --card: #111827;
+  --border: rgba(0,194,212,0.15);
+  --text: #E8EDF5;
+  --muted: #8896AE;
+  --white: #ffffff;
+  --success: #10B981;
+  --error: #EF4444;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 12px;
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--dark); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark2); }
+::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 2px; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 0 32px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(7,11,20,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 800; font-size: 1.3rem;
+  color: var(--white); cursor: pointer; text-decoration: none;
+}
+.nav-logo .accent { color: var(--teal); }
+.logo-box {
+  width: 36px; height: 36px; background: var(--teal); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.nav-links { display: flex; gap: 4px; }
+.nav-link {
+  padding: 8px 16px; font-family: var(--font-body); font-size: 0.88rem; font-weight: 500;
+  color: var(--muted); background: transparent; border: none; border-radius: 8px;
+  cursor: pointer; transition: var(--transition);
+}
+.nav-link:hover { color: var(--white); background: var(--teal-glow); }
+.nav-link.active { color: var(--teal); background: var(--teal-glow); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 100px 32px 60px; position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(0,194,212,0.07) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 10% 80%, rgba(0,155,171,0.05) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,194,212,0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,194,212,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-content { max-width: 680px; position: relative; z-index: 1; animation: fadeUp 0.8s ease both; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+  background: var(--teal-glow); border: 1px solid var(--border); border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; color: var(--teal);
+  letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px;
+}
+.badge-dot { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 2s infinite; }
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800; line-height: 1.1; color: var(--white); margin-bottom: 20px;
+}
+.hero h1 .accent { color: var(--teal); }
+.hero p { font-size: 1.05rem; color: var(--muted); line-height: 1.7; margin-bottom: 36px; max-width: 540px; }
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.stat-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 24px; text-align: center; min-width: 130px;
+}
+.stat-num { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--teal); line-height: 1; }
+.stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 0.92rem; font-weight: 500;
+  cursor: pointer; border: none; transition: var(--transition); text-decoration: none; white-space: nowrap;
+}
+.btn-primary { background: var(--teal); color: var(--dark); font-weight: 700; }
+.btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,194,212,0.35); }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--teal-glow); border-color: var(--teal); color: var(--teal); }
+.btn-sm { padding: 8px 16px; font-size: 0.82rem; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* SECTIONS */
+section { padding: 80px 32px; position: relative; }
+.section-header { text-align: center; margin-bottom: 52px; }
+.section-tag {
+  display: inline-block; padding: 4px 12px; background: var(--teal-glow); color: var(--teal);
+  border-radius: 999px; font-size: 0.73rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+  font-weight: 800; color: var(--white); margin-bottom: 12px;
+}
+.section-sub { color: var(--muted); font-size: 0.95rem; max-width: 540px; margin: 0 auto; line-height: 1.6; }
+
+/* PAGE SYSTEM */
+.page { display: none; animation: fadeUp 0.4s ease both; }
+.page.active { display: block; }
+
+/* FILTER BAR */
+.filter-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+.search-input {
+  flex: 1; min-width: 200px; padding: 11px 16px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text); font-family: var(--font-body); font-size: 0.88rem; outline: none; transition: var(--transition);
+}
+.search-input:focus { border-color: var(--teal); }
+.search-input::placeholder { color: var(--muted); }
+.filter-select {
+  padding: 11px 16px; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text); font-family: var(--font-body);
+  font-size: 0.88rem; outline: none; cursor: pointer;
+}
+
+/* RESOURCE GRID */
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+.resource-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 24px; transition: var(--transition); position: relative; overflow: hidden;
+}
+.resource-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--teal), transparent); opacity: 0; transition: var(--transition);
+}
+.resource-card:hover { border-color: var(--teal); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.resource-card:hover::before { opacity: 1; }
+.resource-icon { width: 48px; height: 48px; background: var(--teal-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
+.resource-cat { display: inline-block; padding: 3px 10px; background: var(--teal-glow); color: var(--teal); border-radius: 999px; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+.resource-title { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 8px; line-height: 1.3; }
+.resource-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.resource-footer { display: flex; align-items: center; justify-content: space-between; }
+.resource-price { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--teal); }
+
+/* CV BUILDER */
+.cv-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1200px; margin: 0 auto; }
+.cv-form-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+.cv-preview-box { position: sticky; top: 88px; height: fit-content; }
+.cv-preview {
+  background: white; border-radius: var(--radius); overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5); font-size: 0.75rem; color: #111;
+}
+.cvp-header { background: #070B14; color: white; padding: 24px; }
+.cvp-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; }
+.cvp-role { color: var(--teal); font-size: 0.83rem; margin-top: 4px; }
+.cvp-contact { font-size: 0.68rem; color: #aaa; margin-top: 6px; }
+.cvp-body { padding: 20px; }
+.cvp-section-title { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); border-bottom: 1px solid var(--teal); padding-bottom: 3px; margin: 14px 0 8px; }
+.cvp-item { margin-bottom: 8px; font-size: 0.7rem; color: #333; line-height: 1.4; }
+.cvp-item strong { color: #111; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+.form-input {
+  width: 100%; padding: 10px 14px; background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-family: var(--font-body); font-size: 0.88rem;
+  outline: none; transition: var(--transition);
+}
+.form-input:focus { border-color: var(--teal); }
+.form-input::placeholder { color: var(--muted); }
+textarea.form-input { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.cv-tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.cv-tab {
+  padding: 8px 16px; background: transparent; border: none; color: var(--muted);
+  font-size: 0.83rem; cursor: pointer; border-bottom: 2px solid transparent; transition: var(--transition); font-family: var(--font-body);
+}
+.cv-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+.cv-tab-content { display: none; }
+.cv-tab-content.active { display: block; }
+
+.entry-card { background: var(--dark2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; position: relative; }
+.entry-remove {
+  position: absolute; top: 8px; right: 8px; background: rgba(239,68,68,0.1); color: var(--error);
+  border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* JOBS */
+.job-grid { display: flex; flex-direction: column; gap: 14px; }
+.job-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 24px; display: flex; align-items: center; gap: 20px;
+  transition: var(--transition); cursor: pointer;
+}
+.job-card:hover { border-color: var(--teal); background: var(--dark3); }
+.job-icon { width: 50px; height: 50px; flex-shrink: 0; background: var(--teal-glow); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.job-info { flex: 1; min-width: 0; }
+.job-title { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+.job-company { font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+.job-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.job-tag { padding: 3px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 500; }
+.tag-type { background: var(--teal-glow); color: var(--teal); }
+.tag-loc { background: rgba(16,185,129,0.1); color: var(--success); }
+.tag-cat { background: rgba(139,92,246,0.1); color: #a78bfa; }
+.job-right { text-align: right; flex-shrink: 0; }
+.job-salary { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--white); }
+.job-deadline { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+
+/* VALUES GRID */
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; }
+.value-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 28px 22px; text-align: center; transition: var(--transition);
+}
+.value-card:hover { border-color: var(--teal); transform: translateY(-4px); }
+.value-icon { font-size: 30px; margin-bottom: 12px; }
+.value-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.value-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--dark2); border: 1px solid var(--border); border-radius: 16px;
+  padding: 36px; max-width: 620px; width: 100%; max-height: 85vh; overflow-y: auto;
+  animation: modalIn 0.3s ease;
+}
+.pay-modal { max-width: 440px; }
+.modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.modal-close {
+  background: var(--dark3); border: none; color: var(--muted);
+  width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.modal-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--white); }
+.modal-company { color: var(--muted); font-size: 0.88rem; margin-top: 3px; }
+.modal-section { margin-bottom: 20px; }
+.modal-section-title { font-size: 0.73rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.modal-text { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+.req-list { list-style: none; }
+.req-list li { padding: 5px 0; color: var(--muted); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; }
+.req-list li::before { content: '→'; color: var(--teal); flex-shrink: 0; }
+
+/* PAYMENT */
+.pay-amount { font-family: var(--font-display); font-size: 2.5rem; font-weight: 800; color: var(--teal); text-align: center; margin: 16px 0 4px; }
+.pay-item { color: var(--muted); text-align: center; font-size: 0.88rem; margin-bottom: 24px; }
+.pay-steps { margin-bottom: 22px; }
+.pay-step { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.83rem; color: var(--muted); }
+.pay-step:last-child { border-bottom: none; }
+.step-num { width: 22px; height: 22px; flex-shrink: 0; background: var(--teal-glow); color: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; }
+.pay-status { text-align: center; padding: 14px; border-radius: var(--radius); font-size: 0.88rem; font-weight: 500; margin-top: 14px; display: none; }
+.pay-status.pending { background: rgba(234,179,8,0.1); color: #EAB308; display: block; }
+.pay-status.success { background: rgba(16,185,129,0.1); color: var(--success); display: block; }
+.pay-status.error { background: rgba(239,68,68,0.1); color: var(--error); display: block; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  padding: 14px 20px; background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); font-size: 0.85rem; color: var(--text);
+  max-width: 320px; transform: translateX(120%); transition: transform 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show { transform: translateX(0); }
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error { border-left: 3px solid var(--error); }
+
+/* EMPTY / LOADING */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+.spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+
+/* FOOTER */
+footer { background: var(--dark2); border-top: 1px solid var(--border); padding: 40px 32px; text-align: center; }
+.footer-logo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+.footer-logo .accent { color: var(--teal); }
+.footer-tagline { color: var(--muted); font-size: 0.82rem; margin-bottom: 20px; }
+.footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+.footer-link { color: var(--muted); font-size: 0.8rem; text-decoration: none; background: none; border: none; cursor: pointer; transition: var(--transition); }
+.footer-link:hover { color: var(--teal); }
+.footer-copy { color: var(--muted); font-size: 0.72rem; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* RESPONSIVE */
+.hero-stats {
+  position: absolute; right: 48px; top: 50%;
+  transform: translateY(-50%);
+  width: 340px;
+  display: flex; flex-direction: column; gap: 10px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.hero-photo-card {
+  border-radius: 16px; overflow: hidden;
+  height: 220px; position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+}
+.hero-photo-card img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.hero-photo-badge {
+  position: absolute; bottom: 12px; left: 12px;
+  background: rgba(7,11,20,0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: var(--teal);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.hero-photo-sm {
+  border-radius: 12px; overflow: hidden;
+  height: 130px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.hero-photo-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ─── PHOTO SECTIONS ─── */
+.photo-mosaic {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 260px 260px;
+  gap: 12px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.photo-mosaic .photo-main {
+  grid-row: 1 / 3;
+}
+.photo-tile {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  background: var(--dark3);
+}
+.photo-tile img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.photo-tile:hover img { transform: scale(1.04); }
+.photo-tile .photo-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 20px 16px 14px;
+  background: linear-gradient(transparent, rgba(7,11,20,0.85));
+  color: white;
+  font-size: 0.78rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.photo-tile:hover .photo-caption { opacity: 1; }
+
+.photo-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.photo-strip .photo-tile {
+  height: 200px;
+  border-radius: 14px;
+}
+
+.impact-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.impact-photo {
+  border-radius: 20px;
+  overflow: hidden;
+  height: 420px;
+  position: relative;
+}
+.impact-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.impact-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 20px;
+  border: 2px solid var(--teal);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.impact-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.impact-quote .accent { color: var(--teal); }
+.impact-stat-row {
+  display: flex; gap: 32px; flex-wrap: wrap;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.impact-stat { text-align: center; }
+.impact-stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 800;
+  color: var(--teal);
+}
+.impact-stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+@media (max-width: 900px) {
+  .photo-mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 200px 200px 200px;
+  }
+  .photo-mosaic .photo-main { grid-row: 1 / 2; grid-column: 1 / 3; }
+  .photo-strip { grid-template-columns: repeat(2, 1fr); }
+  .photo-strip .photo-tile { height: 180px; }
+  .impact-section { grid-template-columns: 1fr; }
+  .impact-photo { height: 280px; }
+}
+@media (max-width: 640px) {
+  .photo-mosaic {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 180px 150px 150px;
+    gap: 8px;
+  }
+  .photo-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .photo-strip .photo-tile { height: 150px; }
+  .impact-stat-row { gap: 20px; }
+}
+/* ─── END PHOTO SECTIONS ─── */
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 40px; height: 40px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer; flex-shrink: 0;
+}
+.hamburger span {
+  display: block; width: 20px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: var(--transition);
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav {
+  display: none;
+  position: fixed; top: 68px; left: 0; right: 0;
+  background: rgba(7,11,20,0.98); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  z-index: 999; flex-direction: column; padding: 12px 16px 20px;
+  animation: fadeUp 0.2s ease;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav .nav-link {
+  width: 100%; text-align: left; padding: 14px 16px;
+  font-size: 1rem; border-radius: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.mobile-nav .nav-link:last-child { border-bottom: none; }
+
+/* ─── TABLET (≤900px) ─── */
+@media (max-width: 900px) {
+  .hero-stats { display: none; }
+  .cv-layout { grid-template-columns: 1fr; }
+  .cv-preview-box { position: static; }
+  .values-grid { grid-template-columns: repeat(2, 1fr); }
+  .resource-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}
+
+/* ─── MOBILE (≤640px) ─── */
+@media (max-width: 640px) {
+  /* NAV — show hamburger, hide desktop links */
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  /* HERO */
+  .hero {
+    padding: 96px 20px 56px;
+    min-height: auto;
+    text-align: center;
+  }
+  .hero h1 { font-size: 2rem; }
+  .hero p { font-size: 0.95rem; margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; flex-direction: column; align-items: center; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero-badge { font-size: 0.68rem; }
+
+  /* SECTIONS */
+  section { padding: 52px 20px; }
+  .section-title { font-size: 1.6rem; }
+  .section-sub { font-size: 0.88rem; }
+
+  /* VALUES / SERVICES GRID */
+  .values-grid { grid-template-columns: 1fr; gap: 14px; }
+  .value-card { padding: 22px 18px; }
+
+  /* COURSES GRID */
+  .resource-grid { grid-template-columns: 1fr; gap: 16px; }
+  .resource-card { padding: 20px; }
+
+  /* FILTER BAR */
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .search-input { min-width: unset; width: 100%; }
+  .filter-select { width: 100%; }
+
+  /* JOB CARDS */
+  .job-card {
+    flex-wrap: wrap; gap: 12px; padding: 18px;
+    align-items: flex-start;
+  }
+  .job-right { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+  .job-deadline { margin-top: 0; }
+
+  /* CV BUILDER */
+  .cv-form-box { padding: 20px 16px; }
+  .cv-tabs { gap: 2px; }
+  .cv-tab { padding: 8px 10px; font-size: 0.78rem; }
+  .cv-layout { gap: 20px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .form-row .form-group { margin-bottom: 14px; }
+  .entry-card { padding: 14px; }
+
+  /* MODALS — full screen on mobile */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh; padding: 24px 20px;
+    width: 100%; max-width: 100%;
+  }
+  .pay-modal { max-width: 100%; }
+  .pay-amount { font-size: 2rem; }
+
+  /* FOOTER */
+  footer { padding: 36px 20px; }
+  .footer-links { gap: 12px; }
+
+  /* STAT CARDS in hero */
+  .stat-card { padding: 16px 20px; }
+
+  /* TOAST */
+  .toast { left: 16px; right: 16px; max-width: unset; bottom: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="logo-box">🔍</div>
+    Zenith<span class="accent">Zoom</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-link" id="nav-courses" onclick="showPage('courses')">Courses</button>
+    <button class="nav-link" id="nav-cv" onclick="showPage('cv')">CV Builder</button>
+    <button class="nav-link" id="nav-jobs" onclick="showPage('jobs')">Jobs</button>
+  </div>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE NAV DRAWER -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="nav-link" onclick="showPage('home');closeMobileNav()">🏠 Home</button>
+  <button class="nav-link" onclick="showPage('courses');closeMobileNav()">📚 Courses</button>
+  <button class="nav-link" onclick="showPage('cv');closeMobileNav()">✨ CV Builder</button>
+  <button class="nav-link" onclick="showPage('jobs');closeMobileNav()">💼 Jobs</button>
+  <a class="nav-link" href="/admin/login" style="text-decoration:none;display:block;">⚙️ Admin</a>
+</div>
+
+<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><div class="badge-dot"></div>Kenya's Premier Education Platform</div>
+      <h1>Unlock Your <span class="accent">Full Potential</span> with Expert-Led Learning</h1>
+      <p>Zenith Zoom equips individuals and organizations with the skills, knowledge, and confidence needed to thrive in a rapidly changing world.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('courses')">📚 Browse Courses</button>
+        <button class="btn btn-ghost" onclick="showPage('cv')">✨ Build My CV</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-photo-card">
+        <img
+          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=420&q=85&fit=crop&crop=faces"
+          alt="Confident African professional woman"
+          loading="eager"
+          onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=420&q=85&fit=crop'"
+        >
+        <div class="hero-photo-badge">🎓 500+ Graduates</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="hero-photo-sm">
+          <img
+            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=220&q=80&fit=crop&crop=faces"
+            alt="African students collaborating"
+            loading="eager"
+            onerror="this.src='https://images.unsplash.com/photo-1543269865-cbf427effbad?w=220&q=80&fit=crop'"
+          >
+        </div>
+        <div class="hero-photo-sm">
+          <img
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=220&q=80&fit=crop&crop=faces"
+            alt="African woman on laptop"
+            loading="eager"
+            onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=220&q=80&fit=crop'"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUES -->
+  <section style="background:var(--dark2);">
+    <div class="section-header">
+      <div class="section-tag">Our Foundation</div>
+      <h2 class="section-title">Built on Values That Matter</h2>
+      <p class="section-sub">Every program and resource is created with our core values at the center.</p>
+    </div>
+    <div class="values-grid" style="max-width:1100px;margin:0 auto;">
+      <div class="value-card"><div class="value-icon">🎯</div><div class="value-name">Integrity</div><div class="value-desc">We uphold transparency and honesty in everything we do.</div></div>
+      <div class="value-card"><div class="value-icon">⭐</div><div class="value-name">Excellence</div><div class="value-desc">We strive to deliver outstanding educational experiences.</div></div>
+      <div class="value-card"><div class="value-icon">🌱</div><div class="value-name">Growth</div><div class="value-desc">We believe in continuous learning and improvement.</div></div>
+      <div class="value-card"><div class="value-icon">💡</div><div class="value-name">Innovation</div><div class="value-desc">We embrace creative solutions and modern learning strategies.</div></div>
+      <div class="value-card"><div class="value-icon">🤝</div><div class="value-name">Community</div><div class="value-desc">We foster collaboration, inclusivity, and mutual support.</div></div>
+    </div>
+  </section>
+
+  <!-- PHOTO MOSAIC — Real People, Real Growth -->
+  <section style="padding-top:60px;padding-bottom:60px;">
+    <div class="section-header">
+      <div class="section-tag">Our Community</div>
+      <h2 class="section-title">Real People. Real Growth.</h2>
+      <p class="section-sub">Professionals and learners across Africa unlocking their potential every day.</p>
+    </div>
+    <div class="photo-mosaic">
+      <!-- Large main photo -->
+      <div class="photo-tile photo-main">
+        <img
+          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=800&q=80&fit=crop"
+          alt="African professional woman smiling confidently"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Empowered professionals building tomorrow</div>
+      </div>
+      <!-- Top right -->
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80&fit=crop"
+          alt="Young Africans studying together"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Collaborative learning</div>
+      </div>
+      <!-- Middle right -->
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80&fit=crop"
+          alt="African woman working on laptop"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Digital skills for the modern workplace</div>
+      </div>
+      <!-- Bottom middle -->
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&fit=crop"
+          alt="African professional man smiling"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Leadership in action</div>
+      </div>
+      <!-- Bottom right -->
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&q=80&fit=crop"
+          alt="African woman presenting at work"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1598550487031-0898b4852123?w=500&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Confident communicators</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section style="background:var(--dark2);">
+    <div class="section-header">
+      <div class="section-tag">What We Do</div>
+      <h2 class="section-title">Comprehensive Talent Solutions</h2>
+    </div>
+    <div class="values-grid" style="max-width:900px;margin:0 auto;">
+      <div class="value-card"><div class="value-icon">📖</div><div class="value-name">Course Development</div><div class="value-desc">Expert-designed programs covering technical, business, and creative fields with immediate real-world application.</div></div>
+      <div class="value-card"><div class="value-icon">🏢</div><div class="value-name">Workforce Training</div><div class="value-desc">Custom training solutions for organizations — from onboarding to leadership development.</div></div>
+      <div class="value-card"><div class="value-icon">💼</div><div class="value-name">Talent Solutions</div><div class="value-desc">Connecting trained learners to opportunities through our growing employer network.</div></div>
+    </div>
+  </section>
+
+  <!-- IMPACT SPLIT SECTION -->
+  <section style="padding-top:80px;padding-bottom:80px;">
+    <div class="impact-section">
+      <div class="impact-photo">
+        <img
+          src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80&fit=crop&crop=faces"
+          alt="African students learning together in a bright space"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800&q=80&fit=crop'"
+        >
+      </div>
+      <div>
+        <div class="section-tag">Our Impact</div>
+        <div class="impact-quote" style="margin-top:12px;">
+          Transforming <span class="accent">ambition</span> into achievement across Africa
+        </div>
+        <p style="color:var(--muted);font-size:0.95rem;line-height:1.75;">
+          From fresh graduates to seasoned executives, our learners are building skills that open real doors — landing promotions, launching businesses, and leading teams across Kenya and beyond.
+        </p>
+        <div class="impact-stat-row">
+          <div class="impact-stat">
+            <div class="impact-stat-num">500+</div>
+            <div class="impact-stat-label">Learners Trained</div>
+          </div>
+          <div class="impact-stat">
+            <div class="impact-stat-num">50+</div>
+            <div class="impact-stat-label">Courses Available</div>
+          </div>
+          <div class="impact-stat">
+            <div class="impact-stat-num">92%</div>
+            <div class="impact-stat-label">Satisfaction Rate</div>
+          </div>
+          <div class="impact-stat">
+            <div class="impact-stat-num">30+</div>
+            <div class="impact-stat-label">Employer Partners</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTO STRIP — Faces of the community -->
+  <section style="background:var(--dark2);padding-top:60px;padding-bottom:60px;">
+    <div class="section-header">
+      <div class="section-tag">Across Africa</div>
+      <h2 class="section-title">Learning Has No Borders</h2>
+      <p class="section-sub">Our community spans cities, towns, and remote areas — united by the drive to grow.</p>
+    </div>
+    <div class="photo-strip">
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&q=80&fit=crop&crop=faces"
+          alt="African man studying on laptop"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Remote learner, Nairobi</div>
+      </div>
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&q=80&fit=crop&crop=faces"
+          alt="African woman in a business meeting"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Team leader, Mombasa</div>
+      </div>
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80&fit=crop&crop=faces"
+          alt="African professional man in a smart jacket"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Entrepreneur, Kisumu</div>
+      </div>
+      <div class="photo-tile">
+        <img
+          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&q=80&fit=crop&crop=faces"
+          alt="African students working on a group project"
+          loading="lazy"
+          onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80&fit=crop'"
+        >
+        <div class="photo-caption">Students, Nakuru</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="background:linear-gradient(135deg,rgba(0,194,212,0.07) 0%,transparent 60%);text-align:center;">
+    <div class="section-tag">Get Started Today</div>
+    <h2 class="section-title" style="margin-top:8px;">Ready to Level Up?</h2>
+    <p class="section-sub" style="margin-bottom:32px;">Download premium courses, build a professional CV, or find your next career opportunity.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="showPage('courses')">📚 Explore Courses</button>
+      <button class="btn btn-ghost" onclick="showPage('jobs')">🔍 View Job Openings</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">Zenith<span class="accent">Zoom</span></div>
+    <div class="footer-tagline">Empowering Growth. Transforming Lives.</div>
+    <div class="footer-links">
+      <button class="footer-link" onclick="showPage('home')">Home</button>
+      <button class="footer-link" onclick="showPage('courses')">Courses</button>
+      <button class="footer-link" onclick="showPage('cv')">CV Builder</button>
+      <button class="footer-link" onclick="showPage('jobs')">Jobs</button>
+      <a class="footer-link" href="/admin/login">Admin Panel</a>
+    </div>
+    <div class="footer-copy">© 2025 Zenith Zoom. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ═══════════════ RESOURCES PAGE ═══════════════ -->
+<div id="page-courses" class="page" style="padding-top:88px;">
+  <section>
+    <div class="section-header">
+      <div class="section-tag">Course Library</div>
+      <h2 class="section-title">Premium Courses</h2>
+      <p class="section-sub">Download expert-crafted PDFs to accelerate your professional growth. Secure payment via M-Pesa Lipa Na M-Pesa.</p>
+    </div>
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="filter-bar">
+        <input class="search-input" type="text" id="course-search" placeholder="🔍 Search courses..." oninput="filterCourses()">
+        <select class="filter-select" id="course-category" onchange="filterCourses()">
+          <option value="">All Categories</option>
+          <option>Business</option><option>Technology</option><option>Marketing</option>
+          <option>Leadership</option><option>Finance</option><option>Career Development</option>
+        </select>
+      </div>
+      <div id="course-grid" class="resource-grid">
+        <div class="empty-state" style="grid-column:1/-1;"><div class="spinner"></div><p>Loading courses...</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════ CV BUILDER PAGE ═══════════════ -->
+<div id="page-cv" class="page" style="padding-top:88px;">
+  <section>
+    <div class="section-header">
+      <div class="section-tag">CV Builder</div>
+      <h2 class="section-title">Build a Professional CV</h2>
+      <p class="section-sub">Fill in your details, preview live, then pay KES 100 via M-Pesa to download your polished PDF.</p>
+    </div>
+    <div class="cv-layout">
+      <!-- FORM -->
+      <div class="cv-form-box">
+        <div class="cv-tabs">
+          <button class="cv-tab active" onclick="cvTab('personal')">👤 Personal</button>
+          <button class="cv-tab" onclick="cvTab('experience')">💼 Experience</button>
+          <button class="cv-tab" onclick="cvTab('education')">🎓 Education</button>
+          <button class="cv-tab" onclick="cvTab('skills')">⚡ Skills</button>
+        </div>
+
+        <div class="cv-tab-content active" id="tab-personal">
+          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="cv-name" placeholder="Jane Wanjiku" oninput="updatePreview()"></div>
+          <div class="form-group"><label class="form-label">Professional Title</label><input class="form-input" id="cv-title" placeholder="Senior Marketing Manager" oninput="updatePreview()"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="cv-email" placeholder="jane@example.com" oninput="updatePreview()"></div>
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="cv-phone" placeholder="+254 700 000 000" oninput="updatePreview()"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="cv-location" placeholder="Nairobi, Kenya" oninput="updatePreview()"></div>
+            <div class="form-group"><label class="form-label">LinkedIn / Portfolio</label><input class="form-input" id="cv-linkedin" placeholder="linkedin.com/in/jane" oninput="updatePreview()"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Professional Summary</label><textarea class="form-input" id="cv-summary" rows="4" placeholder="Results-driven professional with 5+ years of experience..." oninput="updatePreview()"></textarea></div>
+        </div>
+
+        <div class="cv-tab-content" id="tab-experience">
+          <div id="experience-list"></div>
+          <button class="btn btn-ghost btn-sm" onclick="addEntry('exp')" style="width:100%;margin-top:4px;">+ Add Work Experience</button>
+        </div>
+
+        <div class="cv-tab-content" id="tab-education">
+          <div id="education-list"></div>
+          <button class="btn btn-ghost btn-sm" onclick="addEntry('edu')" style="width:100%;margin-top:4px;">+ Add Education</button>
+        </div>
+
+        <div class="cv-tab-content" id="tab-skills">
+          <div class="form-group"><label class="form-label">Key Skills (comma-separated)</label><textarea class="form-input" id="cv-skills" rows="4" placeholder="Project Management, Data Analysis, Microsoft Excel, Communication..." oninput="updatePreview()"></textarea></div>
+          <div class="form-group"><label class="form-label">Certifications & Achievements</label><textarea class="form-input" id="cv-certs" rows="3" placeholder="Google Analytics Certified, CPA Kenya, Dean's List 2020..." oninput="updatePreview()"></textarea></div>
+          <div class="form-group"><label class="form-label">Languages</label><input class="form-input" id="cv-langs" placeholder="English (Fluent), Swahili (Native)" oninput="updatePreview()"></div>
+        </div>
+
+        <div style="padding-top:20px;border-top:1px solid var(--border);margin-top:8px;">
+          <button class="btn btn-primary" onclick="initCVPayment()" style="width:100%;">
+            💳 Pay KES 100 & Download PDF
+          </button>
+          <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin-top:10px;">Secure payment via M-Pesa • Your CV PDF is ready after payment</p>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="cv-preview-box">
+        <p style="color:var(--muted);font-size:0.78rem;text-align:center;margin-bottom:10px;">📄 Live Preview</p>
+        <div class="cv-preview" id="cv-preview-box">
+          <div class="cvp-header">
+            <div class="cvp-name" id="prev-name">Your Name</div>
+            <div class="cvp-role" id="prev-title">Professional Title</div>
+            <div class="cvp-contact" id="prev-contact">email@example.com | +254 000 000 000 | Nairobi, Kenya</div>
+          </div>
+          <div class="cvp-body">
+            <div id="prev-summary"></div>
+            <div id="prev-experience"></div>
+            <div id="prev-education"></div>
+            <div id="prev-skills"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════ JOBS PAGE ═══════════════ -->
+<div id="page-jobs" class="page" style="padding-top:88px;">
+  <section>
+    <div class="section-header">
+      <div class="section-tag">Opportunities</div>
+      <h2 class="section-title">Current Job Openings</h2>
+      <p class="section-sub">Discover career opportunities sourced from leading employers across Kenya and beyond.</p>
+    </div>
+    <div style="max-width:900px;margin:0 auto;">
+      <div class="filter-bar">
+        <input class="search-input" type="text" id="job-search" placeholder="🔍 Search jobs, companies..." oninput="filterJobs()">
+        <select class="filter-select" id="job-type" onchange="filterJobs()">
+          <option value="">All Types</option>
+          <option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Internship</option><option>Remote</option>
+        </select>
+        <select class="filter-select" id="job-category" onchange="filterJobs()">
+          <option value="">All Fields</option>
+          <option>Technology</option><option>Marketing</option><option>Finance</option>
+          <option>Human Resources</option><option>Creative</option><option>Data & Analytics</option>
+        </select>
+      </div>
+      <div id="job-grid" class="job-grid">
+        <div class="empty-state"><div class="spinner"></div><p>Loading opportunities...</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- JOB DETAIL MODAL -->
+<div class="modal-overlay" id="job-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div><div class="modal-title" id="modal-job-title"></div><div class="modal-company" id="modal-job-company"></div></div>
+      <button class="modal-close" onclick="closeModal('job-modal')">✕</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="modal-job-tags"></div>
+    <div class="modal-section"><div class="modal-section-title">Description</div><p class="modal-text" id="modal-job-desc"></p></div>
+    <div class="modal-section" id="modal-req-sec"><div class="modal-section-title">Requirements</div><ul class="req-list" id="modal-job-reqs"></ul></div>
+    <div class="modal-section" id="modal-salary-sec"><div class="modal-section-title">Compensation</div><p class="modal-text" id="modal-job-salary" style="color:var(--teal);font-weight:600;font-size:1rem;"></p></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;" id="modal-apply-btns"></div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="pay-modal">
+  <div class="modal pay-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="pay-modal-title">Complete Payment</div>
+      <button class="modal-close" onclick="closePayModal()">✕</button>
+    </div>
+    <div class="pay-amount" id="pay-modal-amount">KES 50</div>
+    <div class="pay-item" id="pay-modal-item"></div>
+    <div class="pay-steps">
+      <div class="pay-step"><div class="step-num">1</div>Enter your Safaricom M-Pesa number below</div>
+      <div class="pay-step"><div class="step-num">2</div>Click Pay Now — you'll get a prompt on your phone</div>
+      <div class="pay-step"><div class="step-num">3</div>Enter your M-Pesa PIN to confirm payment</div>
+      <div class="pay-step"><div class="step-num">4</div>Your download link appears here automatically</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">M-Pesa Phone Number</label>
+      <input class="form-input" id="pay-phone" placeholder="0712 345 678 or 254712345678" maxlength="13">
+    </div>
+    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;">💚 Pay Now via M-Pesa</button>
+    <div class="pay-status" id="pay-status"></div>
+    <div style="display:none;text-align:center;margin-top:16px;" id="dl-wrap">
+      <a class="btn btn-primary" id="dl-link" href="#" target="_blank">⬇️ Download Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// MOBILE NAV
+// ─────────────────────────────────────────────
+function toggleMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('hamburger');
+  const isOpen = nav.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+function closeMobileNav() {
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let allCourses = [];
+let allJobs = [];
+let currentPayType = null;
+let currentResourceId = null;
+let currentCheckoutId = null;
+let pollInterval = null;
+const cvExp = [];
+const cvEdu = [];
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'courses' && !allCourses.length) loadCourses();
+  if (name === 'jobs' && !allJobs.length) loadJobs();
+}
+
+// ─────────────────────────────────────────────
+// RESOURCES
+// ─────────────────────────────────────────────
+async function loadCourses() {
+  try {
+    const r = await fetch('/api/resources');
+    const d = await r.json();
+    allCourses = d.resources || [];
+    if (!allCourses.length) throw new Error('empty');
+  } catch {
+    allCourses = getSampleCourses();
+  }
+  renderCourses(allCourses);
+}
+
+function getSampleCourses() {
+  return [
+    { _id: 's1', title: 'Business Plan Writing Guide', description: 'A comprehensive guide to crafting winning business plans for investors and financial institutions.', category: 'Business', price: 150, downloads: 42 },
+    { _id: 's2', title: 'Digital Marketing Masterclass', description: 'Master SEO, social media strategy, and paid advertising from certified industry professionals.', category: 'Marketing', price: 200, downloads: 88 },
+    { _id: 's3', title: 'Leadership Development Toolkit', description: 'Proven frameworks and exercises used by top executives to build high-performing teams.', category: 'Leadership', price: 250, downloads: 31 },
+    { _id: 's4', title: 'Financial Literacy Handbook', description: 'Essential personal and business finance concepts for professionals in East Africa.', category: 'Finance', price: 100, downloads: 65 },
+    { _id: 's5', title: 'Python for Data Analysis', description: 'Beginner-friendly exercises covering pandas, numpy, and data visualization with real datasets.', category: 'Technology', price: 300, downloads: 120 },
+    { _id: 's6', title: 'Career Transition Playbook', description: 'Step-by-step strategies for switching industries, building your brand, and negotiating offers.', category: 'Career Development', price: 80, downloads: 55 },
+  ];
+}
+
+const catIcons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀', default:'📄' };
+
+function renderCourses(list) {
+  const grid = document.getElementById('resource-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📂</div><p>No courses found.</p></div>';
+    return;
+  }
+  grid.innerHTML = list.map(r => `
+    <div class="resource-card">
+      <div class="resource-icon">${catIcons[r.category] || catIcons.default}</div>
+      <span class="resource-cat">${r.category}</span>
+      <div class="resource-title">${escHtml(r.title)}</div>
+      <div class="resource-desc">${escHtml(r.description)}</div>
+      <div class="resource-footer">
+        <div class="resource-price">KES ${r.price}</div>
+        <button class="btn btn-primary btn-sm" onclick="openResPay('${r._id}',${r.price},'${escJs(r.title)}')">⬇️ Download</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCourses() {
+  const q = document.getElementById('course-search').value.toLowerCase();
+  const cat = document.getElementById('course-category').value;
+  renderCourses(allCourses.filter(r =>
+    (!cat || r.category === cat) &&
+    (!q || r.title.toLowerCase().includes(q) || r.description.toLowerCase().includes(q))
+  ));
+}
+
+// ─────────────────────────────────────────────
+// JOBS
+// ─────────────────────────────────────────────
+async function loadJobs() {
+  try {
+    const r = await fetch('/api/jobs');
+    const d = await r.json();
+    allJobs = d.jobs || [];
+    if (!allJobs.length) throw new Error('empty');
+  } catch {
+    allJobs = getSampleJobs();
+  }
+  renderJobs(allJobs);
+}
+
+function getSampleJobs() {
+  const future = (days) => new Date(Date.now() + days*86400000).toISOString();
+  return [
+    { _id:'j1', title:'Frontend Developer', company:'TechBridge Kenya', location:'Nairobi', type:'Full-Time', category:'Technology', salary:'KES 80,000–120,000/mo', description:'Build modern web applications using React and Node.js for our growing SaaS platform.', requirements:['3+ years React experience','Strong CSS/Tailwind skills','Git proficiency'], applyEmail:'careers@techbridge.co.ke', deadline:future(30) },
+    { _id:'j2', title:'Digital Marketing Specialist', company:'Brand Afrika', location:'Remote', type:'Remote', category:'Marketing', salary:'KES 60,000–90,000/mo', description:'Drive high-impact digital campaigns across social media and paid search channels for leading brands.', requirements:['Google Ads certified','SEO/SEM knowledge','2+ years experience'], applyEmail:'hr@brandafrika.com', deadline:future(20) },
+    { _id:'j3', title:'Data Science Intern', company:'Strathmore University', location:'Nairobi', type:'Internship', category:'Data & Analytics', salary:'KES 15,000/mo stipend', description:'Support AI research projects using Python, machine learning, and statistical analysis.', requirements:['Python proficiency','Statistics background','Currently enrolled in relevant degree'], applyEmail:'intern@strathmore.edu', deadline:future(15) },
+    { _id:'j4', title:'HR Manager', company:'Equity Bank Kenya', location:'Nairobi', type:'Full-Time', category:'Human Resources', salary:'KES 150,000–200,000/mo', description:'Lead HR operations for a 500+ employee division, overseeing recruitment, compliance, and culture.', requirements:['CHRP certified','5+ years HR management','Labour law expertise'], applyEmail:'careers@equitybank.co.ke', deadline:future(25) },
+    { _id:'j5', title:'Senior Graphic Designer', company:'Creatives Hub', location:'Nairobi', type:'Part-Time', category:'Creative', salary:'KES 40,000/mo', description:'Create compelling visual identities and marketing content for brands across East Africa.', requirements:['Adobe Creative Suite expert','Portfolio of brand identity work','Client communication skills'], applyEmail:'design@creativeshub.co.ke', deadline:future(10) },
+  ];
+}
+
+const jobCatIcons = { Technology:'💻', Marketing:'📣', Finance:'💰', 'Human Resources':'👥', Creative:'🎨', 'Data & Analytics':'📊', default:'💼' };
+
+function renderJobs(list) {
+  const grid = document.getElementById('job-grid');
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No job postings match your search.</p></div>';
+    return;
+  }
+  grid.innerHTML = list.map(j => `
+    <div class="job-card" onclick="openJobModal('${j._id}')">
+      <div class="job-icon">${jobCatIcons[j.category] || jobCatIcons.default}</div>
+      <div class="job-info">
+        <div class="job-title">${escHtml(j.title)}</div>
+        <div class="job-company">${escHtml(j.company)}</div>
+        <div class="job-tags">
+          <span class="job-tag tag-type">${j.type}</span>
+          <span class="job-tag tag-loc">📍 ${escHtml(j.location)}</span>
+          <span class="job-tag tag-cat">${escHtml(j.category)}</span>
+        </div>
+      </div>
+      <div class="job-right">
+        <div class="job-salary">${escHtml(j.salary || 'Competitive')}</div>
+        ${j.deadline ? `<div class="job-deadline">Closes ${new Date(j.deadline).toLocaleDateString('en-KE',{month:'short',day:'numeric'})}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterJobs() {
+  const q = document.getElementById('job-search').value.toLowerCase();
+  const type = document.getElementById('job-type').value;
+  const cat = document.getElementById('job-category').value;
+  renderJobs(allJobs.filter(j =>
+    (!type || j.type === type) &&
+    (!cat || j.category === cat) &&
+    (!q || j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q))
+  ));
+}
+
+function openJobModal(id) {
+  const j = allJobs.find(x => x._id === id);
+  if (!j) return;
+  document.getElementById('modal-job-title').textContent = j.title;
+  document.getElementById('modal-job-company').textContent = `${j.company} · ${j.location}`;
+  document.getElementById('modal-job-tags').innerHTML = `
+    <span class="job-tag tag-type">${j.type}</span>
+    <span class="job-tag tag-loc">📍 ${j.location}</span>
+    <span class="job-tag tag-cat">${j.category}</span>
+  `;
+  document.getElementById('modal-job-desc').textContent = j.description;
+  const reqs = j.requirements || [];
+  document.getElementById('modal-req-sec').style.display = reqs.length ? '' : 'none';
+  document.getElementById('modal-job-reqs').innerHTML = reqs.map(r => `<li>${escHtml(r)}</li>`).join('');
+  document.getElementById('modal-salary-sec').style.display = j.salary ? '' : 'none';
+  document.getElementById('modal-job-salary').textContent = j.salary || '';
+  const btns = document.getElementById('modal-apply-btns');
+  let html = '';
+  if (j.applyLink) html += `<a class="btn btn-primary" href="${j.applyLink}" target="_blank">Apply Now →</a>`;
+  if (j.applyEmail) html += `<a class="btn btn-ghost" href="mailto:${j.applyEmail}?subject=Application: ${encodeURIComponent(j.title)}">✉️ Apply by Email</a>`;
+  if (!html) html = '<span style="color:var(--muted);font-size:0.85rem;">Contact the company directly.</span>';
+  btns.innerHTML = html;
+  document.getElementById('job-modal').classList.add('open');
+}
+
+// ─────────────────────────────────────────────
+// CV BUILDER
+// ─────────────────────────────────────────────
+function cvTab(tab) {
+  const tabs = ['personal','experience','education','skills'];
+  document.querySelectorAll('.cv-tab').forEach((el, i) => el.classList.toggle('active', tabs[i] === tab));
+  document.querySelectorAll('.cv-tab-content').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function addEntry(type) {
+  if (type === 'exp') {
+    cvExp.push({ role:'', company:'', startDate:'', endDate:'', location:'', description:'' });
+    renderEntries('exp');
+  } else {
+    cvEdu.push({ degree:'', institution:'', startYear:'', endYear:'' });
+    renderEntries('edu');
+  }
+}
+
+function removeEntry(type, idx) {
+  if (type === 'exp') cvExp.splice(idx, 1);
+  else cvEdu.splice(idx, 1);
+  renderEntries(type);
+  updatePreview();
+}
+
+function renderEntries(type) {
+  if (type === 'exp') {
+    document.getElementById('experience-list').innerHTML = cvExp.map((e, i) => `
+      <div class="entry-card">
+        <button class="entry-remove" onclick="removeEntry('exp',${i})">✕</button>
+        <div class="form-row" style="margin-bottom:10px;">
+          <input class="form-input" placeholder="Job Title" value="${escHtml(e.role)}" oninput="cvExp[${i}].role=this.value;updatePreview()">
+          <input class="form-input" placeholder="Company / Organization" value="${escHtml(e.company)}" oninput="cvExp[${i}].company=this.value;updatePreview()">
+        </div>
+        <div class="form-row" style="margin-bottom:10px;">
+          <input class="form-input" placeholder="Start (e.g. Jan 2022)" value="${escHtml(e.startDate)}" oninput="cvExp[${i}].startDate=this.value;updatePreview()">
+          <input class="form-input" placeholder="End (or Present)" value="${escHtml(e.endDate)}" oninput="cvExp[${i}].endDate=this.value;updatePreview()">
+        </div>
+        <input class="form-input" placeholder="City, Country" value="${escHtml(e.location)}" oninput="cvExp[${i}].location=this.value;updatePreview()" style="margin-bottom:10px;">
+        <textarea class="form-input" rows="2" placeholder="Key responsibilities and achievements..." oninput="cvExp[${i}].description=this.value;updatePreview()">${escHtml(e.description)}</textarea>
+      </div>
+    `).join('');
+  } else {
+    document.getElementById('education-list').innerHTML = cvEdu.map((e, i) => `
+      <div class="entry-card">
+        <button class="entry-remove" onclick="removeEntry('edu',${i})">✕</button>
+        <div class="form-row" style="margin-bottom:10px;">
+          <input class="form-input" placeholder="Degree / Qualification" value="${escHtml(e.degree)}" oninput="cvEdu[${i}].degree=this.value;updatePreview()">
+          <input class="form-input" placeholder="Institution" value="${escHtml(e.institution)}" oninput="cvEdu[${i}].institution=this.value;updatePreview()">
+        </div>
+        <div class="form-row">
+          <input class="form-input" placeholder="Start Year" value="${escHtml(e.startYear)}" oninput="cvEdu[${i}].startYear=this.value;updatePreview()">
+          <input class="form-input" placeholder="End Year" value="${escHtml(e.endYear)}" oninput="cvEdu[${i}].endYear=this.value;updatePreview()">
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function updatePreview() {
+  const name = document.getElementById('cv-name').value || 'Your Name';
+  const title = document.getElementById('cv-title').value || 'Professional Title';
+  const email = document.getElementById('cv-email').value || 'email@example.com';
+  const phone = document.getElementById('cv-phone').value || '+254 000 000 000';
+  const loc = document.getElementById('cv-location').value || 'Nairobi, Kenya';
+  const summary = document.getElementById('cv-summary').value;
+  const skills = document.getElementById('cv-skills').value;
+  const certs = document.getElementById('cv-certs').value;
+  const langs = document.getElementById('cv-langs').value;
+
+  document.getElementById('prev-name').textContent = name;
+  document.getElementById('prev-title').textContent = title;
+  document.getElementById('prev-contact').textContent = `${email} | ${phone} | ${loc}`;
+
+  document.getElementById('prev-summary').innerHTML = summary
+    ? `<div class="cvp-section-title">Summary</div><div class="cvp-item">${escHtml(summary)}</div>` : '';
+
+  const expHtml = cvExp.filter(e => e.role).map(e =>
+    `<div class="cvp-item"><strong>${escHtml(e.role)}</strong> — ${escHtml(e.company)}<br><span style="color:#888;font-size:0.65rem">${e.startDate}${e.endDate ? ' – ' + e.endDate : ''}${e.location ? ' · ' + e.location : ''}</span>${e.description ? '<br>' + escHtml(e.description) : ''}</div>`
+  ).join('');
+  document.getElementById('prev-experience').innerHTML = expHtml ? `<div class="cvp-section-title">Experience</div>${expHtml}` : '';
+
+  const eduHtml = cvEdu.filter(e => e.degree).map(e =>
+    `<div class="cvp-item"><strong>${escHtml(e.degree)}</strong> — ${escHtml(e.institution)}<br><span style="color:#888;font-size:0.65rem">${e.startYear}${e.endYear ? ' – ' + e.endYear : ''}</span></div>`
+  ).join('');
+  document.getElementById('prev-education').innerHTML = eduHtml ? `<div class="cvp-section-title">Education</div>${eduHtml}` : '';
+
+  let skillsHtml = '';
+  if (skills) skillsHtml += `<div class="cvp-section-title">Skills</div><div class="cvp-item">${escHtml(skills)}</div>`;
+  if (certs) skillsHtml += `<div class="cvp-section-title">Certifications</div><div class="cvp-item">${escHtml(certs)}</div>`;
+  if (langs) skillsHtml += `<div class="cvp-section-title">Languages</div><div class="cvp-item">${escHtml(langs)}</div>`;
+  document.getElementById('prev-skills').innerHTML = skillsHtml;
+}
+
+// ─────────────────────────────────────────────
+// PAYMENT
+// ─────────────────────────────────────────────
+function openResPay(id, price, title) {
+  currentPayType = 'resource';
+  currentResourceId = id;
+  document.getElementById('pay-modal-title').textContent = 'Download Course';
+  document.getElementById('pay-modal-amount').textContent = `KES ${price}`;
+  document.getElementById('pay-modal-item').textContent = title;
+  resetPayModal();
+  document.getElementById('pay-modal').classList.add('open');
+}
+
+function initCVPayment() {
+  const name = document.getElementById('cv-name').value.trim();
+  if (!name) { showToast('Please enter your name first.', 'error'); cvTab('personal'); return; }
+  currentPayType = 'cv';
+  document.getElementById('pay-modal-title').textContent = 'Download Your CV';
+  document.getElementById('pay-modal-amount').textContent = 'KES 100';
+  document.getElementById('pay-modal-item').textContent = `Professional CV — ${name}`;
+  resetPayModal();
+  document.getElementById('pay-modal').classList.add('open');
+}
+
+function resetPayModal() {
+  document.getElementById('pay-phone').value = '';
+  document.getElementById('pay-status').className = 'pay-status';
+  document.getElementById('pay-status').textContent = '';
+  document.getElementById('dl-wrap').style.display = 'none';
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = false;
+  btn.textContent = '💚 Pay Now via M-Pesa';
+  btn.style.display = '';
+  clearInterval(pollInterval);
+  currentCheckoutId = null;
+}
+
+function closePayModal() {
+  document.getElementById('pay-modal').classList.remove('open');
+  clearInterval(pollInterval);
+}
+
+async function submitPayment() {
+  const phone = document.getElementById('pay-phone').value.trim();
+  if (!phone) { showToast('Please enter your M-Pesa phone number.', 'error'); return; }
+
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending STK Push...';
+
+  const status = document.getElementById('pay-status');
+  status.className = 'pay-status pending';
+  status.textContent = '📱 Check your phone for the M-Pesa payment prompt...';
+
+  try {
+    let endpoint, body;
+    if (currentPayType === 'resource') {
+      endpoint = '/api/mpesa/pay-resource';
+      body = { phone, resourceId: currentResourceId };
+    } else {
+      endpoint = '/api/mpesa/pay-cv';
+      body = {
+        phone,
+        cvData: {
+          fullName: document.getElementById('cv-name').value,
+          jobTitle: document.getElementById('cv-title').value,
+          email: document.getElementById('cv-email').value,
+          phone: document.getElementById('cv-phone').value,
+          location: document.getElementById('cv-location').value,
+          linkedin: document.getElementById('cv-linkedin').value,
+          summary: document.getElementById('cv-summary').value,
+          skills: document.getElementById('cv-skills').value,
+          certifications: document.getElementById('cv-certs').value,
+          languages: document.getElementById('cv-langs').value,
+          experience: [...cvExp],
+          education: [...cvEdu]
+        }
+      };
+    }
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      status.className = 'pay-status error';
+      status.textContent = '❌ ' + data.message;
+      btn.disabled = false;
+      btn.textContent = '💚 Pay Now via M-Pesa';
+      return;
+    }
+
+    currentCheckoutId = data.checkoutRequestId;
+    status.textContent = '📱 Enter your M-Pesa PIN to confirm payment. Waiting...';
+
+    let attempts = 0;
+    pollInterval = setInterval(async () => {
+      if (++attempts > 24) {
+        clearInterval(pollInterval);
+        status.className = 'pay-status error';
+        status.textContent = '⏰ Payment timed out. Please try again.';
+        btn.disabled = false;
+        btn.textContent = '💚 Pay Now via M-Pesa';
+        return;
+      }
+      try {
+        const pr = await fetch(`/api/mpesa/status/${currentCheckoutId}`);
+        const pd = await pr.json();
+        if (pd.status === 'completed') {
+          clearInterval(pollInterval);
+          status.className = 'pay-status success';
+          status.textContent = '✅ Payment confirmed! Your download is ready below.';
+          document.getElementById('dl-wrap').style.display = 'block';
+          document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+          btn.style.display = 'none';
+          showToast('Payment successful! Your file is ready.', 'success');
+        } else if (pd.status === 'failed') {
+          clearInterval(pollInterval);
+          status.className = 'pay-status error';
+          status.textContent = '❌ Payment failed or cancelled. Please try again.';
+          btn.disabled = false;
+          btn.textContent = '💚 Pay Now via M-Pesa';
+        }
+      } catch {}
+    }, 5000);
+
+  } catch {
+    status.className = 'pay-status error';
+    status.textContent = '❌ Network error. Please check your connection.';
+    btn.disabled = false;
+    btn.textContent = '💚 Pay Now via M-Pesa';
+  }
+}
+
+// ─────────────────────────────────────────────
+// MODALS & UTILS
+// ─────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.getElementById('job-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal('job-modal'); });
+document.getElementById('pay-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePayModal(); });
+
+// Close mobile nav on outside tap
+document.addEventListener('click', e => {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('hamburger');
+  if (nav.classList.contains('open') && !nav.contains(e.target) && !btn.contains(e.target)) {
+    closeMobileNav();
+  }
+});
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escJs(s) {
+  return String(s||'').replace(/'/g, "\\'").replace(/\n/g, ' ');
+}
+
+// INIT
+updatePreview();
+</script>
+</body>
+</html>
