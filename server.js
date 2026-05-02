@@ -43,12 +43,16 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom')
     console.log('✅ MongoDB connected');
     await seedAdmin();
     await seedSampleData();
-    app.listen(PORT, () => console.log(`🚀 Zenith Zoom running on port ${PORT}`));
+    // Only call listen if not already handled by host
+    if (!module.parent) {
+      app.listen(PORT, () => console.log(`🚀 Zenith Zoom running on port ${PORT}`));
+    }
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
-    // Start anyway for demo
-    app.listen(PORT, () => console.log(`🚀 Zenith Zoom running on port ${PORT} (no DB)`));
+    if (!module.parent) {
+      app.listen(PORT, () => console.log(`🚀 Zenith Zoom running on port ${PORT} (no DB)`));
+    }
   });
 
 async function seedAdmin() {
