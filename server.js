@@ -31,21 +31,6 @@ app.use(session({
   }
 }));
 
-// TEMPORARY password reset route - remove after use
-app.get('/reset-admin-password', async (req, res) => {
-  try {
-    const Admin = require('./models/Admin');
-    await Admin.deleteMany({});
-    await Admin.create({
-      email: 'admin@zenithzoom.com',
-      password: 'ZenithAdmin2025'
-    });
-    res.send('✅ Admin reset! Email: admin@zenithzoom.com | Password: ZenithAdmin2025 | <a href="/admin/login">Login now</a>');
-  } catch(err) {
-    res.send('Error: ' + err.message);
-  }
-});
-
 // Routes
 app.use('/api/mpesa', require('./routes/mpesa'));
 app.use('/api/resources', require('./routes/resources'));
