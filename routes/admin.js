@@ -61,4 +61,40 @@ router.get('/api/payments', isAdmin, async (req, res) => {
   }
 });
 
+// Public CV price endpoint (no auth needed)
+router.get('/api/cv-price', async (req, res) => {
+  try {
+    const Setting = require('../models/Setting');
+    const price = await Setting.get('cvPrice', 100);
+    res.json({ success: true, price });
+  } catch (err) {
+    res.json({ success: true, price: 100 });
+  }
+});
+
+// GET settings
+router.get('/api/settings', isAdmin, async (req, res) => {
+  try {
+    const Setting = require('../models/Setting');
+    const cvPrice = await Setting.get('cvPrice', 100);
+    res.json({ success: true, cvPrice });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST update settings
+router.post('/api/settings', isAdmin, async (req, res) => {
+  try {
+    const Setting = require('../models/Setting');
+    const { cvPrice } = req.body;
+    if (cvPrice !== undefined) {
+      await Setting.set('cvPrice', parseInt(cvPrice));
+    }
+    res.json({ success: true, message: 'Settings saved' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;
