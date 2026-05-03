@@ -224,6 +224,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <button class="sidebar-item" id="nav-payments" onclick="showPanel('payments')">
     <span class="sidebar-icon">💳</span> Payments
   </button>
+  <button class="sidebar-item" id="nav-settings" onclick="showPanel('settings')">
+    <span class="sidebar-icon">⚙️</span> Settings
+  </button>
   <div class="sidebar-logout">
     <a class="logout-btn" href="/admin/logout">
       <span>🚪</span> Sign Out
@@ -321,6 +324,71 @@ tr:hover td { background: rgba(255,255,255,0.02); }
             <thead><tr><th>Phone</th><th>Type</th><th>Resource</th><th>Amount</th><th>M-Pesa Receipt</th><th>Status</th><th>Date</th></tr></thead>
             <tbody id="payments-tbody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);"><div class="spinner" style="margin-bottom:10px;"></div>Loading payments...</td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS PANEL ══ -->
+    <div class="panel" id="panel-settings">
+      <div style="margin-bottom:22px;">
+        <h2 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text);">Platform Settings</h2>
+        <p style="color:var(--muted);font-size:0.8rem;margin-top:2px;">Manage pricing and platform configuration</p>
+      </div>
+
+      <!-- CV BUILDER PRICING -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header">
+          <div class="card-title">✨ CV Builder Pricing</div>
+          <span style="color:var(--muted);font-size:0.8rem;">Currently charged when user downloads their CV</span>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+            <div class="form-group">
+              <label>CV Download Price (KES) *</label>
+              <input type="number" id="cv-price-input" placeholder="100" min="1" style="font-size:1.1rem;font-weight:600;">
+              <p style="font-size:0.75rem;color:var(--muted);margin-top:6px;">This is what users pay via M-Pesa to download their CV PDF</p>
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;background:var(--dark2);border-radius:var(--radius);padding:20px;text-align:center;">
+              <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;">CURRENT PRICE</div>
+              <div id="cv-price-display" style="font-family:var(--font-display);font-size:2.5rem;font-weight:800;color:var(--teal);">KES —</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">per CV download</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveCVPrice()" id="save-cv-price-btn">
+            💾 Save CV Price
+          </button>
+          <div id="cv-price-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.85rem;"></div>
+        </div>
+      </div>
+
+      <!-- PLATFORM INFO -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">ℹ️ Platform Info</div>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+            <div style="background:var(--dark2);border-radius:10px;padding:16px;">
+              <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Payment Gateway</div>
+              <div style="font-weight:600;color:var(--text);">KCB BUNI</div>
+              <div style="font-size:0.75rem;color:var(--muted);">Lipa na M-Pesa STK Push</div>
+            </div>
+            <div style="background:var(--dark2);border-radius:10px;padding:16px;">
+              <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Download Expiry</div>
+              <div style="font-weight:600;color:var(--text);">24 Hours</div>
+              <div style="font-size:0.75rem;color:var(--muted);">After successful payment</div>
+            </div>
+            <div style="background:var(--dark2);border-radius:10px;padding:16px;">
+              <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Database</div>
+              <div style="font-weight:600;color:var(--text);">MongoDB Atlas</div>
+              <div style="font-size:0.75rem;color:var(--muted);">Cloud hosted</div>
+            </div>
+            <div style="background:var(--dark2);border-radius:10px;padding:16px;">
+              <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Hosting</div>
+              <div style="font-weight:600;color:var(--text);">Hostinger</div>
+              <div style="font-size:0.75rem;color:var(--muted);">Node.js</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -440,7 +508,7 @@ function closeSidebar() {
 let resources = [], jobs = [], payments = [];
 
 // ─── PANELS ──────────────────────────────────
-const panelTitles = { overview: ['Overview','Dashboard summary'], courses: ['Courses','Manage course library'], jobs: ['Job Listings','Manage job postings'], payments: ['Payments','All M-Pesa transactions'] };
+const panelTitles = { overview: ['Overview','Dashboard summary'], courses: ['Courses','Manage course library'], jobs: ['Job Listings','Manage job postings'], payments: ['Payments','All M-Pesa transactions'], settings: ['Settings','Platform configuration'] };
 
 function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -455,6 +523,7 @@ function showPanel(name) {
   if (name === 'courses') loadResources();
   if (name === 'jobs') loadJobs();
   if (name === 'payments') loadPayments();
+  if (name === 'settings') loadSettings();
 }
 
 // ─── STATS ───────────────────────────────────
@@ -684,6 +753,52 @@ function renderPayments() {
       <td style="color:var(--muted);font-size:0.78rem;">${new Date(p.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</td>
     </tr>
   `).join('');
+}
+
+// ─── SETTINGS ─────────────────────────────────
+async function loadSettings() {
+  try {
+    const res = await fetch('/admin/api/settings');
+    const data = await res.json();
+    const price = data.cvPrice || 100;
+    document.getElementById('cv-price-input').value = price;
+    document.getElementById('cv-price-display').textContent = `KES ${price}`;
+  } catch {
+    document.getElementById('cv-price-input').value = 100;
+    document.getElementById('cv-price-display').textContent = 'KES 100';
+  }
+}
+
+async function saveCVPrice() {
+  const price = document.getElementById('cv-price-input').value;
+  if (!price || price < 1) { showToast('Please enter a valid price.', 'error'); return; }
+
+  const btn = document.getElementById('save-cv-price-btn');
+  const msg = document.getElementById('cv-price-msg');
+  btn.disabled = true; btn.textContent = '⏳ Saving...';
+
+  try {
+    const res = await fetch('/admin/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cvPrice: parseInt(price) })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('cv-price-display').textContent = `KES ${price}`;
+      msg.style.display = 'block';
+      msg.style.background = 'rgba(16,185,129,0.1)';
+      msg.style.color = '#10B981';
+      msg.textContent = `✅ CV price updated to KES ${price} successfully!`;
+      showToast(`CV price updated to KES ${price}`, 'success');
+      setTimeout(() => msg.style.display = 'none', 4000);
+    } else {
+      showToast(data.message || 'Failed to save.', 'error');
+    }
+  } catch {
+    showToast('Network error. Try again.', 'error');
+  }
+  btn.disabled = false; btn.textContent = '💾 Save CV Price';
 }
 
 // ─── UTILS ───────────────────────────────────

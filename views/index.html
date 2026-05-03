@@ -1336,12 +1336,21 @@ function openResPay(id, price, title) {
   document.getElementById('pay-modal').classList.add('open');
 }
 
-function initCVPayment() {
+async function initCVPayment() {
   const name = document.getElementById('cv-name').value.trim();
   if (!name) { showToast('Please enter your name first.', 'error'); cvTab('personal'); return; }
+
+  // Fetch current CV price from server
+  let cvPrice = 100;
+  try {
+    const r = await fetch('/admin/api/cv-price');
+    const d = await r.json();
+    if (d.price) cvPrice = d.price;
+  } catch {}
+
   currentPayType = 'cv';
   document.getElementById('pay-modal-title').textContent = 'Download Your CV';
-  document.getElementById('pay-modal-amount').textContent = 'KES 100';
+  document.getElementById('pay-modal-amount').textContent = `KES ${cvPrice}`;
   document.getElementById('pay-modal-item').textContent = `Professional CV — ${name}`;
   resetPayModal();
   document.getElementById('pay-modal').classList.add('open');
