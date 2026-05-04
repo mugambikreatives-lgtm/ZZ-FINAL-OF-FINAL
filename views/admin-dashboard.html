@@ -298,14 +298,24 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
         <div>
           <h2 style="font-family:var(--font-display);font-size:1.1rem;color:var(--text);">Job Listings</h2>
-          <p style="color:var(--muted);font-size:0.8rem;margin-top:2px;">Manage job opportunities displayed on the platform</p>
+          <p style="color:var(--muted);font-size:0.8rem;margin-top:2px;">Auto-fetched from Google Jobs + manually posted jobs</p>
         </div>
-        <button class="btn btn-primary" onclick="openAddJob()">+ Add Job</button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="refreshJobCache()">🔄 Refresh Google Jobs</button>
+          <button class="btn btn-primary" onclick="openAddJob()">+ Add Manual Job</button>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:16px;padding:16px 20px;display:flex;align-items:center;gap:12px;">
+        <div id="serpapi-status-icon" style="font-size:20px;">⏳</div>
+        <div>
+          <div style="font-size:0.85rem;font-weight:600;color:var(--text);" id="serpapi-status-text">Checking Google Jobs connection...</div>
+          <div style="font-size:0.75rem;color:var(--muted);">Jobs auto-fetched from Google Jobs API every hour</div>
+        </div>
       </div>
       <div class="card">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Title</th><th>Company</th><th>Type</th><th>Location</th><th>Deadline</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Title</th><th>Company</th><th>Type</th><th>Location</th><th>Source</th><th>Actions</th></tr></thead>
             <tbody id="jobs-tbody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);"><div class="spinner" style="margin-bottom:10px;"></div>Loading jobs...</td></tr></tbody>
           </table>
         </div>
@@ -658,23 +668,45 @@ async function loadJobs() {
     const r = await fetch('/api/jobs');
     const d = await r.json();
     jobs = d.jobs || [];
+    // Update SerpAPI status
+    const icon = document.getElementById('serpapi-status-icon');
+    const text = document.getElementById('serpapi-status-text');
+    if (d.source === 'google') {
+      icon.textContent = '✅';
+      text.textContent = `Google Jobs connected — ${jobs.length} jobs loaded automatically`;
+      text.style.color = 'var(--success)';
+    } else {
+      icon.textContent = '⚠️';
+      text.textContent = 'Google Jobs not connected — showing manual jobs only. Add SERPAPI_KEY to enable auto-fetching.';
+      text.style.color = 'var(--warning)';
+    }
   } catch { jobs = []; }
   renderJobs();
 }
 
 function renderJobs() {
   const tbody = document.getElementById('jobs-tbody');
-  if (!jobs.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);">No jobs yet. Post your first listing above.</td></tr>'; return; }
+  if (!jobs.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted);">No jobs found. Add SERPAPI_KEY to auto-fetch from Google Jobs.</td></tr>'; return; }
   tbody.innerHTML = jobs.map(j => `
     <tr>
       <td><div style="font-weight:600;color:var(--text);">${esc(j.title)}</div></td>
       <td>${esc(j.company)}</td>
-      <td><span class="badge badge-info">${esc(j.type)}</span></td>
+      <td><span class="badge badge-info">${esc(j.type || 'Full-Time')}</span></td>
       <td>${esc(j.location)}</td>
-      <td style="color:var(--muted);font-size:0.8rem;">${j.deadline ? new Date(j.deadline).toLocaleDateString('en-KE',{day:'numeric',month:'short'}) : '—'}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteJob('${j._id}','${esc(j.title)}')">🗑 Delete</button></td>
+      <td>${j.isGoogleJob ? '<span class="badge badge-success">🌐 Google</span>' : '<span class="badge badge-info">✍️ Manual</span>'}</td>
+      <td>${!j.isGoogleJob ? `<button class="btn btn-danger btn-sm" onclick="deleteJob('${j._id}','${esc(j.title)}')">🗑 Delete</button>` : '<span style="color:var(--muted);font-size:0.75rem;">Auto</span>'}</td>
     </tr>
   `).join('');
+}
+
+async function refreshJobCache() {
+  try {
+    await fetch('/api/jobs/refresh-cache', { method: 'POST' });
+    showToast('Cache cleared! Reloading fresh jobs from Google...', 'success');
+    setTimeout(loadJobs, 1000);
+  } catch {
+    showToast('Failed to refresh cache.', 'error');
+  }
 }
 
 function openAddJob() {
