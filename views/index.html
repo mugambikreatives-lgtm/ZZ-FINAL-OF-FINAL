@@ -147,7 +147,7 @@ section { padding: 80px 32px; position: relative; }
 }
 
 /* RESOURCE GRID */
-course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
 .resource-card {
   background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 24px; transition: var(--transition); position: relative; overflow: hidden;
@@ -319,32 +319,34 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 .hero-stats {
   position: absolute; right: 48px; top: 50%;
   transform: translateY(-50%);
-  width: 340px;
-  display: flex; flex-direction: column; gap: 10px;
+  width: 380px;
+  display: flex; flex-direction: column; gap: 12px;
   animation: fadeUp 0.8s 0.3s ease both;
 }
 .hero-photo-card {
-  border-radius: 16px; overflow: hidden;
-  height: 220px; position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  border: 1px solid var(--border);
+  border-radius: 24px; overflow: hidden;
+  height: 480px; position: relative;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  border: 1px solid rgba(0,194,212,0.2);
 }
 .hero-photo-card img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: cover;
+  object-position: center top;
+  display: block;
 }
 .hero-photo-badge {
-  position: absolute; bottom: 12px; left: 12px;
-  background: rgba(7,11,20,0.85);
-  backdrop-filter: blur(8px);
+  position: absolute; bottom: 16px; left: 16px;
+  background: rgba(7,11,20,0.88);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   color: var(--teal);
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 999px;
-  font-size: 0.75rem; font-weight: 600;
+  font-size: 0.8rem; font-weight: 600;
 }
 .hero-photo-sm {
-  border-radius: 12px; overflow: hidden;
-  height: 130px;
+  border-radius: 14px; overflow: hidden;
+  height: 160px;
   border: 1px solid var(--border);
   box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
@@ -508,7 +510,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   .cv-layout { grid-template-columns: 1fr; }
   .cv-preview-box { position: static; }
   .values-grid { grid-template-columns: repeat(2, 1fr); }
-  .course-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .resource-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
 
 /* ─── MOBILE (≤640px) ─── */
@@ -540,7 +542,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   .value-card { padding: 22px 18px; }
 
   /* COURSES GRID */
-  .course-grid { grid-template-columns: 1fr; gap: 16px; }
+  .resource-grid { grid-template-columns: 1fr; gap: 16px; }
   .resource-card { padding: 20px; }
 
   /* FILTER BAR */
@@ -632,30 +634,12 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     <div class="hero-stats">
       <div class="hero-photo-card">
         <img
-          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=420&q=85&fit=crop&crop=faces"
+          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=90&fit=crop&crop=faces"
           alt="Confident African professional woman"
           loading="eager"
-          onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=420&q=85&fit=crop'"
+          onerror="this.src='https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=600&q=90&fit=crop'"
         >
         <div class="hero-photo-badge">🎓 500+ Graduates</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="hero-photo-sm">
-          <img
-            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=220&q=80&fit=crop&crop=faces"
-            alt="African students collaborating"
-            loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1543269865-cbf427effbad?w=220&q=80&fit=crop'"
-          >
-        </div>
-        <div class="hero-photo-sm">
-          <img
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=220&q=80&fit=crop&crop=faces"
-            alt="African woman on laptop"
-            loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=220&q=80&fit=crop'"
-          >
-        </div>
       </div>
     </div>
   </div>
@@ -880,7 +864,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
           <option>Leadership</option><option>Finance</option><option>Career Development</option>
         </select>
       </div>
-      <div id="course-grid" class="course-grid">
+      <div id="course-grid" class="resource-grid">
         <div class="empty-state" style="grid-column:1/-1;"><div class="spinner"></div><p>Loading courses...</p></div>
       </div>
     </div>
@@ -893,7 +877,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     <div class="section-header">
       <div class="section-tag">CV Builder</div>
       <h2 class="section-title">Build a Professional CV</h2>
-      <p class="section-sub">Fill in your details, preview live, then pay KES 100 via M-Pesa to download your polished PDF.</p>
+      <p class="section-sub">Fill in your details, preview live, then pay via M-Pesa to download your polished PDF.</p>
     </div>
     <div class="cv-layout">
       <!-- FORM -->
@@ -937,7 +921,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 
         <div style="padding-top:20px;border-top:1px solid var(--border);margin-top:8px;">
           <button class="btn btn-primary" onclick="initCVPayment()" style="width:100%;">
-            💳 Pay KES 100 & Download PDF
+            💳 Pay <span id="cv-btn-price">KES 100</span> & Download PDF
           </button>
           <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin-top:10px;">Secure payment via M-Pesa • Your CV PDF is ready after payment</p>
         </div>
@@ -1356,6 +1340,17 @@ async function initCVPayment() {
   document.getElementById('pay-modal').classList.add('open');
 }
 
+// Load CV price on page load to update button
+async function loadCVPrice() {
+  try {
+    const r = await fetch('/admin/api/cv-price');
+    const d = await r.json();
+    if (d.price) {
+      document.getElementById('cv-btn-price').textContent = `KES ${d.price}`;
+    }
+  } catch {}
+}
+
 function resetPayModal() {
   document.getElementById('pay-phone').value = '';
   document.getElementById('pay-status').className = 'pay-status';
@@ -1502,6 +1497,7 @@ function escJs(s) {
 
 // INIT
 updatePreview();
+loadCVPrice();
 </script>
 </body>
 </html>
