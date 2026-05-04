@@ -147,7 +147,7 @@ section { padding: 80px 32px; position: relative; }
 }
 
 /* RESOURCE GRID */
-.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
+course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; }
 .resource-card {
   background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 24px; transition: var(--transition); position: relative; overflow: hidden;
@@ -508,7 +508,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   .cv-layout { grid-template-columns: 1fr; }
   .cv-preview-box { position: static; }
   .values-grid { grid-template-columns: repeat(2, 1fr); }
-  .resource-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .course-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
 
 /* ─── MOBILE (≤640px) ─── */
@@ -540,7 +540,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   .value-card { padding: 22px 18px; }
 
   /* COURSES GRID */
-  .resource-grid { grid-template-columns: 1fr; gap: 16px; }
+  .course-grid { grid-template-columns: 1fr; gap: 16px; }
   .resource-card { padding: 20px; }
 
   /* FILTER BAR */
@@ -880,7 +880,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
           <option>Leadership</option><option>Finance</option><option>Career Development</option>
         </select>
       </div>
-      <div id="course-grid" class="resource-grid">
+      <div id="course-grid" class="course-grid">
         <div class="empty-state" style="grid-column:1/-1;"><div class="spinner"></div><p>Loading courses...</p></div>
       </div>
     </div>
