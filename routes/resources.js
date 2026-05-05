@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
       { title: new RegExp(search, 'i') },
       { description: new RegExp(search, 'i') }
     ];
-    const resources = await Resource.find(query).select('-filePath').sort('-createdAt');
+    const resources = await Resource.find(query).select('-filePath').sort('-createdAt').maxTimeMS(5000);
     res.json({ success: true, resources });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Error fetching resources' });
