@@ -26,7 +26,7 @@ const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 }, fileFil
 router.get('/', async (req, res) => {
   try {
     const { category, search } = req.query;
-    let query = { isActive: true };
+    let query = { isActive: { $ne: false } };
     if (category) query.category = category;
     if (search) query.$or = [
       { title: new RegExp(search, 'i') },
