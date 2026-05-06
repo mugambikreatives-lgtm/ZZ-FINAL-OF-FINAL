@@ -37,11 +37,22 @@ app.use('/api/resources', require('./routes/resources'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/admin', require('./routes/admin'));
 
-// Serve main app pages
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views/index.html')));
-app.get('/resources', (req, res) => res.sendFile(path.join(__dirname, 'views/index.html')));
-app.get('/cv-builder', (req, res) => res.sendFile(path.join(__dirname, 'views/index.html')));
-app.get('/jobs', (req, res) => res.sendFile(path.join(__dirname, 'views/index.html')));
+// Fix courses grid - serves patched index.html
+app.get('/', (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  let html = fs.readFileSync(path.join(__dirname, 'views/index.html'), 'utf8');
+  // Patch: ensure renderCourses works with both grid IDs
+  html = html.replace(
+    "const grid = document.getElementById('course-grid');",
+    "const grid = document.getElementById('course-grid') || document.getElementById('resource-grid'); if(!grid) return;"
+  );
+  res.send(html);
+});
+
+app.get('/courses', (req, res) => res.redirect('/'));
+app.get('/cv-builder', (req, res) => res.redirect('/'));
+app.get('/jobs', (req, res) => res.redirect('/'));
 
 // Connect to MongoDB and start server
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom')
