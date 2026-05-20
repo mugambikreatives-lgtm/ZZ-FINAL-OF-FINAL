@@ -15,18 +15,28 @@ function getBaseUrl() {
     : 'https://uat.buni.kcbgroup.com';
 }
 
+function getTokenUrl() {
+  return process.env.KCB_ENV === 'production'
+    ? 'https://accounts.buni.kcbgroup.com/oauth2/token'
+    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+}
+
 // Generate a Bearer access token from KCB BUNI
 async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
-  const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
+  const params = new URLSearchParams();
+  params.append('grant_type', 'client_credentials');
 
   const res = await axios.post(
-    `${getBaseUrl()}/token?grant_type=client_credentials`,
-    {},
+    getTokenUrl(),
+    params.toString(),
     {
       headers: {
-        Authorization: `Basic ${auth}`,
         'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      auth: {
+        username: KCB_CONSUMER_KEY,
+        password: KCB_CONSUMER_SECRET
       }
     }
   );
