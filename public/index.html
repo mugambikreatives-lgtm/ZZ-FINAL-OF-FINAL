@@ -585,6 +585,369 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   /* TOAST */
   .toast { left: 16px; right: 16px; max-width: unset; bottom: 16px; }
 }
+
+/* ═══════════════════════════════════════
+   ZENITH ZOOM — NEW HOME PAGE STYLES
+═══════════════════════════════════════ */
+
+/* HERO */
+.zz-hero {
+  background: linear-gradient(135deg, #0a0f1a 0%, #0d1b2e 60%, #0a1628 100%);
+  padding: 60px 24px 80px;
+  border-bottom: 1px solid rgba(0,194,212,0.15);
+}
+.zz-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 48px;
+  align-items: center;
+}
+.zz-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,194,212,0.1);
+  border: 1px solid rgba(0,194,212,0.3);
+  color: var(--teal);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+.zz-hero-h1 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 0 18px;
+  letter-spacing: -1px;
+}
+.zz-accent { color: var(--teal); }
+.zz-hero-sub {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 460px;
+}
+
+/* SEARCH BAR */
+.zz-search-bar {
+  display: flex;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 480px;
+}
+.zz-search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 14px 18px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+}
+.zz-search-bar input::placeholder { color: var(--muted); }
+.zz-search-bar button {
+  background: var(--teal);
+  border: none;
+  padding: 14px 20px;
+  color: #000;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.zz-search-bar button:hover { background: #00dff0; }
+
+/* FEATURE CARDS */
+.zz-hero-cards {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 16px;
+}
+.zz-feature-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 24px 18px;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.zz-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0,194,212,0.4);
+  background: rgba(0,194,212,0.05);
+}
+.zz-card-center {
+  border-color: rgba(0,194,212,0.3);
+  background: rgba(0,194,212,0.06);
+}
+.zz-fc-icons { font-size: 1.3rem; letter-spacing: 4px; }
+.zz-fc-title { font-size: 1rem; font-weight: 700; color: #fff; }
+.zz-fc-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; flex: 1; }
+.zz-price-tag {
+  display: inline-block;
+  background: rgba(0,194,212,0.15);
+  color: var(--teal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* CV MOCK */
+.zz-cv-preview { position: relative; margin-bottom: 4px; }
+.zz-cv-mock {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.zz-cv-line { height: 5px; background: rgba(255,255,255,0.15); border-radius: 3px; }
+.zz-cv-thick { height: 8px; background: rgba(0,194,212,0.5); }
+.zz-cv-short { width: 60%; }
+.zz-live-badge {
+  position: absolute;
+  top: -8px; right: -8px;
+  background: var(--teal);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* BUTTONS */
+.zz-btn-blue, .zz-btn-green, .zz-btn-outline {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+.zz-btn-blue { background: #2563eb; color: #fff; }
+.zz-btn-blue:hover { background: #1d4ed8; }
+.zz-btn-green { background: #16a34a; color: #fff; }
+.zz-btn-green:hover { background: #15803d; }
+.zz-btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.25); }
+.zz-btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+
+/* SECTIONS */
+.zz-section { max-width: 1200px; margin: 0 auto; padding: 48px 24px; }
+.zz-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.zz-section-header h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+.zz-see-all {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+.zz-see-all:hover { text-decoration: underline; }
+
+/* CATEGORIES */
+.zz-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.zz-cat {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  border-radius: 100px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.zz-cat:hover {
+  background: rgba(0,194,212,0.12);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+/* TWO COLUMN LAYOUT */
+.zz-two-col-section {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 0 24px 48px !important;
+}
+.zz-col { display: flex; flex-direction: column; }
+
+/* HOME COURSE CARDS */
+.zz-home-courses { display: flex; flex-direction: column; gap: 14px; }
+.zz-home-course-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.zz-home-course-card:hover {
+  border-color: rgba(0,194,212,0.3);
+  background: rgba(0,194,212,0.04);
+}
+.zz-course-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  background: rgba(0,194,212,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,194,212,0.2);
+}
+.zz-course-info { flex: 1; min-width: 0; }
+.zz-course-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zz-course-pages { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
+.zz-mpesa-btn {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.zz-mpesa-btn:hover { background: #15803d; }
+
+/* HOME JOB CARDS */
+.zz-home-jobs { display: flex; flex-direction: column; gap: 12px; }
+.zz-home-job-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 14px;
+  transition: all 0.2s;
+}
+.zz-home-job-card:hover {
+  border-color: rgba(0,194,212,0.3);
+  background: rgba(0,194,212,0.04);
+}
+.zz-job-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1e3a5f, #0d2137);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.zz-job-info { flex: 1; min-width: 0; }
+.zz-job-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zz-job-company { font-size: 0.75rem; color: var(--muted); }
+.zz-apply-btn {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.zz-apply-btn:hover { border-color: var(--teal); color: var(--teal); }
+
+/* STATS STRIP */
+.zz-stats-strip {
+  background: rgba(0,194,212,0.06);
+  border-top: 1px solid rgba(0,194,212,0.15);
+  border-bottom: 1px solid rgba(0,194,212,0.15);
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 32px 24px;
+}
+.zz-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 48px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.zz-stat:last-child { border-right: none; }
+.zz-stat-num { font-size: 2rem; font-weight: 900; color: var(--teal); }
+.zz-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+.zz-loading { color: var(--muted); font-size: 0.85rem; padding: 20px 0; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .zz-hero-inner { grid-template-columns: 1fr; }
+  .zz-hero-cards { grid-template-columns: 1fr; }
+  .zz-card-center { order: -1; }
+  .zz-two-col-section { grid-template-columns: 1fr !important; }
+  .zz-stat { padding: 0 24px; }
+  .zz-stat-num { font-size: 1.5rem; }
+}
+@media (max-width: 600px) {
+  .zz-hero { padding: 40px 16px 60px; }
+  .zz-stats-strip { flex-wrap: wrap; gap: 20px; }
+  .zz-stat { border-right: none; padding: 0 16px; }
+}
 </style>
 </head>
 <body>
@@ -617,236 +980,97 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 
 <!-- ═══════════════ HOME PAGE ═══════════════ -->
 <div id="page-home" class="page active">
-  <div class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid"></div>
-    <div class="hero-content">
-      <div class="hero-badge"><div class="badge-dot"></div>Kenya's Premier Education Platform</div>
-      <h1>Unlock Your <span class="accent">Full Potential</span> with Expert-Led Learning</h1>
-      <p>Zenith Zoom equips individuals and organizations with the skills, knowledge, and confidence needed to thrive in a rapidly changing world.</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" onclick="showPage('courses')">📚 Browse Courses</button>
-        <button class="btn btn-ghost" onclick="showPage('cv')">✨ Build My CV</button>
-      </div>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-photo-card">
-        <img
-          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=420&q=85&fit=crop&crop=faces"
-          alt="Confident African professional woman"
-          loading="eager"
-          onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=420&q=85&fit=crop'"
-        >
-        <div class="hero-photo-badge">🎓 500+ Graduates</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="hero-photo-sm">
-          <img
-            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=220&q=80&fit=crop&crop=faces"
-            alt="African students collaborating"
-            loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1543269865-cbf427effbad?w=220&q=80&fit=crop'"
-          >
-        </div>
-        <div class="hero-photo-sm">
-          <img
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=220&q=80&fit=crop&crop=faces"
-            alt="African woman on laptop"
-            loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=220&q=80&fit=crop'"
-          >
+
+  <!-- ═══ NAVBAR (already in HTML above, this is page content) ═══ -->
+
+  <!-- HERO -->
+  <section class="zz-hero">
+    <div class="zz-hero-inner">
+      <div class="zz-hero-text">
+        <div class="zz-badge">🇰🇪 Kenya's #1 Career Platform</div>
+        <h1 class="zz-hero-h1">Grow Your Career.<br><span class="zz-accent">Get Paid Skills.</span></h1>
+        <p class="zz-hero-sub">Download expert PDF courses, build a stunning CV, and find your next job — all in one place. Pay via M-Pesa.</p>
+        <div class="zz-search-bar">
+          <input type="text" id="home-search" placeholder="Search Courses &amp; Jobs..." onkeydown="if(event.key==='Enter')homeSearch()" />
+          <button onclick="homeSearch()">🔍</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- VALUES -->
-  <section style="background:var(--dark2);">
-    <div class="section-header">
-      <div class="section-tag">Our Foundation</div>
-      <h2 class="section-title">Built on Values That Matter</h2>
-      <p class="section-sub">Every program and resource is created with our core values at the center.</p>
-    </div>
-    <div class="values-grid" style="max-width:1100px;margin:0 auto;">
-      <div class="value-card"><div class="value-icon">🎯</div><div class="value-name">Integrity</div><div class="value-desc">We uphold transparency and honesty in everything we do.</div></div>
-      <div class="value-card"><div class="value-icon">⭐</div><div class="value-name">Excellence</div><div class="value-desc">We strive to deliver outstanding educational experiences.</div></div>
-      <div class="value-card"><div class="value-icon">🌱</div><div class="value-name">Growth</div><div class="value-desc">We believe in continuous learning and improvement.</div></div>
-      <div class="value-card"><div class="value-icon">💡</div><div class="value-name">Innovation</div><div class="value-desc">We embrace creative solutions and modern learning strategies.</div></div>
-      <div class="value-card"><div class="value-icon">🤝</div><div class="value-name">Community</div><div class="value-desc">We foster collaboration, inclusivity, and mutual support.</div></div>
-    </div>
-  </section>
-
-  <!-- PHOTO MOSAIC — Real People, Real Growth -->
-  <section style="padding-top:60px;padding-bottom:60px;">
-    <div class="section-header">
-      <div class="section-tag">Our Community</div>
-      <h2 class="section-title">Real People. Real Growth.</h2>
-      <p class="section-sub">Professionals and learners across Africa unlocking their potential every day.</p>
-    </div>
-    <div class="photo-mosaic">
-      <!-- Large main photo -->
-      <div class="photo-tile photo-main">
-        <img
-          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=800&q=80&fit=crop"
-          alt="African professional woman smiling confidently"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Empowered professionals building tomorrow</div>
-      </div>
-      <!-- Top right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80&fit=crop"
-          alt="Young Africans studying together"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Collaborative learning</div>
-      </div>
-      <!-- Middle right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80&fit=crop"
-          alt="African woman working on laptop"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Digital skills for the modern workplace</div>
-      </div>
-      <!-- Bottom middle -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&fit=crop"
-          alt="African professional man smiling"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Leadership in action</div>
-      </div>
-      <!-- Bottom right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&q=80&fit=crop"
-          alt="African woman presenting at work"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1598550487031-0898b4852123?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Confident communicators</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section style="background:var(--dark2);">
-    <div class="section-header">
-      <div class="section-tag">What We Do</div>
-      <h2 class="section-title">Comprehensive Talent Solutions</h2>
-    </div>
-    <div class="values-grid" style="max-width:900px;margin:0 auto;">
-      <div class="value-card"><div class="value-icon">📖</div><div class="value-name">Course Development</div><div class="value-desc">Expert-designed programs covering technical, business, and creative fields with immediate real-world application.</div></div>
-      <div class="value-card"><div class="value-icon">🏢</div><div class="value-name">Workforce Training</div><div class="value-desc">Custom training solutions for organizations — from onboarding to leadership development.</div></div>
-      <div class="value-card"><div class="value-icon">💼</div><div class="value-name">Talent Solutions</div><div class="value-desc">Connecting trained learners to opportunities through our growing employer network.</div></div>
-    </div>
-  </section>
-
-  <!-- IMPACT SPLIT SECTION -->
-  <section style="padding-top:80px;padding-bottom:80px;">
-    <div class="impact-section">
-      <div class="impact-photo">
-        <img
-          src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80&fit=crop&crop=faces"
-          alt="African students learning together in a bright space"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800&q=80&fit=crop'"
-        >
-      </div>
-      <div>
-        <div class="section-tag">Our Impact</div>
-        <div class="impact-quote" style="margin-top:12px;">
-          Transforming <span class="accent">ambition</span> into achievement across Africa
+      <div class="zz-hero-cards">
+        <div class="zz-feature-card" onclick="showPage('courses')">
+          <div class="zz-fc-icons">📚 🖥️ ⬇️</div>
+          <div class="zz-fc-title">Premium Courses</div>
+          <div class="zz-fc-desc">Expert PDF guides on business, tech, marketing &amp; more.</div>
+          <button class="zz-btn-blue">Browse PDF Library</button>
         </div>
-        <p style="color:var(--muted);font-size:0.95rem;line-height:1.75;">
-          From fresh graduates to seasoned executives, our learners are building skills that open real doors — landing promotions, launching businesses, and leading teams across Kenya and beyond.
-        </p>
-        <div class="impact-stat-row">
-          <div class="impact-stat">
-            <div class="impact-stat-num">500+</div>
-            <div class="impact-stat-label">Learners Trained</div>
+        <div class="zz-feature-card zz-card-center" onclick="showPage('cv')">
+          <div class="zz-cv-preview">
+            <div class="zz-cv-mock">
+              <div class="zz-cv-line zz-cv-thick"></div>
+              <div class="zz-cv-line"></div>
+              <div class="zz-cv-line"></div>
+              <div class="zz-cv-line zz-cv-short"></div>
+              <div class="zz-cv-line"></div>
+            </div>
+            <div class="zz-live-badge">Live Preview</div>
           </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">50+</div>
-            <div class="impact-stat-label">Courses Available</div>
-          </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">92%</div>
-            <div class="impact-stat-label">Satisfaction Rate</div>
-          </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">30+</div>
-            <div class="impact-stat-label">Employer Partners</div>
-          </div>
+          <div class="zz-fc-title">Instant CV Builder</div>
+          <div class="zz-fc-desc">Build a professional CV in minutes.</div>
+          <div class="zz-price-tag">KES 100 Download</div>
+          <button class="zz-btn-green">Build CV</button>
+        </div>
+        <div class="zz-feature-card" onclick="showPage('jobs')">
+          <div class="zz-fc-icons">💼 🤝 🔍</div>
+          <div class="zz-fc-title">Job Matching</div>
+          <div class="zz-fc-desc">Find top jobs and career opportunities near you.</div>
+          <button class="zz-btn-outline">Find Jobs</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PHOTO STRIP — Faces of the community -->
-  <section style="background:var(--dark2);padding-top:60px;padding-bottom:60px;">
-    <div class="section-header">
-      <div class="section-tag">Across Africa</div>
-      <h2 class="section-title">Learning Has No Borders</h2>
-      <p class="section-sub">Our community spans cities, towns, and remote areas — united by the drive to grow.</p>
+  <!-- TOP CATEGORIES -->
+  <section class="zz-section">
+    <div class="zz-section-header">
+      <h2>🔥 Top Categories</h2>
     </div>
-    <div class="photo-strip">
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&q=80&fit=crop&crop=faces"
-          alt="African man studying on laptop"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Remote learner, Nairobi</div>
+    <div class="zz-categories">
+      <button class="zz-cat" onclick="filterCategory('Finance')">Finance</button>
+      <button class="zz-cat" onclick="filterCategory('Technology')">Tech</button>
+      <button class="zz-cat" onclick="filterCategory('Marketing')">Marketing</button>
+      <button class="zz-cat" onclick="filterCategory('Business')">Business</button>
+      <button class="zz-cat" onclick="filterCategory('Leadership')">Leadership</button>
+      <button class="zz-cat" onclick="filterCategory('Career Development')">Career Development</button>
+    </div>
+  </section>
+
+  <!-- LATEST COURSES + FEATURED JOBS -->
+  <section class="zz-section zz-two-col-section">
+    <div class="zz-col">
+      <div class="zz-section-header">
+        <h2>🆕 Latest Courses</h2>
+        <button class="zz-see-all" onclick="showPage('courses')">See All →</button>
       </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&q=80&fit=crop&crop=faces"
-          alt="African woman in a business meeting"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Team leader, Mombasa</div>
+      <div id="home-courses-grid" class="zz-home-courses">
+        <div class="zz-loading">Loading courses...</div>
       </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80&fit=crop&crop=faces"
-          alt="African professional man in a smart jacket"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Entrepreneur, Kisumu</div>
+    </div>
+    <div class="zz-col">
+      <div class="zz-section-header">
+        <h2>💡 Featured Jobs</h2>
+        <button class="zz-see-all" onclick="showPage('jobs')">See All →</button>
       </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&q=80&fit=crop&crop=faces"
-          alt="African students working on a group project"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Students, Nakuru</div>
+      <div id="home-jobs-list" class="zz-home-jobs">
+        <div class="zz-loading">Loading jobs...</div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section style="background:linear-gradient(135deg,rgba(0,194,212,0.07) 0%,transparent 60%);text-align:center;">
-    <div class="section-tag">Get Started Today</div>
-    <h2 class="section-title" style="margin-top:8px;">Ready to Level Up?</h2>
-    <p class="section-sub" style="margin-bottom:32px;">Download premium courses, build a professional CV, or find your next career opportunity.</p>
-    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="showPage('courses')">📚 Explore Courses</button>
-      <button class="btn btn-ghost" onclick="showPage('jobs')">🔍 View Job Openings</button>
-    </div>
+  <!-- STATS STRIP -->
+  <section class="zz-stats-strip">
+    <div class="zz-stat"><span class="zz-stat-num">500+</span><span class="zz-stat-label">Learners</span></div>
+    <div class="zz-stat"><span class="zz-stat-num">50+</span><span class="zz-stat-label">Courses</span></div>
+    <div class="zz-stat"><span class="zz-stat-num">92%</span><span class="zz-stat-label">Satisfaction</span></div>
+    <div class="zz-stat"><span class="zz-stat-num">30+</span><span class="zz-stat-label">Employers</span></div>
   </section>
 
   <footer>
@@ -859,7 +1083,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <button class="footer-link" onclick="showPage('jobs')">Jobs</button>
       <a class="footer-link" href="/admin/login">Admin Panel</a>
     </div>
-    <div class="footer-copy">© 2025 Zenith Zoom. All rights reserved.</div>
+    <div class="footer-copy">© 2025 Zenith Zoom. All rights reserved. | Payments secured by KCB M-Pesa</div>
   </footer>
 </div>
 
@@ -1077,6 +1301,7 @@ function showPage(name) {
   if (navEl) navEl.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'courses' && !allCourses.length) loadCourses();
+  if (name === 'home') { if (!allCourses.length) loadCourses(); if (!allJobs.length) loadJobs(); }
   if (name === 'jobs' && !allJobs.length) loadJobs();
 }
 
@@ -1097,6 +1322,7 @@ async function loadCourses() {
     allCourses = getSampleCourses();
   }
   renderCourses(allCourses);
+  renderHomeCourses(allCourses);
 }
 
 function getSampleCourses() {
@@ -1155,6 +1381,7 @@ async function loadJobs() {
     allJobs = getSampleJobs();
   }
   renderJobs(allJobs);
+  renderHomeJobs(allJobs);
 }
 
 function getSampleJobs() {
@@ -1498,6 +1725,62 @@ function escJs(s) {
 
 // INIT
 updatePreview();
+
+// ═══ HOME PAGE FUNCTIONS ═══
+
+function homeSearch() {
+  const q = document.getElementById('home-search').value.trim();
+  if (!q) return;
+  showPage('courses');
+  setTimeout(() => {
+    const searchInput = document.getElementById('course-search');
+    if (searchInput) { searchInput.value = q; filterCourses(); }
+  }, 100);
+}
+
+function filterCategory(cat) {
+  showPage('courses');
+  setTimeout(() => {
+    const sel = document.getElementById('course-category');
+    if (sel) { sel.value = cat; filterCourses(); }
+  }, 100);
+}
+
+function renderHomeCourses(courses) {
+  const grid = document.getElementById('home-courses-grid');
+  if (!grid) return;
+  const icons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀' };
+  const top = courses.slice(0, 3);
+  if (!top.length) { grid.innerHTML = '<div class="zz-loading">No courses yet.</div>'; return; }
+  grid.innerHTML = top.map(c => `
+    <div class="zz-home-course-card" onclick="openPayModal('${c._id}','resource')">
+      <div class="zz-course-thumb">${icons[c.category] || '📄'}</div>
+      <div class="zz-course-info">
+        <div class="zz-course-name">${c.title}</div>
+        <div class="zz-course-pages">${c.category} · KES ${c.price}</div>
+        <button class="zz-mpesa-btn" onclick="event.stopPropagation();openPayModal('${c._id}','resource')">GET VIA M-PESA</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderHomeJobs(jobs) {
+  const list = document.getElementById('home-jobs-list');
+  if (!list) return;
+  const top = jobs.slice(0, 3);
+  if (!top.length) { list.innerHTML = '<div class="zz-loading">No jobs yet.</div>'; return; }
+  list.innerHTML = top.map(j => `
+    <div class="zz-home-job-card">
+      <div class="zz-job-logo">💼</div>
+      <div class="zz-job-info">
+        <div class="zz-job-title">${j.title}</div>
+        <div class="zz-job-company">${j.company || 'Company'} · ${j.location || 'Kenya'}</div>
+      </div>
+      <button class="zz-apply-btn" onclick="showPage('jobs')">APPLY</button>
+    </div>
+  `).join('');
+}
+
 </script>
 </body>
 </html>
