@@ -68,16 +68,22 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   };
   console.log('STK Push payload:', JSON.stringify(payload));
 
+  const messageId = `ZZ_${Date.now()}_${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+
   const response = await axios.post(
     `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`,
     payload,
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'routeCode': '207',
+        'operation': 'STKPush',
+        'messageId': messageId
       }
     }
   );
+  console.log('KCB STK response:', JSON.stringify(response.data));
 
   return response.data;
 }
