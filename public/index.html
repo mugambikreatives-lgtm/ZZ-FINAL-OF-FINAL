@@ -948,6 +948,510 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   .zz-stats-strip { flex-wrap: wrap; gap: 20px; }
   .zz-stat { border-right: none; padding: 0 16px; }
 }
+
+/* ══════════════════════════════════════════════
+   ZENITH ZOOM v2 — PREMIUM HOME PAGE
+   Inspired by modern SaaS, built for Kenya
+══════════════════════════════════════════════ */
+
+/* HERO */
+.h-hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.h-hero-img-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.h-hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: saturate(0.7);
+}
+.h-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(5,12,28,0.97) 0%,
+    rgba(5,12,28,0.88) 40%,
+    rgba(5,12,28,0.45) 70%,
+    rgba(5,12,28,0.15) 100%
+  );
+}
+.h-hero-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 40px 120px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.h-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,194,212,0.12);
+  border: 1px solid rgba(0,194,212,0.3);
+  color: #00c2d4;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+.h-pill.dark {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--muted);
+}
+.h-hero-title {
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  color: #fff;
+  letter-spacing: -2px;
+  margin: 0 0 20px;
+}
+.h-hero-title em {
+  font-style: normal;
+  color: #00c2d4;
+  position: relative;
+}
+.h-hero-body {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.75;
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+.h-hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.h-btn-primary {
+  background: #00c2d4;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.2px;
+}
+.h-btn-primary:hover { background: #00dff0; transform: translateY(-1px); }
+.h-btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 10px;
+  padding: 14px 28px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.h-btn-ghost:hover { border-color: #00c2d4; color: #00c2d4; }
+.h-btn-ghost.white { border-color: rgba(255,255,255,0.4); }
+.h-hero-trust {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.h-hero-trust span {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+}
+
+/* FLOATING CARDS */
+.h-hero-right { position: relative; height: 340px; }
+.h-floating-card {
+  position: absolute;
+  background: rgba(15,25,45,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 240px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: floatCard 4s ease-in-out infinite;
+}
+.h-card1 { top: 20px; left: 0; animation-delay: 0s; }
+.h-card2 { top: 130px; right: 0; animation-delay: 1.5s; }
+.h-card3 { bottom: 20px; left: 20px; animation-delay: 0.8s; }
+@keyframes floatCard {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.h-card-icon { font-size: 1.6rem; }
+.h-card-title { font-size: 0.88rem; font-weight: 700; color: #fff; }
+.h-card-sub { font-size: 0.74rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+/* SEARCH */
+.h-search-wrap {
+  position: relative;
+  z-index: 3;
+  background: rgba(10,16,30,0.95);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 24px 40px;
+  max-width: 100%;
+}
+.h-search-inner {
+  display: flex;
+  max-width: 700px;
+  margin: 0 auto 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.h-search-inner input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 14px 20px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+}
+.h-search-inner input::placeholder { color: rgba(255,255,255,0.3); }
+.h-search-inner button {
+  background: #00c2d4;
+  border: none;
+  padding: 14px 28px;
+  color: #000;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.h-search-inner button:hover { background: #00dff0; }
+.h-search-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.h-search-tags span {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 600;
+}
+.h-search-tags button {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  border-radius: 100px;
+  padding: 4px 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.h-search-tags button:hover { border-color: #00c2d4; color: #00c2d4; }
+
+/* FEATURE BLOCKS */
+.h-features {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.h-feature-card {
+  padding: 40px 36px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.h-feature-card:last-child { border-right: none; }
+.h-feature-card:hover { background: rgba(255,255,255,0.02); }
+.h-feat-highlight {
+  background: rgba(0,194,212,0.04);
+  border-right-color: rgba(0,194,212,0.15);
+}
+.h-feat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.h-feat-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+}
+.h-feat-icon-wrap.blue { background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.25); }
+.h-feat-icon-wrap.green { background: rgba(22,163,74,0.15); border: 1px solid rgba(22,163,74,0.25); }
+.h-feat-icon-wrap.purple { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.25); }
+.h-feat-arrow { color: rgba(255,255,255,0.2); font-size: 1.2rem; transition: color 0.2s; }
+.h-feature-card:hover .h-feat-arrow { color: #00c2d4; }
+.h-live-dot { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #22c55e; font-weight: 700; }
+.h-live-dot span { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; display: block; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+.h-feature-card h3 { font-size: 1.1rem; font-weight: 800; color: #fff; margin: 0; }
+.h-feature-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.65; margin: 0; flex: 1; }
+.h-feat-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.h-feat-tag {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+.h-feat-tag.green { background: rgba(22,163,74,0.12); border-color: rgba(22,163,74,0.25); color: #22c55e; }
+.h-feat-cta { font-size: 0.82rem; color: #00c2d4; font-weight: 700; }
+.h-cv-mock { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; margin: 4px 0; }
+.h-cv-bar { height: 5px; background: rgba(255,255,255,0.12); border-radius: 3px; }
+.h-cv-bar.thick { height: 8px; background: rgba(0,194,212,0.4); width: 70%; }
+.h-cv-bar.short { width: 55%; }
+
+/* STATS */
+.h-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-wrap: wrap;
+}
+.h-stat { text-align: center; padding: 0 56px; }
+.h-stat strong { display: block; font-size: 2.2rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
+.h-stat span { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 4px; display: block; }
+.h-stat-div { width: 1px; height: 50px; background: rgba(255,255,255,0.08); }
+
+/* TWO COL */
+.h-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 100%;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.h-col {
+  padding: 48px 48px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+}
+.h-col:last-child { border-right: none; }
+.h-col-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; }
+.h-col-eyebrow { font-size: 0.75rem; color: #00c2d4; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase; }
+.h-col-title { font-size: 1.4rem; font-weight: 900; color: #fff; margin: 0; letter-spacing: -0.5px; }
+.h-see-all { background: none; border: none; color: #00c2d4; font-size: 0.82rem; font-weight: 700; cursor: pointer; padding: 0; }
+.h-see-all:hover { text-decoration: underline; }
+
+/* Course cards */
+.h-course-list { display: flex; flex-direction: column; gap: 12px; }
+.h-course-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.h-course-item:hover { background: rgba(0,194,212,0.05); border-color: rgba(0,194,212,0.2); }
+.h-ci-icon {
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  background: rgba(0,194,212,0.08);
+  border: 1px solid rgba(0,194,212,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+}
+.h-ci-name { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.h-ci-meta { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+.h-ci-btn {
+  background: #16a34a; color: #fff;
+  border: none; border-radius: 6px;
+  padding: 5px 12px; font-size: 0.72rem;
+  font-weight: 800; cursor: pointer;
+  transition: background 0.2s;
+}
+.h-ci-btn:hover { background: #15803d; }
+
+/* Job cards */
+.h-job-list { display: flex; flex-direction: column; gap: 12px; }
+.h-job-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  transition: all 0.2s;
+}
+.h-job-item:hover { background: rgba(0,194,212,0.05); border-color: rgba(0,194,212,0.2); }
+.h-ji-logo {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg,#1e3a5f,#0d2137);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.h-ji-title { font-size: 0.88rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.h-ji-company { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+.h-ji-apply {
+  margin-left: auto; flex-shrink: 0;
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.7);
+  border-radius: 8px; padding: 7px 16px;
+  font-size: 0.75rem; font-weight: 800;
+  cursor: pointer; transition: all 0.2s;
+}
+.h-ji-apply:hover { border-color: #00c2d4; color: #00c2d4; }
+
+/* Skeleton loader */
+.h-skeleton {
+  height: 80px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 14px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* COMPARISON */
+.h-compare-section {
+  padding: 80px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.h-compare-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.h-compare-header h2 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 16px 0 0;
+  letter-spacing: -1px;
+}
+.h-teal { color: #00c2d4; }
+.h-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.h-compare-col {
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.h-compare-col.bad {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.h-compare-col.good {
+  background: rgba(0,194,212,0.05);
+  border: 1px solid rgba(0,194,212,0.2);
+}
+.h-compare-col-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 20px;
+  letter-spacing: 0.3px;
+}
+.h-compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+}
+.h-compare-row:last-child { border-bottom: none; }
+.h-tag-bad {
+  background: rgba(239,68,68,0.12);
+  color: #f87171;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.h-tag-good {
+  background: rgba(34,197,94,0.12);
+  color: #4ade80;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* CTA BANNER */
+.h-cta-banner {
+  background: linear-gradient(120deg, rgba(0,194,212,0.12) 0%, rgba(37,99,235,0.08) 100%);
+  border-top: 1px solid rgba(0,194,212,0.15);
+  border-bottom: 1px solid rgba(0,194,212,0.1);
+  padding: 64px 48px;
+}
+.h-cta-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.h-cta-inner h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.5px;
+}
+.h-cta-inner p { color: rgba(255,255,255,0.5); margin: 0; font-size: 0.95rem; }
+.h-cta-actions { display: flex; gap: 14px; flex-shrink: 0; }
+
+/* RESPONSIVE */
+@media(max-width:960px) {
+  .h-hero-content { grid-template-columns: 1fr; padding: 80px 24px 100px; }
+  .h-hero-right { display: none; }
+  .h-features { grid-template-columns: 1fr; }
+  .h-feature-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .h-two-col { grid-template-columns: 1fr; }
+  .h-col { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 36px 24px; }
+  .h-compare-grid { grid-template-columns: 1fr; }
+  .h-compare-section { padding: 48px 24px; }
+  .h-cta-inner { flex-direction: column; text-align: center; }
+  .h-cta-actions { justify-content: center; }
+  .h-stat { padding: 12px 24px; }
+  .h-stat-div { display: none; }
+  .h-search-wrap { padding: 20px 24px; }
+}
+@media(max-width:600px) {
+  .h-hero-title { letter-spacing: -1px; }
+  .h-stats { gap: 8px; }
+}
+
 </style>
 </head>
 <body>
@@ -981,96 +1485,194 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 <!-- ═══════════════ HOME PAGE ═══════════════ -->
 <div id="page-home" class="page active">
 
-  <!-- ═══ NAVBAR (already in HTML above, this is page content) ═══ -->
-
-  <!-- HERO -->
-  <section class="zz-hero">
-    <div class="zz-hero-inner">
-      <div class="zz-hero-text">
-        <div class="zz-badge">🇰🇪 Kenya's #1 Career Platform</div>
-        <h1 class="zz-hero-h1">Grow Your Career.<br><span class="zz-accent">Get Paid Skills.</span></h1>
-        <p class="zz-hero-sub">Download expert PDF courses, build a stunning CV, and find your next job — all in one place. Pay via M-Pesa.</p>
-        <div class="zz-search-bar">
-          <input type="text" id="home-search" placeholder="Search Courses &amp; Jobs..." onkeydown="if(event.key==='Enter')homeSearch()" />
-          <button onclick="homeSearch()">🔍</button>
+  <!-- ══════════ HERO ══════════ -->
+  <section class="h-hero">
+    <div class="h-hero-img-wrap">
+      <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=1400&q=90&fit=crop&crop=faces,top" alt="Professional African woman" class="h-hero-bg-img" />
+      <div class="h-hero-overlay"></div>
+    </div>
+    <div class="h-hero-content">
+      <div class="h-hero-left">
+        <div class="h-pill">🇰🇪 Top Career Platform in Kenya</div>
+        <h1 class="h-hero-title">Grow faster.<br><em>Earn smarter.</em></h1>
+        <p class="h-hero-body">Download expert courses, build a professional CV, and land your next job — all via M-Pesa. No subscriptions. Just results.</p>
+        <div class="h-hero-actions">
+          <button class="h-btn-primary" onclick="showPage('courses')">Browse Courses</button>
+          <button class="h-btn-ghost" onclick="showPage('cv')">Build My CV →</button>
+        </div>
+        <div class="h-hero-trust">
+          <span>✓ Instant download</span>
+          <span>✓ Pay via M-Pesa</span>
+          <span>✓ No account needed</span>
         </div>
       </div>
-      <div class="zz-hero-cards">
-        <div class="zz-feature-card" onclick="showPage('courses')">
-          <div class="zz-fc-icons">📚 🖥️ ⬇️</div>
-          <div class="zz-fc-title">Premium Courses</div>
-          <div class="zz-fc-desc">Expert PDF guides on business, tech, marketing &amp; more.</div>
-          <button class="zz-btn-blue">Browse PDF Library</button>
-        </div>
-        <div class="zz-feature-card zz-card-center" onclick="showPage('cv')">
-          <div class="zz-cv-preview">
-            <div class="zz-cv-mock">
-              <div class="zz-cv-line zz-cv-thick"></div>
-              <div class="zz-cv-line"></div>
-              <div class="zz-cv-line"></div>
-              <div class="zz-cv-line zz-cv-short"></div>
-              <div class="zz-cv-line"></div>
-            </div>
-            <div class="zz-live-badge">Live Preview</div>
+      <div class="h-hero-right">
+        <div class="h-floating-card h-card1">
+          <div class="h-card-icon">📚</div>
+          <div>
+            <div class="h-card-title">Digital Marketing Course</div>
+            <div class="h-card-sub">KES 2,000 · PDF Download</div>
           </div>
-          <div class="zz-fc-title">Instant CV Builder</div>
-          <div class="zz-fc-desc">Build a professional CV in minutes.</div>
-          <div class="zz-price-tag">KES 100 Download</div>
-          <button class="zz-btn-green">Build CV</button>
         </div>
-        <div class="zz-feature-card" onclick="showPage('jobs')">
-          <div class="zz-fc-icons">💼 🤝 🔍</div>
-          <div class="zz-fc-title">Job Matching</div>
-          <div class="zz-fc-desc">Find top jobs and career opportunities near you.</div>
-          <button class="zz-btn-outline">Find Jobs</button>
+        <div class="h-floating-card h-card2">
+          <div class="h-card-icon">✅</div>
+          <div>
+            <div class="h-card-title">Payment Confirmed</div>
+            <div class="h-card-sub">M-Pesa · Just now</div>
+          </div>
+        </div>
+        <div class="h-floating-card h-card3">
+          <div class="h-card-icon">🎯</div>
+          <div>
+            <div class="h-card-title">500+ Graduates</div>
+            <div class="h-card-sub">Across Kenya</div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- TOP CATEGORIES -->
-  <section class="zz-section">
-    <div class="zz-section-header">
-      <h2>🔥 Top Categories</h2>
-    </div>
-    <div class="zz-categories">
-      <button class="zz-cat" onclick="filterCategory('Finance')">Finance</button>
-      <button class="zz-cat" onclick="filterCategory('Technology')">Tech</button>
-      <button class="zz-cat" onclick="filterCategory('Marketing')">Marketing</button>
-      <button class="zz-cat" onclick="filterCategory('Business')">Business</button>
-      <button class="zz-cat" onclick="filterCategory('Leadership')">Leadership</button>
-      <button class="zz-cat" onclick="filterCategory('Career Development')">Career Development</button>
-    </div>
-  </section>
-
-  <!-- LATEST COURSES + FEATURED JOBS -->
-  <section class="zz-section zz-two-col-section">
-    <div class="zz-col">
-      <div class="zz-section-header">
-        <h2>🆕 Latest Courses</h2>
-        <button class="zz-see-all" onclick="showPage('courses')">See All →</button>
+    <!-- Search bar overlapping hero bottom -->
+    <div class="h-search-wrap">
+      <div class="h-search-inner">
+        <input id="home-search" type="text" placeholder="Search courses, skills, jobs..." onkeydown="if(event.key==='Enter')homeSearch()" />
+        <button onclick="homeSearch()">Search</button>
       </div>
-      <div id="home-courses-grid" class="zz-home-courses">
-        <div class="zz-loading">Loading courses...</div>
-      </div>
-    </div>
-    <div class="zz-col">
-      <div class="zz-section-header">
-        <h2>💡 Featured Jobs</h2>
-        <button class="zz-see-all" onclick="showPage('jobs')">See All →</button>
-      </div>
-      <div id="home-jobs-list" class="zz-home-jobs">
-        <div class="zz-loading">Loading jobs...</div>
+      <div class="h-search-tags">
+        <span>Popular:</span>
+        <button onclick="filterCategory('Marketing')">Marketing</button>
+        <button onclick="filterCategory('Finance')">Finance</button>
+        <button onclick="filterCategory('Technology')">Tech</button>
+        <button onclick="filterCategory('Business')">Business</button>
       </div>
     </div>
   </section>
 
-  <!-- STATS STRIP -->
-  <section class="zz-stats-strip">
-    <div class="zz-stat"><span class="zz-stat-num">500+</span><span class="zz-stat-label">Learners</span></div>
-    <div class="zz-stat"><span class="zz-stat-num">50+</span><span class="zz-stat-label">Courses</span></div>
-    <div class="zz-stat"><span class="zz-stat-num">92%</span><span class="zz-stat-label">Satisfaction</span></div>
-    <div class="zz-stat"><span class="zz-stat-num">30+</span><span class="zz-stat-label">Employers</span></div>
+  <!-- ══════════ 3 FEATURE BLOCKS ══════════ -->
+  <section class="h-features">
+    <div class="h-feature-card" onclick="showPage('courses')">
+      <div class="h-feat-header">
+        <div class="h-feat-icon-wrap blue">📚</div>
+        <div class="h-feat-arrow">→</div>
+      </div>
+      <h3>Premium Courses</h3>
+      <p>Expert PDF guides on business, tech, marketing & finance. Download instantly after M-Pesa payment.</p>
+      <div class="h-feat-footer">
+        <span class="h-feat-tag">50+ courses</span>
+        <span class="h-feat-cta">Browse library</span>
+      </div>
+    </div>
+    <div class="h-feature-card h-feat-highlight" onclick="showPage('cv')">
+      <div class="h-feat-header">
+        <div class="h-feat-icon-wrap green">📄</div>
+        <div class="h-live-dot"><span></span>Live Preview</div>
+      </div>
+      <h3>Instant CV Builder</h3>
+      <p>Build a professional, ATS-friendly CV in minutes. Download as PDF for just KES 100.</p>
+      <div class="h-cv-mock">
+        <div class="h-cv-bar thick"></div>
+        <div class="h-cv-bar"></div>
+        <div class="h-cv-bar short"></div>
+        <div class="h-cv-bar"></div>
+      </div>
+      <div class="h-feat-footer">
+        <span class="h-feat-tag green">KES 100</span>
+        <span class="h-feat-cta">Build now</span>
+      </div>
+    </div>
+    <div class="h-feature-card" onclick="showPage('jobs')">
+      <div class="h-feat-header">
+        <div class="h-feat-icon-wrap purple">💼</div>
+        <div class="h-feat-arrow">→</div>
+      </div>
+      <h3>Job Matching</h3>
+      <p>Browse curated job listings across Kenya. Find roles that match your skills and experience level.</p>
+      <div class="h-feat-footer">
+        <span class="h-feat-tag">Active listings</span>
+        <span class="h-feat-cta">Find jobs</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ STATS ROW ══════════ -->
+  <section class="h-stats">
+    <div class="h-stat"><strong>500+</strong><span>Learners trained</span></div>
+    <div class="h-stat-div"></div>
+    <div class="h-stat"><strong>50+</strong><span>Premium courses</span></div>
+    <div class="h-stat-div"></div>
+    <div class="h-stat"><strong>92%</strong><span>Satisfaction rate</span></div>
+    <div class="h-stat-div"></div>
+    <div class="h-stat"><strong>KES 100</strong><span>CV download price</span></div>
+  </section>
+
+  <!-- ══════════ LATEST COURSES + FEATURED JOBS ══════════ -->
+  <section class="h-two-col">
+    <div class="h-col">
+      <div class="h-col-header">
+        <div>
+          <div class="h-col-eyebrow">📥 Fresh content</div>
+          <h2 class="h-col-title">Latest Courses</h2>
+        </div>
+        <button class="h-see-all" onclick="showPage('courses')">See all →</button>
+      </div>
+      <div id="home-courses-grid" class="h-course-list">
+        <div class="h-skeleton"></div>
+        <div class="h-skeleton"></div>
+        <div class="h-skeleton"></div>
+      </div>
+    </div>
+    <div class="h-col">
+      <div class="h-col-header">
+        <div>
+          <div class="h-col-eyebrow">💡 Hiring now</div>
+          <h2 class="h-col-title">Featured Jobs</h2>
+        </div>
+        <button class="h-see-all" onclick="showPage('jobs')">See all →</button>
+      </div>
+      <div id="home-jobs-list" class="h-job-list">
+        <div class="h-skeleton"></div>
+        <div class="h-skeleton"></div>
+        <div class="h-skeleton"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ COMPARISON: OLD WAY VS ZENITH ZOOM ══════════ -->
+  <section class="h-compare-section">
+    <div class="h-compare-header">
+      <div class="h-pill dark">The difference</div>
+      <h2>Old way vs. <span class="h-teal">the Zenith Zoom way</span></h2>
+    </div>
+    <div class="h-compare-grid">
+      <div class="h-compare-col bad">
+        <div class="h-compare-col-title">❌ Traditional job seeking</div>
+        <div class="h-compare-row"><span>Getting skilled</span><span class="h-tag-bad">Months of classes</span></div>
+        <div class="h-compare-row"><span>CV quality</span><span class="h-tag-bad">Inconsistent</span></div>
+        <div class="h-compare-row"><span>Course access</span><span class="h-tag-bad">Expensive & slow</span></div>
+        <div class="h-compare-row"><span>Payment</span><span class="h-tag-bad">Bank transfers</span></div>
+        <div class="h-compare-row"><span>Download speed</span><span class="h-tag-bad">Days or never</span></div>
+      </div>
+      <div class="h-compare-col good">
+        <div class="h-compare-col-title">✅ Zenith Zoom</div>
+        <div class="h-compare-row"><span>Getting skilled</span><span class="h-tag-good">Instant PDF download</span></div>
+        <div class="h-compare-row"><span>CV quality</span><span class="h-tag-good">Professional template</span></div>
+        <div class="h-compare-row"><span>Course access</span><span class="h-tag-good">From KES 500</span></div>
+        <div class="h-compare-row"><span>Payment</span><span class="h-tag-good">M-Pesa STK push</span></div>
+        <div class="h-compare-row"><span>Download speed</span><span class="h-tag-good">Under 60 seconds</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CTA BANNER ══════════ -->
+  <section class="h-cta-banner">
+    <div class="h-cta-inner">
+      <div>
+        <h2>Your first download in under 60 seconds</h2>
+        <p>Enter your M-Pesa number, pay, and get your PDF instantly.</p>
+      </div>
+      <div class="h-cta-actions">
+        <button class="h-btn-primary" onclick="showPage('courses')">Start Learning</button>
+        <button class="h-btn-ghost white" onclick="showPage('cv')">Build CV</button>
+      </div>
+    </div>
   </section>
 
   <footer>
@@ -1081,9 +1683,9 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <button class="footer-link" onclick="showPage('courses')">Courses</button>
       <button class="footer-link" onclick="showPage('cv')">CV Builder</button>
       <button class="footer-link" onclick="showPage('jobs')">Jobs</button>
-      <a class="footer-link" href="/admin/login">Admin Panel</a>
+      <a class="footer-link" href="/admin/login">Admin</a>
     </div>
-    <div class="footer-copy">© 2025 Zenith Zoom. All rights reserved. | Payments secured by KCB M-Pesa</div>
+    <div class="footer-copy">© 2025 Zenith Zoom · Payments secured by KCB M-Pesa</div>
   </footer>
 </div>
 
@@ -1751,14 +2353,14 @@ function renderHomeCourses(courses) {
   if (!grid) return;
   const icons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀' };
   const top = courses.slice(0, 3);
-  if (!top.length) { grid.innerHTML = '<div class="zz-loading">No courses yet.</div>'; return; }
+  if (!top.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">No courses yet.</p>'; return; }
   grid.innerHTML = top.map(c => `
-    <div class="zz-home-course-card" onclick="openPayModal('${c._id}','resource')">
-      <div class="zz-course-thumb">${icons[c.category] || '📄'}</div>
-      <div class="zz-course-info">
-        <div class="zz-course-name">${c.title}</div>
-        <div class="zz-course-pages">${c.category} · KES ${c.price}</div>
-        <button class="zz-mpesa-btn" onclick="event.stopPropagation();openPayModal('${c._id}','resource')">GET VIA M-PESA</button>
+    <div class="h-course-item" onclick="openPayModal('${c._id}','resource')">
+      <div class="h-ci-icon">${icons[c.category] || '📄'}</div>
+      <div style="flex:1;min-width:0">
+        <div class="h-ci-name">${c.title}</div>
+        <div class="h-ci-meta">${c.category} · KES ${c.price}</div>
+        <button class="h-ci-btn" onclick="event.stopPropagation();openPayModal('${c._id}','resource')">GET VIA M-PESA</button>
       </div>
     </div>
   `).join('');
@@ -1768,15 +2370,15 @@ function renderHomeJobs(jobs) {
   const list = document.getElementById('home-jobs-list');
   if (!list) return;
   const top = jobs.slice(0, 3);
-  if (!top.length) { list.innerHTML = '<div class="zz-loading">No jobs yet.</div>'; return; }
+  if (!top.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">No jobs yet.</p>'; return; }
   list.innerHTML = top.map(j => `
-    <div class="zz-home-job-card">
-      <div class="zz-job-logo">💼</div>
-      <div class="zz-job-info">
-        <div class="zz-job-title">${j.title}</div>
-        <div class="zz-job-company">${j.company || 'Company'} · ${j.location || 'Kenya'}</div>
+    <div class="h-job-item">
+      <div class="h-ji-logo">💼</div>
+      <div style="flex:1;min-width:0">
+        <div class="h-ji-title">${j.title}</div>
+        <div class="h-ji-company">${j.company || 'Company'} · ${j.location || 'Kenya'}</div>
       </div>
-      <button class="zz-apply-btn" onclick="showPage('jobs')">APPLY</button>
+      <button class="h-ji-apply" onclick="showPage('jobs')">APPLY</button>
     </div>
   `).join('');
 }
