@@ -54,20 +54,21 @@ function formatPhone(phone) {
 
 // Initiate KCB BUNI STK Push
 async function stkPush({ phone, amount, invoiceNumber, description }) {
-  const { KCB_CALLBACK_URL, KCB_SHORT_CODE, KCB_PASSKEY } = process.env;
+  const { KCB_CALLBACK_URL, KCB_SHORT_CODE } = process.env;
 
   const token = await getAccessToken();
+  console.log('KCB token obtained successfully');
 
   const payload = {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
     invoiceNumber: invoiceNumber || `ZZ-${Date.now()}`,
     sharedShortCode: true,
-    orgShortCode: KCB_SHORT_CODE || '522522',
-    orgPassKey: KCB_PASSKEY || '',
+    orgShortCode: KCB_SHORT_CODE || '8081055',
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: description || 'Zenith Zoom Payment'
   };
+  console.log('STK Push payload:', JSON.stringify(payload));
 
   const response = await axios.post(
     `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`,
