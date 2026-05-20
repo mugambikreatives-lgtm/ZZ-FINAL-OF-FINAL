@@ -1085,7 +1085,11 @@ function showPage(name) {
 // ─────────────────────────────────────────────
 async function loadCourses() {
   try {
-    const r = await fetch('/api/resources');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const r = await fetch('/api/resources', { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!r.ok) throw new Error('API error ' + r.status);
     const d = await r.json();
     allCourses = d.resources || [];
     if (!allCourses.length) throw new Error('empty');
@@ -1109,7 +1113,8 @@ function getSampleCourses() {
 const catIcons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀', default:'📄' };
 
 function renderCourses(list) {
-  const grid = document.getElementById('resource-grid');
+  const grid = document.getElementById('course-grid');
+  if (!grid) return;
   if (!list.length) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📂</div><p>No courses found.</p></div>';
     return;
