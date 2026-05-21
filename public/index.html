@@ -1574,6 +1574,108 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 /* ══ Footer stays dark ══ */
 footer { background: #080d18 !important; }
 
+
+/* ══ FEATURE CARDS — IMAGE + GLASS ══ */
+.h-features {
+  display: grid !important;
+  grid-template-columns: repeat(3,1fr) !important;
+  gap: 0 !important;
+  background: #0d1117 !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+.h-feature-card {
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 340px !important;
+  background: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255,255,255,0.08) !important;
+  padding: 0 !important;
+}
+.h-feature-card:last-child { border-right: none !important; }
+
+/* Background image layer */
+.h-fc-bg-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease;
+  filter: brightness(0.45) saturate(0.8);
+}
+.h-feature-card:hover .h-fc-bg-img {
+  transform: scale(1.06);
+  filter: brightness(0.35) saturate(0.9);
+}
+
+/* Glass content layer */
+.h-fc-glass {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: linear-gradient(
+    160deg,
+    rgba(255,255,255,0.07) 0%,
+    rgba(255,255,255,0.02) 60%,
+    rgba(0,0,0,0.1) 100%
+  );
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.3s;
+}
+.h-feature-card:hover .h-fc-glass {
+  background: linear-gradient(
+    160deg,
+    rgba(0,194,212,0.12) 0%,
+    rgba(255,255,255,0.04) 60%,
+    rgba(0,0,0,0.05) 100%
+  );
+}
+
+/* Override light section overrides for these cards */
+.h-feature-card .h-fc-glass h3 { color: #fff !important; font-size: 1.2rem; font-weight: 800; margin: 0; }
+.h-feature-card .h-fc-glass p { color: rgba(255,255,255,0.72) !important; font-size: 0.87rem; line-height: 1.65; margin: 0; flex: 1; }
+.h-feature-card .h-fc-glass .h-feat-arrow { color: rgba(255,255,255,0.4) !important; }
+.h-feature-card:hover .h-fc-glass .h-feat-arrow { color: #00c2d4 !important; }
+.h-feature-card .h-fc-glass .h-feat-cta { color: #00c2d4 !important; font-weight: 700; font-size: 0.85rem; }
+
+/* Glass tags */
+.glass-tag {
+  background: rgba(255,255,255,0.12) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.85) !important;
+  backdrop-filter: blur(10px);
+}
+.glass-tag.green {
+  background: rgba(34,197,94,0.2) !important;
+  border-color: rgba(34,197,94,0.4) !important;
+  color: #86efac !important;
+}
+
+/* Icon wraps on dark bg */
+.h-fc-glass .h-feat-icon-wrap.blue { background: rgba(37,99,235,0.25) !important; border-color: rgba(37,99,235,0.4) !important; }
+.h-fc-glass .h-feat-icon-wrap.green { background: rgba(22,163,74,0.25) !important; border-color: rgba(22,163,74,0.4) !important; }
+.h-fc-glass .h-feat-icon-wrap.purple { background: rgba(124,58,237,0.25) !important; border-color: rgba(124,58,237,0.4) !important; }
+
+/* CV mock on glass */
+.h-fc-glass .h-cv-bar { background: rgba(255,255,255,0.2) !important; }
+.h-fc-glass .h-cv-bar.thick { background: rgba(0,194,212,0.6) !important; }
+
+/* Live dot */
+.h-live-dot { color: #86efac !important; }
+.h-live-dot span { background: #22c55e !important; }
+
+/* Responsive */
+@media(max-width:960px) {
+  .h-features { grid-template-columns: 1fr !important; }
+  .h-feature-card { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; min-height: 280px !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1670,48 +1772,64 @@ footer { background: #080d18 !important; }
 
   <!-- ══════════ 3 FEATURE BLOCKS ══════════ -->
   <section class="h-features">
-    <div class="h-feature-card" onclick="showPage('courses')">
-      <div class="h-feat-header">
-        <div class="h-feat-icon-wrap blue">📚</div>
-        <div class="h-feat-arrow">→</div>
-      </div>
-      <h3>Premium Courses</h3>
-      <p>Expert PDF guides on business, tech, marketing & finance. Download instantly after M-Pesa payment.</p>
-      <div class="h-feat-footer">
-        <span class="h-feat-tag">50+ courses</span>
-        <span class="h-feat-cta">Browse library</span>
-      </div>
-    </div>
-    <div class="h-feature-card h-feat-highlight" onclick="showPage('cv')">
-      <div class="h-feat-header">
-        <div class="h-feat-icon-wrap green">📄</div>
-        <div class="h-live-dot"><span></span>Live Preview</div>
-      </div>
-      <h3>Instant CV Builder</h3>
-      <p>Build a professional, ATS-friendly CV in minutes. Download as PDF for just KES 100.</p>
-      <div class="h-cv-mock">
-        <div class="h-cv-bar thick"></div>
-        <div class="h-cv-bar"></div>
-        <div class="h-cv-bar short"></div>
-        <div class="h-cv-bar"></div>
-      </div>
-      <div class="h-feat-footer">
-        <span class="h-feat-tag green">KES 100</span>
-        <span class="h-feat-cta">Build now</span>
+
+    <!-- COURSES CARD -->
+    <div class="h-feature-card h-fc-courses" onclick="showPage('courses')">
+      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80&fit=crop')"></div>
+      <div class="h-fc-glass">
+        <div class="h-feat-header">
+          <div class="h-feat-icon-wrap blue">📚</div>
+          <div class="h-feat-arrow">→</div>
+        </div>
+        <h3>Premium Courses</h3>
+        <p>Expert PDF guides on business, tech, marketing & finance. Download instantly after M-Pesa payment.</p>
+        <div class="h-feat-footer">
+          <span class="h-feat-tag glass-tag">50+ courses</span>
+          <span class="h-feat-cta">Browse library</span>
+        </div>
       </div>
     </div>
-    <div class="h-feature-card" onclick="showPage('jobs')">
-      <div class="h-feat-header">
-        <div class="h-feat-icon-wrap purple">💼</div>
-        <div class="h-feat-arrow">→</div>
-      </div>
-      <h3>Job Matching</h3>
-      <p>Browse curated job listings across Kenya. Find roles that match your skills and experience level.</p>
-      <div class="h-feat-footer">
-        <span class="h-feat-tag">Active listings</span>
-        <span class="h-feat-cta">Find jobs</span>
+
+    <!-- CV CARD -->
+    <div class="h-feature-card h-fc-cv" onclick="showPage('cv')">
+      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80&fit=crop')"></div>
+      <div class="h-fc-glass">
+        <div class="h-feat-header">
+          <div class="h-feat-icon-wrap green">📄</div>
+          <div class="h-live-dot"><span></span>Live Preview</div>
+        </div>
+        <h3>Instant CV Builder</h3>
+        <p>Build a professional, ATS-friendly CV in minutes. Download as PDF for just KES 100.</p>
+        <div class="h-cv-mock">
+          <div class="h-cv-bar thick"></div>
+          <div class="h-cv-bar"></div>
+          <div class="h-cv-bar short"></div>
+          <div class="h-cv-bar"></div>
+        </div>
+        <div class="h-feat-footer">
+          <span class="h-feat-tag glass-tag green">KES 100</span>
+          <span class="h-feat-cta">Build now</span>
+        </div>
       </div>
     </div>
+
+    <!-- JOBS CARD -->
+    <div class="h-feature-card h-fc-jobs" onclick="showPage('jobs')">
+      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80&fit=crop')"></div>
+      <div class="h-fc-glass">
+        <div class="h-feat-header">
+          <div class="h-feat-icon-wrap purple">💼</div>
+          <div class="h-feat-arrow">→</div>
+        </div>
+        <h3>Job Matching</h3>
+        <p>Browse curated job listings across Kenya. Find roles that match your skills and experience level.</p>
+        <div class="h-feat-footer">
+          <span class="h-feat-tag glass-tag">Active listings</span>
+          <span class="h-feat-cta">Find jobs</span>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ══════════ STATS ROW ══════════ -->
