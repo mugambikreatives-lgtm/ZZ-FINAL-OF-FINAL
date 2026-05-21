@@ -9,6 +9,7 @@ const resourceSchema = new mongoose.Schema({
   filePath: { type: String, required: true },
   thumbnail: { type: String, default: null },
   downloads: { type: Number, default: 0 },
+  cloudinaryId: { type: String, default: null },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });

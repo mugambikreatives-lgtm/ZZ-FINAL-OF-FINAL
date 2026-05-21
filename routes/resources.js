@@ -1,26 +1,38 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
 const Resource = require('../models/Resource');
 const { isAdminAPI } = require('../middleware/auth');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '../private-uploads');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Cloudinary storage for PDFs
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'zenithzoom-courses',
+    resource_type: 'raw', // required for PDFs
+    format: 'pdf',
+    use_filename: true,
+    unique_filename: true
   }
 });
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 }, fileFilter: (req, file, cb) => {
-  if (file.mimetype === 'application/pdf') cb(null, true);
-  else cb(new Error('Only PDF files allowed'), false);
-}});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') cb(null, true);
+    else cb(new Error('Only PDF files allowed'), false);
+  }
+});
 
 // GET all resources (public)
 router.get('/', async (req, res) => {
@@ -45,18 +57,22 @@ router.post('/', isAdminAPI, upload.single('file'), async (req, res) => {
     const { title, description, category, price } = req.body;
     if (!req.file) return res.status(400).json({ success: false, message: 'PDF file required' });
 
+    // Cloudinary gives us a secure URL
+    const cloudinaryUrl = req.file.path;
+    const publicId = req.file.filename;
+
     const resource = await Resource.create({
       title, description, category,
       price: parseFloat(price) || 50,
       fileName: req.file.originalname,
-      filePath: req.file.path
+      filePath: cloudinaryUrl,   // store Cloudinary URL
+      cloudinaryId: publicId     // store public_id for deletion
     });
     res.json({ success: true, resource });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-
 
 // PATCH update resource fields (admin)
 router.patch('/:id', isAdminAPI, async (req, res) => {
@@ -80,7 +96,10 @@ router.delete('/:id', isAdminAPI, async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
     if (!resource) return res.status(404).json({ success: false, message: 'Not found' });
-    if (fs.existsSync(resource.filePath)) fs.unlinkSync(resource.filePath);
+    // Delete from Cloudinary if cloudinaryId exists
+    if (resource.cloudinaryId) {
+      try { await cloudinary.uploader.destroy(resource.cloudinaryId, { resource_type: 'raw' }); } catch {}
+    }
     await resource.deleteOne();
     res.json({ success: true, message: 'Resource deleted' });
   } catch (err) {
