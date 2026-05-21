@@ -19,29 +19,28 @@ function getBaseUrl() {
 // Generate a Bearer access token from KCB BUNI
 async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
+  const isSandbox = process.env.KCB_ENV !== 'production';
 
-  // Exact format from KCB BUNI curl command:
-  // curl -k -X POST https://accounts.buni.kcbgroup.com/oauth2/token
-  //   -d "grant_type=client_credentials"
-  //   -H "Authorization: Basic Base64(consumer-key:consumer-secret)"
-  const tokenUrl = 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  // Sandbox: uat.buni.kcbgroup.com/token (WORKING - confirmed May 20)
+  // Production: accounts.buni.kcbgroup.com/oauth2/token
+  const tokenUrl = isSandbox
+    ? 'https://uat.buni.kcbgroup.com/token'
+    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+
   const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
-
-  console.log('KCB token request to:', tokenUrl);
-  console.log('Using consumer key:', KCB_CONSUMER_KEY);
+  console.log('Token URL:', tokenUrl, '| Key:', KCB_CONSUMER_KEY);
 
   const res = await axios.post(
-    tokenUrl,
-    'grant_type=client_credentials',
+    `${tokenUrl}?grant_type=client_credentials`,
+    {},
     {
       headers: {
-        'Authorization': `Basic ${auth}`,
+        Authorization: `Basic ${auth}`,
         'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      httpsAgent: new https.Agent({ rejectUnauthorized: false }) // matches curl -k flag
+      }
     }
   );
-  console.log('KCB token response:', JSON.stringify(res.data));
+  console.log('KCB token obtained successfully');
   return res.data.access_token;
 }
 
