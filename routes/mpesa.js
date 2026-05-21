@@ -56,9 +56,9 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const payload = {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
-    invoiceNumber: invoiceNumber || `ZZ-${Date.now()}`,
+    invoiceNumber: `8081055-${invoiceNumber || `ZZ-${Date.now()}`}`,
     sharedShortCode: true,
-    orgShortCode: KCB_SHORT_CODE || '8081055',
+    orgShortCode: '',
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: description || 'Zenith Zoom Payment'
   };
