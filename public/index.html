@@ -957,10 +957,12 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 /* HERO */
 .h-hero {
   position: relative;
-  min-height: 92vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-top: 68px;
+  box-sizing: border-box;
 }
 .h-hero-img-wrap {
   position: absolute;
@@ -994,7 +996,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 100px 40px 120px;
+  padding: 60px 40px 100px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -1457,6 +1459,120 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 *, *::before, *::after {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 }
+
+
+/* ══ LIGHT SECTIONS ══ */
+.h-features {
+  background: #f8f9fc !important;
+  border-top: 1px solid #e8eaf0;
+  border-bottom: 1px solid #e8eaf0;
+}
+.h-feature-card {
+  background: #f8f9fc !important;
+  border-right: 1px solid #e8eaf0 !important;
+}
+.h-feature-card:hover { background: #fff !important; }
+.h-feat-highlight {
+  background: linear-gradient(160deg,#f0fafb,#e6f7f9) !important;
+  border-right-color: #b2e8ed !important;
+}
+.h-feature-card h3 { color: #0f1923 !important; }
+.h-feature-card p { color: #5a6472 !important; }
+.h-feat-arrow { color: #c0c8d4 !important; }
+.h-feature-card:hover .h-feat-arrow { color: #00a8b8 !important; }
+.h-feat-tag {
+  background: #eef0f5 !important;
+  border-color: #d8dce6 !important;
+  color: #6b7280 !important;
+}
+.h-cv-bar { background: #dde2ea !important; }
+.h-cv-bar.thick { background: rgba(0,180,200,0.4) !important; }
+
+/* Stats - off white */
+.h-stats {
+  background: #fff !important;
+  border-top: 1px solid #e8eaf0 !important;
+  border-bottom: 1px solid #e8eaf0 !important;
+}
+.h-stat strong { color: #0f1923 !important; }
+.h-stat span { color: #6b7280 !important; }
+.h-stat-div { background: #e0e4ec !important; }
+
+/* Two col - white */
+.h-two-col { background: #fff !important; }
+.h-col { border-right: 1px solid #e8eaf0 !important; }
+.h-col:last-child { border-right: none !important; }
+.h-col-title { color: #0f1923 !important; }
+.h-course-item {
+  background: #f8f9fc !important;
+  border: 1px solid #e8eaf0 !important;
+}
+.h-course-item:hover { background: #f0fafb !important; border-color: #00c2d4 !important; }
+.h-ci-name { color: #0f1923 !important; }
+.h-ci-meta { color: #6b7280 !important; }
+.h-ci-icon {
+  background: rgba(0,194,212,0.08) !important;
+  border: 1px solid rgba(0,194,212,0.2) !important;
+}
+.h-job-item {
+  background: #f8f9fc !important;
+  border: 1px solid #e8eaf0 !important;
+}
+.h-job-item:hover { background: #f0fafb !important; border-color: #00c2d4 !important; }
+.h-ji-title { color: #0f1923 !important; }
+.h-ji-company { color: #6b7280 !important; }
+.h-ji-apply {
+  border-color: #d0d5de !important;
+  color: #4b5563 !important;
+}
+.h-ji-apply:hover { border-color: #00c2d4 !important; color: #00a8b8 !important; }
+.h-see-all { color: #00a8b8 !important; }
+.h-col-eyebrow { color: #00a8b8 !important; }
+
+/* Comparison - keep dark but tweak */
+.h-compare-section { background: #0a0f1a; }
+.h-compare-col.bad { background: rgba(255,255,255,0.04) !important; }
+
+/* Skeleton on white bg */
+.h-skeleton {
+  background: linear-gradient(90deg,#eef0f5 25%,#e4e8f0 50%,#eef0f5 75%) !important;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+
+/* ══ SEARCH BAR on dark bg ══ */
+.h-search-wrap { background: #0d1625 !important; }
+
+/* ══ Two-col section header text ══ */
+.h-col-header { border-bottom: 1px solid #e8eaf0; padding-bottom: 16px; margin-bottom: 20px; }
+
+/* ══ CTA banner - teal gradient ══ */
+.h-cta-banner {
+  background: linear-gradient(120deg, #007a8a 0%, #005f6e 100%) !important;
+  border: none !important;
+}
+.h-cta-inner h2 { color: #fff !important; }
+.h-cta-inner p { color: rgba(255,255,255,0.75) !important; }
+.h-cta-banner .h-btn-primary {
+  background: #fff !important;
+  color: #007a8a !important;
+}
+.h-cta-banner .h-btn-primary:hover { background: #e6f7f9 !important; }
+.h-cta-banner .h-btn-ghost {
+  border-color: rgba(255,255,255,0.5) !important;
+  color: #fff !important;
+}
+.h-cta-banner .h-btn-ghost:hover { border-color: #fff !important; background: rgba(255,255,255,0.1) !important; }
+
+/* ══ Comparison section stays dark ══ */
+.h-compare-section {
+  background: #0d1625;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.h-compare-header h2 { color: #fff !important; }
+
+/* ══ Footer stays dark ══ */
+footer { background: #080d18 !important; }
 
 </style>
 </head>
