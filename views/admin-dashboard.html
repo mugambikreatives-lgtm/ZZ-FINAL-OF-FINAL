@@ -850,6 +850,47 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 
 // INIT
 loadStats();
+
+// ── EDIT COURSE ──
+function openEditCourse(id, title, price, category, description) {
+  document.getElementById('edit-course-id').value = id;
+  document.getElementById('edit-title').value = title;
+  document.getElementById('edit-price').value = price;
+  document.getElementById('edit-category').value = category;
+  document.getElementById('edit-description').value = description;
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+}
+
+async function saveEditCourse() {
+  const id = document.getElementById('edit-course-id').value;
+  const title = document.getElementById('edit-title').value.trim();
+  const price = document.getElementById('edit-price').value;
+  const category = document.getElementById('edit-category').value;
+  const description = document.getElementById('edit-description').value.trim();
+  if (!title || !price) { showToast('Title and price are required.', 'error'); return; }
+  try {
+    const res = await fetch(`/api/resources/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, price: parseFloat(price), category, description })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('Course updated successfully!', 'success');
+      closeEditModal();
+      loadResources();
+    } else {
+      showToast(data.message || 'Update failed.', 'error');
+    }
+  } catch (err) {
+    showToast('Update failed. Try again.', 'error');
+  }
+}
+
 </script>
 
 <!-- EDIT COURSE MODAL -->
