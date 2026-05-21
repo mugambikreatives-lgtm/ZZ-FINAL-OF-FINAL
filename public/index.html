@@ -2489,8 +2489,9 @@ async function submitPayment() {
     const data = await res.json();
 
     if (!data.success) {
+      console.error('Payment failed:', data);
       status.className = 'pay-status error';
-      status.textContent = '❌ ' + data.message;
+      status.textContent = '❌ ' + (data.message || 'Payment initiation failed. Try again.');
       btn.disabled = false;
       btn.textContent = '💚 Pay Now via M-Pesa';
       return;
@@ -2530,9 +2531,10 @@ async function submitPayment() {
       } catch {}
     }, 5000);
 
-  } catch {
+  } catch (err) {
+    console.error('Payment error:', err);
     status.className = 'pay-status error';
-    status.textContent = '❌ Network error. Please check your connection.';
+    status.textContent = '❌ ' + (err.message || 'Network error. Please check your connection.');
     btn.disabled = false;
     btn.textContent = '💚 Pay Now via M-Pesa';
   }

@@ -1,4 +1,5 @@
 const express = require('express');
+const https = require('https');
 const router = express.Router();
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
@@ -29,7 +30,6 @@ async function getAccessToken() {
   console.log('KCB token request to:', tokenUrl);
   console.log('Using consumer key:', KCB_CONSUMER_KEY);
 
-  const https = require('https');
   const res = await axios.post(
     tokenUrl,
     'grant_type=client_credentials',
