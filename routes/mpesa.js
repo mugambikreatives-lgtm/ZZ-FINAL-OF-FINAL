@@ -19,7 +19,11 @@ function getBaseUrl() {
 async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
   // Token endpoint confirmed from JWT issuer field
-  const tokenUrl = 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  const isSandbox = process.env.KCB_ENV !== 'production';
+  const tokenUrl = isSandbox
+    ? 'https://uat.buni.kcbgroup.com/oauth2/token'
+    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  console.log('Using token URL:', tokenUrl);
 
   const params = new URLSearchParams();
   params.append('grant_type', 'client_credentials');
