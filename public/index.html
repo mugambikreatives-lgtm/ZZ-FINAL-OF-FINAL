@@ -2594,7 +2594,13 @@ function renderHomeCourses(courses) {
   const icons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀' };
   const top = courses.slice(0, 3);
   if (!top.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">No courses yet.</p>'; return; }
-  grid.innerHTML = top.map(c => `
+  // Only show real DB courses (not sample fallback IDs like s1, s2)
+  const realCourses = top.filter(c => c._id && c._id.length > 5);
+  if (!realCourses.length) {
+    grid.innerHTML = '<p style="color:#999;font-size:0.85rem;padding:12px 0">Courses loading...</p>';
+    return;
+  }
+  grid.innerHTML = realCourses.map(c => `
     <div class="h-course-item" onclick="openResPay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')" style="cursor:pointer">
       <div class="h-ci-icon">${icons[c.category] || '📄'}</div>
       <div style="flex:1;min-width:0">
