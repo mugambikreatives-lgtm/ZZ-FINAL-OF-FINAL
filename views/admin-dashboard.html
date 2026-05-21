@@ -588,7 +588,8 @@ function renderResources() {
       <td><span class="badge badge-info">${esc(r.category)}</span></td>
       <td style="color:var(--teal);font-weight:600;">KES ${r.price}</td>
       <td style="color:var(--muted);">${r.downloads || 0}</td>
-      <td>
+      <td style="display:flex;gap:8px;">
+        <button class="btn btn-sm" style="background:var(--teal);color:#000;" onclick="openEditCourse('${r._id}','${esc(r.title)}',${r.price},'${esc(r.category)}','${esc(r.description||'')}')" >✏️ Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteCourse('${r._id}','${esc(r.title)}')">🗑 Delete</button>
       </td>
     </tr>
@@ -850,5 +851,41 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 // INIT
 loadStats();
 </script>
+
+<!-- EDIT COURSE MODAL -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="background:#141c2e;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:36px;width:100%;max-width:480px;margin:20px;">
+    <h3 style="color:#fff;margin:0 0 24px;font-size:1.2rem;">✏️ Edit Course</h3>
+    <input type="hidden" id="edit-course-id" />
+    <div style="margin-bottom:16px;">
+      <label style="display:block;color:rgba(255,255,255,0.6);font-size:0.8rem;margin-bottom:6px;font-weight:600;">TITLE</label>
+      <input id="edit-title" type="text" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:#fff;font-size:0.95rem;box-sizing:border-box;outline:none;" />
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block;color:rgba(255,255,255,0.6);font-size:0.8rem;margin-bottom:6px;font-weight:600;">CATEGORY</label>
+      <select id="edit-category" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:#fff;font-size:0.95rem;box-sizing:border-box;outline:none;">
+        <option value="Business">Business</option>
+        <option value="Technology">Technology</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Finance">Finance</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Career Development">Career Development</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block;color:rgba(255,255,255,0.6);font-size:0.8rem;margin-bottom:6px;font-weight:600;">PRICE (KES)</label>
+      <input id="edit-price" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:#fff;font-size:0.95rem;box-sizing:border-box;outline:none;" />
+    </div>
+    <div style="margin-bottom:24px;">
+      <label style="display:block;color:rgba(255,255,255,0.6);font-size:0.8rem;margin-bottom:6px;font-weight:600;">DESCRIPTION</label>
+      <textarea id="edit-description" rows="3" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:#fff;font-size:0.95rem;box-sizing:border-box;outline:none;resize:vertical;"></textarea>
+    </div>
+    <div style="display:flex;gap:12px;">
+      <button onclick="saveEditCourse()" style="flex:1;background:var(--teal);color:#000;border:none;border-radius:10px;padding:13px;font-weight:800;font-size:0.95rem;cursor:pointer;">Save Changes</button>
+      <button onclick="closeEditModal()" style="flex:1;background:rgba(255,255,255,0.06);color:#fff;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:13px;font-weight:700;font-size:0.95rem;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

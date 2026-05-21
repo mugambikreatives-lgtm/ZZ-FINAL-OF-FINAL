@@ -57,6 +57,24 @@ router.post('/', isAdminAPI, upload.single('file'), async (req, res) => {
   }
 });
 
+
+// PATCH update resource fields (admin)
+router.patch('/:id', isAdminAPI, async (req, res) => {
+  try {
+    const { price, title, category, description } = req.body;
+    const update = {};
+    if (price !== undefined) update.price = parseFloat(price);
+    if (title !== undefined) update.title = title;
+    if (category !== undefined) update.category = category;
+    if (description !== undefined) update.description = description;
+    const resource = await Resource.findByIdAndUpdate(req.params.id, update, { new: true });
+    if (!resource) return res.status(404).json({ success: false, message: 'Not found' });
+    res.json({ success: true, resource });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // DELETE resource (admin)
 router.delete('/:id', isAdminAPI, async (req, res) => {
   try {
