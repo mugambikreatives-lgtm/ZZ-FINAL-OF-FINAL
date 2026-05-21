@@ -19,21 +19,32 @@ function getBaseUrl() {
 async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
   // Token endpoint confirmed from JWT issuer field
-  const tokenUrl = 'https://accounts.buni.kcbgroup.com/oauth2/token';
-  console.log('Using token URL:', tokenUrl);
+  const isSandbox = process.env.KCB_ENV !== 'production';
+  // Sandbox: uat.buni.kcbgroup.com/token (no /oauth2 path)
+  // Production: accounts.buni.kcbgroup.com/oauth2/token
+  const tokenUrl = isSandbox
+    ? 'https://uat.buni.kcbgroup.com/token'
+    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  console.log('Token URL:', tokenUrl);
 
-  const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
+  const isSandboxReq = process.env.KCB_ENV !== 'production';
+  const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
 
-  const res = await axios.post(tokenUrl, params.toString(), {
-    auth: {
-      username: KCB_CONSUMER_KEY,
-      password: KCB_CONSUMER_SECRET
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+  // Sandbox uses query param, production uses body
+  const tokenEndpoint = isSandboxReq
+    ? `${tokenUrl}?grant_type=client_credentials`
+    : tokenUrl;
+
+  const res = await axios.post(
+    tokenEndpoint,
+    isSandboxReq ? {} : 'grant_type=client_credentials',
+    {
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     }
-  });
+  );
   console.log('KCB token response:', JSON.stringify(res.data));
   return res.data.access_token;
 }
