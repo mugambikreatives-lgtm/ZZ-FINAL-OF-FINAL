@@ -2477,12 +2477,12 @@ function renderHomeCourses(courses) {
   const top = courses.slice(0, 3);
   if (!top.length) { grid.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">No courses yet.</p>'; return; }
   grid.innerHTML = top.map(c => `
-    <div class="h-course-item" onclick="openPayModal('${c._id}','resource')">
+    <div class="h-course-item" onclick="openResPay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')" style="cursor:pointer">
       <div class="h-ci-icon">${icons[c.category] || '📄'}</div>
       <div style="flex:1;min-width:0">
         <div class="h-ci-name">${c.title}</div>
         <div class="h-ci-meta">${c.category} · KES ${c.price}</div>
-        <button class="h-ci-btn" onclick="event.stopPropagation();openPayModal('${c._id}','resource')">GET VIA M-PESA</button>
+        <button class="h-ci-btn" onclick="event.stopPropagation();openResPay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')" >GET VIA M-PESA</button>
       </div>
     </div>
   `).join('');
