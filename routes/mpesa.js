@@ -99,6 +99,10 @@ router.post('/pay-resource', async (req, res) => {
     if (!phone || !resourceId)
       return res.status(400).json({ success: false, message: 'Phone and resource ID required' });
 
+    // Validate it's a real MongoDB ObjectId
+    if (!resourceId.match(/^[a-fA-F0-9]{24}$/))
+      return res.status(400).json({ success: false, message: 'Invalid resource ID' });
+
     const resource = await Resource.findById(resourceId);
     if (!resource)
       return res.status(404).json({ success: false, message: 'Resource not found' });
