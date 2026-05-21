@@ -19,29 +19,42 @@ function getBaseUrl() {
 // Generate a Bearer access token from KCB BUNI
 async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
-  const isSandbox = process.env.KCB_ENV !== 'production';
 
-  // Sandbox: uat.buni.kcbgroup.com/token (WORKING - confirmed May 20)
-  // Production: accounts.buni.kcbgroup.com/oauth2/token
-  const tokenUrl = isSandbox
-    ? 'https://uat.buni.kcbgroup.com/token'
-    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  // Try all known KCB token endpoints until one works
+  const tokenConfigs = [
+    { url: 'https://accounts.buni.kcbgroup.com/oauth2/token', body: 'grant_type=client_credentials' },
+    { url: 'https://uat.buni.kcbgroup.com/token', body: null, query: '?grant_type=client_credentials' },
+    { url: 'https://uat.buni.kcbgroup.com/oauth2/token', body: 'grant_type=client_credentials' },
+  ];
 
   const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
-  console.log('Token URL:', tokenUrl, '| Key:', KCB_CONSUMER_KEY);
+  let lastError = null;
 
-  const res = await axios.post(
-    `${tokenUrl}?grant_type=client_credentials`,
-    {},
-    {
-      headers: {
-        Authorization: `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
+  for (const cfg of tokenConfigs) {
+    try {
+      const url = cfg.query ? cfg.url + cfg.query : cfg.url;
+      console.log('Trying token URL:', url);
+      const res = await axios.post(
+        url,
+        cfg.body || {},
+        {
+          headers: {
+            Authorization: `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          timeout: 10000
+        }
+      );
+      if (res.data.access_token) {
+        console.log('KCB token obtained from:', url);
+        return res.data.access_token;
       }
+    } catch (err) {
+      console.log('Failed:', cfg.url, '->', err.response?.data?.error_description || err.message);
+      lastError = err;
     }
-  );
-  console.log('KCB token obtained successfully');
-  return res.data.access_token;
+  }
+  throw lastError || new Error('All token endpoints failed');
 }
 
 // Format phone to 2547XXXXXXXX
