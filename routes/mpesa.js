@@ -302,7 +302,7 @@ router.get('/download/:token', async (req, res) => {
       const resource = payment.resourceId;
       if (!resource) return res.status(404).send('Resource not found.');
 
-      // If filePath is a Cloudinary URL, generate signed URL and redirect
+      // If filePath is a Cloudinary URL, serve via signed download URL
       if (resource.filePath && resource.filePath.startsWith('http')) {
         const cloudinary = require('cloudinary').v2;
         cloudinary.config({
@@ -310,14 +310,16 @@ router.get('/download/:token', async (req, res) => {
           api_key: process.env.CLOUDINARY_API_KEY,
           api_secret: process.env.CLOUDINARY_API_SECRET
         });
-        // Extract public_id from URL
-        const publicId = resource.cloudinaryId || resource.filePath
-          .replace(/.*\/upload\/(?:v\d+\/)?/, '')
-          .replace(/\.pdf$/, '');
-        const signedUrl = cloudinary.utils.private_download_url(
-          publicId, 'pdf',
-          { resource_type: 'raw', expires_at: Math.floor(Date.now()/1000) + 3600, attachment: true }
-        );
+        const publicId = resource.cloudinaryId;
+        const signedUrl = cloudinary.url(publicId, {
+          resource_type: 'raw',
+          type: 'upload',
+          sign_url: true,
+          secure: true,
+          expires_at: Math.floor(Date.now() / 1000) + 3600,
+          flags: 'attachment'
+        });
+        console.log('Signed download URL:', signedUrl);
         return res.redirect(signedUrl);
       }
       // Fallback for local files
