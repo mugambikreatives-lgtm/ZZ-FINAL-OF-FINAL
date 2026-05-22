@@ -21,7 +21,9 @@ const storage = new CloudinaryStorage({
     resource_type: 'raw', // required for PDFs
     format: 'pdf',
     use_filename: true,
-    unique_filename: true
+    unique_filename: true,
+    access_mode: 'public',
+    type: 'upload'
   }
 });
 
