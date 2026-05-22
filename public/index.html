@@ -1676,6 +1676,159 @@ footer { background: #080d18 !important; }
   .h-feature-card { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; min-height: 280px !important; }
 }
 
+
+/* ══ AUTH NAVBAR ══ */
+.nav-auth-wrap { display: flex; align-items: center; gap: 10px; }
+.nav-login-btn {
+  background: transparent; border: 1.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8); border-radius: 8px; padding: 7px 18px;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.nav-login-btn:hover { border-color: #00c2d4; color: #00c2d4; }
+.nav-signup-btn {
+  background: #00c2d4; border: none; color: #000;
+  border-radius: 8px; padding: 7px 18px;
+  font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.nav-signup-btn:hover { background: #00dff0; }
+.nav-user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(0,194,212,0.12); border: 1px solid rgba(0,194,212,0.3);
+  border-radius: 100px; padding: 5px 14px 5px 8px;
+  cursor: pointer; transition: all 0.2s;
+}
+.nav-user-pill:hover { background: rgba(0,194,212,0.2); }
+.nav-user-initial {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #00c2d4; color: #000; display: flex; align-items: center;
+  justify-content: center; font-size: 0.75rem; font-weight: 800;
+}
+#nav-username { font-size: 0.82rem; font-weight: 700; color: #fff; }
+
+/* ══ AUTH MODAL ══ */
+.auth-modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.auth-modal-overlay.open { opacity: 1; pointer-events: all; }
+.auth-modal {
+  background: #0f1923; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px; padding: 40px; width: 100%; max-width: 420px;
+  margin: 20px; box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  transform: translateY(20px); transition: transform 0.25s;
+}
+.auth-modal-overlay.open .auth-modal { transform: translateY(0); }
+.auth-modal-logo { text-align: center; margin-bottom: 24px; }
+.auth-modal-logo span { font-size: 1.5rem; font-weight: 900; color: #fff; }
+.auth-modal-logo span em { font-style: normal; color: #00c2d4; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 28px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 4px; }
+.auth-tab {
+  flex: 1; padding: 9px; text-align: center; font-size: 0.85rem; font-weight: 700;
+  color: rgba(255,255,255,0.4); cursor: pointer; border-radius: 8px; transition: all 0.2s;
+  border: none; background: transparent; font-family: inherit;
+}
+.auth-tab.active { background: #00c2d4; color: #000; }
+.auth-field { margin-bottom: 16px; }
+.auth-field label { display: block; font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.5); margin-bottom: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
+.auth-field input {
+  width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 0.95rem;
+  box-sizing: border-box; outline: none; transition: border-color 0.2s; font-family: inherit;
+}
+.auth-field input:focus { border-color: #00c2d4; }
+.auth-submit {
+  width: 100%; background: #00c2d4; color: #000; border: none;
+  border-radius: 10px; padding: 14px; font-size: 0.95rem; font-weight: 800;
+  cursor: pointer; margin-top: 8px; transition: background 0.2s; font-family: inherit;
+}
+.auth-submit:hover { background: #00dff0; }
+.auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background: rgba(255,255,255,0.1); }
+.auth-divider span { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.auth-google-btn {
+  width: 100%; background: #fff; color: #333; border: none;
+  border-radius: 10px; padding: 12px; font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 10px; transition: background 0.2s; font-family: inherit;
+}
+.auth-google-btn:hover { background: #f5f5f5; }
+.auth-error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; margin-bottom: 14px; display: none; }
+.auth-error.show { display: block; }
+.auth-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: rgba(255,255,255,0.4); font-size: 1.4rem; cursor: pointer; }
+.auth-modal-wrap { position: relative; }
+
+/* ══ DASHBOARD PAGE ══ */
+.dash-hero {
+  background: linear-gradient(135deg, #0a0f1a 0%, #0d1b2e 100%);
+  padding: 80px 48px 48px; border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.dash-hero-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 24px; }
+.dash-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, #00c2d4, #0066ff);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; font-weight: 900; color: #fff; flex-shrink: 0;
+  border: 3px solid rgba(0,194,212,0.3);
+}
+.dash-name { font-size: 1.6rem; font-weight: 900; color: #fff; margin: 0 0 4px; }
+.dash-email { font-size: 0.85rem; color: rgba(255,255,255,0.4); }
+.dash-stats { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding: 32px 48px; }
+.dash-stat-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 24px; text-align: center;
+}
+.dash-stat-num { font-size: 2rem; font-weight: 900; color: #00c2d4; }
+.dash-stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 4px; }
+.dash-section { max-width: 1100px; margin: 0 auto; padding: 0 48px 48px; }
+.dash-section-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin: 0 0 20px; }
+.dash-course-card {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 20px; margin-bottom: 14px; cursor: pointer;
+  transition: all 0.2s;
+}
+.dash-course-card:hover { background: rgba(0,194,212,0.06); border-color: rgba(0,194,212,0.25); }
+.dash-course-icon {
+  width: 56px; height: 56px; border-radius: 12px;
+  background: rgba(0,194,212,0.1); border: 1px solid rgba(0,194,212,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+}
+.dash-course-name { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.dash-course-meta { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+.dash-progress-bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.dash-progress-fill { height: 100%; background: #00c2d4; border-radius: 3px; transition: width 0.5s; }
+.dash-view-btn {
+  margin-left: auto; background: #00c2d4; color: #000; border: none;
+  border-radius: 8px; padding: 8px 18px; font-size: 0.8rem; font-weight: 800;
+  cursor: pointer; flex-shrink: 0; transition: background 0.2s; font-family: inherit;
+}
+.dash-view-btn:hover { background: #00dff0; }
+.dash-empty { text-align: center; padding: 48px; color: rgba(255,255,255,0.3); }
+.dash-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* ══ PDF VIEWER MODAL ══ */
+.viewer-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0.95); display: none;
+  flex-direction: column;
+}
+.viewer-overlay.open { display: flex; }
+.viewer-header {
+  background: #0a0f1a; border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+}
+.viewer-title { font-size: 0.95rem; font-weight: 700; color: #fff; flex: 1; }
+.viewer-close {
+  background: rgba(255,255,255,0.08); border: none; color: #fff;
+  border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 700; font-family: inherit;
+}
+.viewer-frame { flex: 1; border: none; width: 100%; }
+
 </style>
 </head>
 <body>
@@ -1691,6 +1844,17 @@ footer { background: #080d18 !important; }
     <button class="nav-link" id="nav-courses" onclick="showPage('courses')">Courses</button>
     <button class="nav-link" id="nav-cv" onclick="showPage('cv')">CV Builder</button>
     <button class="nav-link" id="nav-jobs" onclick="showPage('jobs')">Jobs</button>
+  </div>
+  <div class="nav-auth-wrap">
+    <div id="nav-auth-btns">
+      <button class="nav-login-btn" onclick="showAuthModal('login')">Log In</button>
+      <button class="nav-signup-btn" onclick="showAuthModal('register')">Sign Up</button>
+    </div>
+    <div id="nav-user-btn" style="display:none" onclick="showPage('dashboard')" class="nav-user-pill">
+      <img id="nav-avatar-img" src="" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;" />
+      <span id="nav-user-initial" class="nav-user-initial">👤</span>
+      <span id="nav-username">My Account</span>
+    </div>
   </div>
   <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
@@ -2144,6 +2308,7 @@ function showPage(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'courses' && !allCourses.length) loadCourses();
   if (name === 'home') { if (!allCourses.length) loadCourses(); if (!allJobs.length) loadJobs(); }
+  if (name === 'account') { initAuth(); }
   if (name === 'jobs' && !allJobs.length) loadJobs();
 }
 
@@ -2636,12 +2801,295 @@ function renderHomeJobs(jobs) {
 }
 
 
+
+// ══════════════════════════════════════
+// USER AUTH & DASHBOARD
+// ══════════════════════════════════════
+
+let currentUser = null;
+
+function getToken() { return localStorage.getItem('zz_token'); }
+function setToken(t) { localStorage.setItem('zz_token', t); }
+function clearToken() { localStorage.removeItem('zz_token'); }
+
+// Init on load
+async function initAuth() {
+  const token = getToken();
+  if (!token) return showAuthSection();
+  try {
+    const res = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+    const data = await res.json();
+    if (data.success) {
+      currentUser = data.user;
+      showDashboard();
+    } else {
+      clearToken();
+      showAuthSection();
+    }
+  } catch { showAuthSection(); }
+}
+
+function showAuthSection() {
+  document.getElementById('auth-section').style.display = 'block';
+  document.getElementById('dashboard-section').style.display = 'none';
+  document.getElementById('nav-account-label').textContent = 'Sign In';
+}
+
+function showDashboard() {
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('dashboard-section').style.display = 'block';
+  document.getElementById('nav-account-label').textContent = currentUser.name.split(' ')[0];
+  document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('user-greeting').textContent = 'Hi, ' + currentUser.name.split(' ')[0] + '! 👋';
+  document.getElementById('user-email-display').textContent = currentUser.email;
+  renderDashboard();
+}
+
+function renderDashboard() {
+  const courses = currentUser.purchasedCourses || [];
+  document.getElementById('stat-courses').textContent = courses.length;
+  const avgProgress = courses.length
+    ? Math.round(courses.reduce((s, c) => s + (c.totalPages ? (c.progress / c.totalPages) * 100 : 0), 0) / courses.length)
+    : 0;
+  document.getElementById('stat-progress').textContent = avgProgress + '%';
+  const spent = courses.reduce((s, c) => s + (c.amountPaid || 0), 0);
+  document.getElementById('stat-spent').textContent = spent.toLocaleString();
+
+  const grid = document.getElementById('my-courses-grid');
+  if (!courses.length) {
+    grid.innerHTML = `<div style="color:#6b7280;font-size:0.9rem;padding:40px;text-align:center;background:#fff;border:1px solid #e8eaf0;border-radius:16px;grid-column:1/-1;">
+      You haven't purchased any courses yet.<br>
+      <button onclick="showPage('courses')" style="margin-top:12px;background:#00c2d4;color:#000;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">Browse Courses</button>
+    </div>`;
+    return;
+  }
+
+  const icons = { Business:'💼', Technology:'💻', Marketing:'📣', Leadership:'🏆', Finance:'💰', 'Career Development':'🚀' };
+  grid.innerHTML = courses.map(c => {
+    const resource = c.resourceId;
+    if (!resource) return '';
+    const pct = c.totalPages ? Math.round((c.progress / c.totalPages) * 100) : 0;
+    return `
+    <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+      <div style="background:linear-gradient(135deg,#0d1625,#1a2a4a);padding:24px;display:flex;align-items:center;gap:12px;">
+        <div style="font-size:2rem;">${icons[resource.category] || '📄'}</div>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:#fff;line-height:1.3;">${resource.title}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:4px;">${resource.category}</div>
+        </div>
+      </div>
+      <div style="padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:0.75rem;color:#6b7280;">Progress</span>
+          <span style="font-size:0.75rem;font-weight:700;color:#00a8b8;">${pct}%</span>
+        </div>
+        <div style="height:6px;background:#f0f2f5;border-radius:3px;overflow:hidden;margin-bottom:16px;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#00c2d4,#0077b6);border-radius:3px;transition:width 0.5s;"></div>
+        </div>
+        <button onclick="openCourseViewer('${resource._id}','${resource.title.replace(/'/g,"\\'")}')" 
+          style="width:100%;background:#00c2d4;color:#000;border:none;border-radius:10px;padding:11px;font-weight:800;font-size:0.88rem;cursor:pointer;">
+          ${pct > 0 ? '▶ Continue Learning' : '▶ Start Learning'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loginUser() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (data.success) {
+      setToken(data.token);
+      currentUser = data.user;
+      await initAuth();
+    } else { errEl.textContent = data.message; }
+  } catch { errEl.textContent = 'Connection error. Try again.'; }
+}
+
+async function registerUser() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const errEl = document.getElementById('register-error');
+  errEl.textContent = '';
+  if (!name || !email || !password) { errEl.textContent = 'Please fill in all fields'; return; }
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password, phone })
+    });
+    const data = await res.json();
+    if (data.success) {
+      setToken(data.token);
+      currentUser = data.user;
+      await initAuth();
+    } else { errEl.textContent = data.message; }
+  } catch { errEl.textContent = 'Connection error. Try again.'; }
+}
+
+function logoutUser() {
+  clearToken(); currentUser = null;
+  showAuthSection();
+}
+
+function switchAuthTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('tab-login').style.background = isLogin ? '#0f1923' : 'transparent';
+  document.getElementById('tab-login').style.color = isLogin ? '#fff' : '#6b7280';
+  document.getElementById('tab-register').style.background = isLogin ? 'transparent' : '#0f1923';
+  document.getElementById('tab-register').style.color = isLogin ? '#6b7280' : '#fff';
+}
+
+async function openCourseViewer(resourceId, title) {
+  try {
+    const token = getToken();
+    if (!token) { showPage('account'); return; }
+    const res = await fetch('/api/auth/view/' + resourceId, { headers: { Authorization: 'Bearer ' + token } });
+    const data = await res.json();
+    if (!data.success) { alert(data.message); return; }
+    document.getElementById('viewer-title').textContent = title;
+    document.getElementById('pdf-iframe').src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(data.viewUrl) + '&embedded=true';
+    showPage('viewer');
+  } catch { alert('Could not load course. Please try again.'); }
+}
+
+// Hook into showPage to init auth when visiting account page
+const _origShowPage = showPage;
+
 // ══ INIT: load home data on page start ══
 document.addEventListener('DOMContentLoaded', () => {
   loadCourses();
   loadJobs();
+  initAuth();
 });
 
 </script>
+
+<!-- ═══ ACCOUNT PAGE ═══ -->
+<div id="page-account" class="page" style="padding-top:88px;min-height:100vh;background:#f8f9fc;">
+
+  <!-- NOT LOGGED IN -->
+  <div id="auth-section" style="max-width:440px;margin:60px auto;padding:0 24px;">
+    
+    <!-- TABS -->
+    <div style="display:flex;background:#fff;border:1px solid #e8eaf0;border-radius:14px;padding:4px;margin-bottom:28px;">
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:10px;background:#0f1923;color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;">Sign In</button>
+      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:10px;border:none;border-radius:transparent;background:transparent;color:#6b7280;font-weight:700;font-size:0.9rem;cursor:pointer;">Create Account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <h2 style="font-size:1.5rem;font-weight:900;color:#0f1923;margin:0 0 8px;">Welcome back</h2>
+      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 24px;">Sign in to access your courses</p>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">EMAIL</label>
+        <input id="login-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;background:#fff;color:#0f1923;" />
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PASSWORD</label>
+        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;background:#fff;color:#0f1923;" onkeydown="if(event.key==='Enter')loginUser()" />
+      </div>
+      <button onclick="loginUser()" style="width:100%;padding:14px;background:#00c2d4;color:#000;border:none;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;margin-bottom:12px;">Sign In</button>
+      <div id="login-error" style="color:#ef4444;font-size:0.82rem;text-align:center;min-height:20px;"></div>
+      <div style="text-align:center;margin-top:16px;color:#6b7280;font-size:0.85rem;">
+        Don't have an account? <button onclick="switchAuthTab('register')" style="background:none;border:none;color:#00a8b8;font-weight:700;cursor:pointer;">Create one</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none;">
+      <h2 style="font-size:1.5rem;font-weight:900;color:#0f1923;margin:0 0 8px;">Create account</h2>
+      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 24px;">Start learning today</p>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">FULL NAME</label>
+        <input id="reg-name" type="text" placeholder="John Doe" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">EMAIL</label>
+        <input id="reg-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PHONE (M-Pesa)</label>
+        <input id="reg-phone" type="tel" placeholder="0712345678" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PASSWORD</label>
+        <input id="reg-password" type="password" placeholder="Min 6 characters" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" onkeydown="if(event.key==='Enter')registerUser()" />
+      </div>
+      <button onclick="registerUser()" style="width:100%;padding:14px;background:#00c2d4;color:#000;border:none;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;margin-bottom:12px;">Create Account</button>
+      <div id="register-error" style="color:#ef4444;font-size:0.82rem;text-align:center;min-height:20px;"></div>
+      <div style="text-align:center;margin-top:16px;color:#6b7280;font-size:0.85rem;">
+        Already have an account? <button onclick="switchAuthTab('login')" style="background:none;border:none;color:#00a8b8;font-weight:700;cursor:pointer;">Sign in</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGGED IN DASHBOARD -->
+  <div id="dashboard-section" style="display:none;max-width:1100px;margin:0 auto;padding:40px 24px;">
+    
+    <!-- HEADER -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div id="user-avatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00c2d4,#0077b6);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;flex-shrink:0;"></div>
+        <div>
+          <div id="user-greeting" style="font-size:1.4rem;font-weight:900;color:#0f1923;"></div>
+          <div id="user-email-display" style="font-size:0.85rem;color:#6b7280;"></div>
+        </div>
+      </div>
+      <button onclick="logoutUser()" style="background:transparent;border:1.5px solid #e8eaf0;color:#6b7280;border-radius:10px;padding:8px 20px;font-size:0.85rem;font-weight:700;cursor:pointer;">Sign Out</button>
+    </div>
+
+    <!-- STATS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;">
+      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
+        <div id="stat-courses" style="font-size:2rem;font-weight:900;color:#00c2d4;">0</div>
+        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">Courses Owned</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
+        <div id="stat-progress" style="font-size:2rem;font-weight:900;color:#22c55e;">0%</div>
+        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">Avg Progress</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
+        <div id="stat-spent" style="font-size:2rem;font-weight:900;color:#7c3aed;">0</div>
+        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">KES Invested</div>
+      </div>
+    </div>
+
+    <!-- MY COURSES -->
+    <div>
+      <h2 style="font-size:1.2rem;font-weight:900;color:#0f1923;margin:0 0 20px;">📚 My Courses</h2>
+      <div id="my-courses-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+        <div style="color:#6b7280;font-size:0.9rem;padding:40px;text-align:center;background:#fff;border:1px solid #e8eaf0;border-radius:16px;grid-column:1/-1;">
+          You haven't purchased any courses yet.<br>
+          <button onclick="showPage('courses')" style="margin-top:12px;background:#00c2d4;color:#000;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">Browse Courses</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ PDF VIEWER PAGE ═══ -->
+<div id="page-viewer" class="page" style="padding-top:68px;height:100vh;display:flex;flex-direction:column;background:#1a1a2e;">
+  <div style="background:#0d1117;border-bottom:1px solid rgba(255,255,255,0.1);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;">
+    <button onclick="showPage('account')" style="background:rgba(255,255,255,0.1);border:none;color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:0.85rem;">← Back to Dashboard</button>
+    <div id="viewer-title" style="font-size:0.95rem;font-weight:700;color:#fff;"></div>
+    <div id="viewer-progress-label" style="font-size:0.82rem;color:rgba(255,255,255,0.5);"></div>
+  </div>
+  <iframe id="pdf-iframe" src="" style="flex:1;width:100%;border:none;" allowfullscreen></iframe>
+</div>
+
 </body>
 </html>

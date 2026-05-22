@@ -32,10 +32,12 @@ app.use(session({
 }));
 
 // Routes
+app.use('/api/auth', require('./routes/auth').router);
 app.use('/api/mpesa', require('./routes/mpesa'));
 app.use('/api/resources', require('./routes/resources'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/admin', require('./routes/admin'));
+app.use('/api/user', require('./routes/user'));
 
 // Fix courses grid - serves patched index.html
 app.get('/', (req, res) => {

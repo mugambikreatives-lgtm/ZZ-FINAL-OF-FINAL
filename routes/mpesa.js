@@ -4,6 +4,7 @@ const router = express.Router();
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const Payment = require('../models/Payment');
+const User = require('../models/User');
 const Resource = require('../models/Resource');
 
 // ─────────────────────────────────────────────
@@ -245,6 +246,20 @@ async function processCallback(checkoutRequestId, resultCode, callbackMetadata) 
 
     if (payment.type === 'resource' && payment.resourceId) {
       await Resource.findByIdAndUpdate(payment.resourceId, { $inc: { downloads: 1 } });
+      // Link purchase to user account by phone number
+      try {
+        const User = require('./models/User') ;
+        const phone = payment.phone?.replace(/^0/, '254').replace(/^\+/, '');
+        const user = await User.findOne({ $or: [{ phone: payment.phone }, { phone }] });
+        if (user && !user.ownsCourse(payment.resourceId)) {
+          user.purchasedCourses.push({
+            resourceId: payment.resourceId,
+            amountPaid: payment.amount
+          });
+          await user.save();
+          console.log('Course access granted to user:', user.email);
+        }
+      } catch(e) { console.log('User link skipped:', e.message); }
     }
   } else {
     payment.status = 'failed';
