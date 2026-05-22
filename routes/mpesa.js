@@ -21,40 +21,24 @@ async function getAccessToken() {
   const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
 
   // Try all known KCB token endpoints until one works
-  const tokenConfigs = [
-    { url: 'https://accounts.buni.kcbgroup.com/oauth2/token', body: 'grant_type=client_credentials' },
-    { url: 'https://uat.buni.kcbgroup.com/token', body: null, query: '?grant_type=client_credentials' },
-    { url: 'https://uat.buni.kcbgroup.com/oauth2/token', body: 'grant_type=client_credentials' },
-  ];
-
+  // accounts.buni.kcbgroup.com/oauth2/token is the correct URL for both sandbox and production
+  const tokenUrl = 'https://accounts.buni.kcbgroup.com/oauth2/token';
   const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
-  let lastError = null;
+  console.log('Token URL:', tokenUrl, '| Key:', KCB_CONSUMER_KEY?.slice(0,8) + '...');
 
-  for (const cfg of tokenConfigs) {
-    try {
-      const url = cfg.query ? cfg.url + cfg.query : cfg.url;
-      console.log('Trying token URL:', url);
-      const res = await axios.post(
-        url,
-        cfg.body || {},
-        {
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          timeout: 10000
-        }
-      );
-      if (res.data.access_token) {
-        console.log('KCB token obtained from:', url);
-        return res.data.access_token;
-      }
-    } catch (err) {
-      console.log('Failed:', cfg.url, '->', err.response?.data?.error_description || err.message);
-      lastError = err;
+  const res = await axios.post(
+    tokenUrl,
+    'grant_type=client_credentials',
+    {
+      headers: {
+        Authorization: `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      timeout: 15000
     }
-  }
-  throw lastError || new Error('All token endpoints failed');
+  );
+  console.log('KCB token obtained successfully');
+  return res.data.access_token;
 }
 
 // Format phone to 2547XXXXXXXX
