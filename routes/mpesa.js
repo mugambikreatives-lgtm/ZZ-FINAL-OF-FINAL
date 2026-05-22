@@ -302,13 +302,9 @@ router.get('/download/:token', async (req, res) => {
       const resource = payment.resourceId;
       if (!resource) return res.status(404).send('Resource not found.');
 
-      // If filePath is a Cloudinary URL, redirect to it
+      // If filePath is a Cloudinary URL, redirect directly to it
       if (resource.filePath && resource.filePath.startsWith('http')) {
-        res.setHeader('Content-Disposition', `attachment; filename="${resource.fileName}"`);
-        const axios = require('axios');
-        const fileRes = await axios.get(resource.filePath, { responseType: 'stream' });
-        fileRes.data.pipe(res);
-        return;
+        return res.redirect(resource.filePath);
       }
       // Fallback for local files
       return res.download(resource.filePath, resource.fileName);
