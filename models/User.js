@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String },
   googleId: { type: String },
+  phone: { type: String }, // M-Pesa number e.g. 254716762062
   avatar: { type: String },
   purchasedCourses: [{
     courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Resource' },

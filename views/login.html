@@ -63,6 +63,7 @@ input::placeholder { color:rgba(255,255,255,0.25); }
     <div id="register-form" style="display:none">
       <div class="field"><label>FULL NAME</label><input type="text" id="reg-name" placeholder="John Doe" /></div>
       <div class="field"><label>EMAIL</label><input type="email" id="reg-email" placeholder="you@example.com" /></div>
+      <div class="field"><label>M-PESA NUMBER <span style="color:rgba(255,255,255,0.4);font-weight:400">(to link purchases)</span></label><input type="tel" id="reg-phone" placeholder="0716762062" /></div>
       <div class="field"><label>PASSWORD</label><input type="password" id="reg-password" placeholder="Min 6 characters" /></div>
       <button class="btn-main" onclick="register()" id="reg-btn">Create Account</button>
       <div class="divider">or</div>
@@ -107,7 +108,7 @@ async function register() {
   const btn = document.getElementById('reg-btn');
   btn.disabled=true; btn.textContent='Creating account...';
   try {
-    const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,email,password}) });
+    const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name,email,password,phone}) });
     const data = await res.json();
     if (data.success) window.location = '/dashboard';
     else { showError(data.message); btn.disabled=false; btn.textContent='Create Account'; }

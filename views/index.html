@@ -1501,6 +1501,21 @@ function escJs(s) {
 // INIT
 updatePreview();
 loadCVPrice();
+// Auth nav button
+(async function() {
+  try {
+    const r = await fetch('/api/auth/me');
+    const d = await r.json();
+    const el = document.getElementById('nav-auth-btn');
+    if (!el) return;
+    if (d.success) {
+      el.innerHTML = `<a href="/dashboard" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(0,194,212,0.12);border:1px solid rgba(0,194,212,0.35);border-radius:8px;padding:6px 14px;color:#00c2d4;font-size:0.8rem;font-weight:700;white-space:nowrap;">📚 My Courses</a>`;
+    } else {
+      el.innerHTML = `<a href="/login" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(0,194,212,0.12);border:1px solid rgba(0,194,212,0.35);border-radius:8px;padding:6px 14px;color:#00c2d4;font-size:0.8rem;font-weight:700;white-space:nowrap;">Sign In</a>`;
+    }
+  } catch {}
+})();
+
 </script>
 </body>
 </html>

@@ -28,7 +28,22 @@ router.post('/register', async (req, res) => {
     if (!name || !email || !password) return res.status(400).json({ success: false, message: 'All fields required' });
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ success: false, message: 'Email already registered' });
-    const user = await User.create({ name, email, password });
+    const { phone } = req.body;
+    const user = await User.create({ name, email, password, phone });
+    // Link any prior M-Pesa payments to this account
+    try {
+      const Payment = require('../models/Payment');
+      const Resource = require('../models/Resource');
+      const phone254 = (phone || '').replace(/^0/, '254').replace(/^\+/, '');
+      const payments = await Payment.find({ phone: { $in: [phone, phone254] }, status: 'completed', type: 'resource' });
+      for (const p of payments) {
+        if (p.resourceId) {
+          const alreadyOwns = user.purchasedCourses.some(c => c.courseId?.toString() === p.resourceId.toString());
+          if (!alreadyOwns) user.purchasedCourses.push({ courseId: p.resourceId });
+        }
+      }
+      if (payments.length) await user.save();
+    } catch(e) { console.log('Payment link on register:', e.message); }
     const token = makeToken(user);
     res.cookie('zz_token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'lax' });
     res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
@@ -113,6 +128,13 @@ router.get('/view/:courseId', authMiddleware, async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
+});
+
+
+// Google OAuth - placeholder (needs Google Client ID/Secret in env)
+router.get('/google', (req, res) => {
+  // Redirect to login with message until Google OAuth is configured
+  res.redirect('/login?msg=google-coming-soon');
 });
 
 module.exports = { router, authMiddleware };
