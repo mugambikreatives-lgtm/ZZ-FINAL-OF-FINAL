@@ -2683,7 +2683,17 @@ async function submitPayment() {
           status.className = 'pay-status success';
           status.textContent = '✅ Payment confirmed! Your download is ready below.';
           document.getElementById('dl-wrap').style.display = 'block';
-          document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+          // Redirect to dashboard if logged in, otherwise show link
+          fetch('/api/auth/me').then(r=>r.json()).then(d => {
+            if (d.success) {
+              status.textContent = '✅ Payment complete! Redirecting to your dashboard...';
+              setTimeout(() => window.location = '/dashboard', 2000);
+            } else {
+              document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+            }
+          }).catch(() => {
+            document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+          });
           btn.style.display = 'none';
           showToast('Payment successful! Your file is ready.', 'success');
         } else if (pd.status === 'failed') {

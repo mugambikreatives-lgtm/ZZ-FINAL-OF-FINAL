@@ -248,18 +248,24 @@ async function processCallback(checkoutRequestId, resultCode, callbackMetadata) 
       await Resource.findByIdAndUpdate(payment.resourceId, { $inc: { downloads: 1 } });
       // Link purchase to user account by phone number
       try {
-        const User = require('./models/User') ;
-        const phone = payment.phone?.replace(/^0/, '254').replace(/^\+/, '');
-        const user = await User.findOne({ $or: [{ phone: payment.phone }, { phone }] });
-        if (user && !user.ownsCourse(payment.resourceId)) {
-          user.purchasedCourses.push({
-            resourceId: payment.resourceId,
-            amountPaid: payment.amount
-          });
-          await user.save();
-          console.log('Course access granted to user:', user.email);
+        const User = require('../models/User');
+        const rawPhone = payment.phone || '';
+        const phone254 = rawPhone.replace(/^0/, '254').replace(/^\+/, '');
+        const phone0 = rawPhone.replace(/^254/, '0');
+        const user = await User.findOne({
+          $or: [{ phone: rawPhone }, { phone: phone254 }, { phone: phone0 }]
+        });
+        if (user) {
+          const alreadyOwns = user.purchasedCourses.some(c => c.courseId?.toString() === payment.resourceId.toString());
+          if (!alreadyOwns) {
+            user.purchasedCourses.push({ courseId: payment.resourceId });
+            await user.save();
+            console.log('Course access granted to user:', user.email);
+          }
+        } else {
+          console.log('No user found for phone:', rawPhone);
         }
-      } catch(e) { console.log('User link skipped:', e.message); }
+      } catch(e) { console.log('User link error:', e.message); }
     }
   } else {
     payment.status = 'failed';

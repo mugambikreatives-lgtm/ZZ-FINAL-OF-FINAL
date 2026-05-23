@@ -5,24 +5,33 @@ const User = require('../models/User');
 
 const JWT_SECRET = process.env.SESSION_SECRET || 'zenithzoom-secret';
 
-// Generate JWT
-function generateToken(user) {
-  return jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
+// Middleware to verify JWT
+function authMiddleware(req, res, next) {
+  const token = req.cookies?.zz_token || req.headers.authorization?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ success: false, message: 'Not authenticated' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ success: false, message: 'Invalid token' });
+  }
+}
+
+function makeToken(user) {
+  return jwt.sign({ id: user._id, name: user.name, email: user.email, avatar: user.avatar }, JWT_SECRET, { expiresIn: '30d' });
 }
 
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
-    if (!name || !email || !password) return res.status(400).json({ success: false, message: 'Name, email and password required' });
-    if (password.length < 6) return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ success: false, message: 'Email already registered' });
-
-    const user = await User.create({ name, email, password, phone });
-    const token = generateToken(user);
-    res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ success: false, message: 'All fields required' });
+    const exists = await User.findOne({ email });
+    if (exists) return res.status(400).json({ success: false, message: 'Email already registered' });
+    const user = await User.create({ name, email, password });
+    const token = makeToken(user);
+    res.cookie('zz_token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'lax' });
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -32,29 +41,23 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ success: false, message: 'Email and password required' });
-
     const user = await User.findOne({ email });
-    if (!user || !user.password) return res.status(401).json({ success: false, message: 'Invalid email or password' });
-
-    const valid = await user.comparePassword(password);
-    if (!valid) return res.status(401).json({ success: false, message: 'Invalid email or password' });
-
-    user.lastLogin = new Date();
-    await user.save();
-
-    const token = generateToken(user);
-    res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
+    if (!user || !user.password) return res.status(400).json({ success: false, message: 'Invalid email or password' });
+    const match = await user.comparePassword(password);
+    if (!match) return res.status(400).json({ success: false, message: 'Invalid email or password' });
+    const token = makeToken(user);
+    res.cookie('zz_token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'lax' });
+    res.json({ success: true, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// GET /api/auth/me — get current user + courses
-router.get('/me', requireAuth, async (req, res) => {
+// GET /api/auth/me
+router.get('/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.userId)
-      .populate('purchasedCourses.resourceId', 'title category price filePath cloudinaryId fileName thumbnail')
+    const user = await User.findById(req.user.id)
+      .populate('purchasedCourses.courseId', 'title category price thumbnail')
       .select('-password');
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     res.json({ success: true, user });
@@ -63,16 +66,22 @@ router.get('/me', requireAuth, async (req, res) => {
   }
 });
 
+// POST /api/auth/logout
+router.post('/logout', (req, res) => {
+  res.clearCookie('zz_token');
+  res.json({ success: true });
+});
+
 // PATCH /api/auth/progress — update course progress
-router.patch('/progress', requireAuth, async (req, res) => {
+router.patch('/progress', authMiddleware, async (req, res) => {
   try {
-    const { resourceId, progress, totalPages } = req.body;
-    const user = await User.findById(req.userId);
-    const course = user.purchasedCourses.find(c => c.resourceId.toString() === resourceId);
-    if (!course) return res.status(403).json({ success: false, message: 'Course not purchased' });
-    course.progress = progress;
-    if (totalPages) course.totalPages = totalPages;
-    course.lastViewed = new Date();
+    const { courseId, progress, lastPage, completed } = req.body;
+    const user = await User.findById(req.user.id);
+    const course = user.purchasedCourses.find(c => c.courseId.toString() === courseId);
+    if (!course) return res.status(404).json({ success: false, message: 'Course not purchased' });
+    if (progress !== undefined) course.progress = progress;
+    if (lastPage !== undefined) course.lastPage = lastPage;
+    if (completed !== undefined) course.completed = completed;
     await user.save();
     res.json({ success: true });
   } catch (err) {
@@ -80,47 +89,30 @@ router.patch('/progress', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/auth/view/:resourceId — get Cloudinary URL for viewing (must own course)
-router.get('/view/:resourceId', requireAuth, async (req, res) => {
+// GET /api/auth/view/:courseId — get Cloudinary URL for purchased course
+router.get('/view/:courseId', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
-    const course = user.purchasedCourses.find(c => c.resourceId.toString() === req.params.resourceId);
-    if (!course) return res.status(403).json({ success: false, message: 'Purchase this course to view it' });
-
+    const user = await User.findById(req.user.id);
+    const purchased = user.purchasedCourses.find(c => c.courseId.toString() === req.params.courseId);
+    if (!purchased) return res.status(403).json({ success: false, message: 'Course not purchased' });
     const Resource = require('../models/Resource');
-    const resource = await Resource.findById(req.params.resourceId);
-    if (!resource) return res.status(404).json({ success: false, message: 'Course not found' });
-
-    // Generate signed Cloudinary URL valid for 2 hours
+    const course = await Resource.findById(req.params.courseId);
+    if (!course) return res.status(404).json({ success: false, message: 'Course not found' });
     const cloudinary = require('cloudinary').v2;
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET
     });
-
+    // Generate 2-hour signed URL for viewing
     const viewUrl = cloudinary.utils.private_download_url(
-      resource.cloudinaryId, 'pdf',
+      course.cloudinaryId, 'pdf',
       { resource_type: 'raw', type: 'upload', expires_at: Math.floor(Date.now() / 1000) + 7200 }
     );
-
-    res.json({ success: true, viewUrl, title: resource.title });
+    res.json({ success: true, url: viewUrl });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Middleware
-function requireAuth(req, res, next) {
-  const auth = req.headers.authorization;
-  if (!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ success: false, message: 'Login required' });
-  try {
-    const decoded = jwt.verify(auth.slice(7), JWT_SECRET);
-    req.userId = decoded.id;
-    next();
-  } catch {
-    res.status(401).json({ success: false, message: 'Session expired. Please login again.' });
-  }
-}
-
-module.exports = { router, requireAuth };
+module.exports = { router, authMiddleware };
