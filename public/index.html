@@ -1847,8 +1847,8 @@ footer { background: #080d18 !important; }
   </div>
   <div class="nav-auth-wrap">
     <div id="nav-auth-btns">
-      <button class="nav-login-btn" onclick="showAuthModal('login')">Log In</button>
-      <button class="nav-signup-btn" onclick="showAuthModal('register')">Sign Up</button>
+      <button class="nav-login-btn" onclick="window.location='/login'">Log In</button>
+      <button class="nav-signup-btn" onclick="window.location='/login#register'">Sign Up</button>
     </div>
     <div id="nav-user-btn" style="display:none" onclick="showPage('dashboard')" class="nav-user-pill">
       <img id="nav-avatar-img" src="" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;" />
@@ -2994,7 +2994,17 @@ const _origShowPage = showPage;
 document.addEventListener('DOMContentLoaded', () => {
   loadCourses();
   loadJobs();
-  initAuth();
+  // Check auth for nav button
+  fetch('/api/auth/me').then(r=>r.json()).then(d => {
+    const btns = document.getElementById('nav-auth-btns');
+    const userBtn = document.getElementById('nav-user-btn');
+    if (d.success && btns && userBtn) {
+      btns.style.display = 'none';
+      userBtn.style.display = 'flex';
+      const label = document.getElementById('nav-account-label');
+      if (label) label.textContent = d.user.name.split(' ')[0];
+    }
+  }).catch(()=>{});
 });
 
 </script>
