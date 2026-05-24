@@ -1850,7 +1850,7 @@ footer { background: #080d18 !important; }
       <button class="nav-login-btn" onclick="window.location='/login'">Log In</button>
       <button class="nav-signup-btn" onclick="window.location='/login#register'">Sign Up</button>
     </div>
-    <div id="nav-user-btn" style="display:none" onclick="showPage('dashboard')" class="nav-user-pill">
+    <div id="nav-user-btn" style="display:none" onclick="window.location='/dashboard'" class="nav-user-pill">
       <img id="nav-avatar-img" src="" style="display:none;width:26px;height:26px;border-radius:50%;object-fit:cover;" />
       <span id="nav-user-initial" class="nav-user-initial">👤</span>
       <span id="nav-username">My Account</span>
@@ -2824,25 +2824,16 @@ function renderHomeJobs(jobs) {
 
 let currentUser = null;
 
-function getToken() { return localStorage.getItem('zz_token'); }
-function setToken(t) { localStorage.setItem('zz_token', t); }
-function clearToken() { localStorage.removeItem('zz_token'); }
+function getToken() { return null; } // Auth now uses cookies via /dashboard
+function setToken(t) { } // no-op
+function clearToken() { } // no-op - don't clear cookie auth
 
 // Init on load
 async function initAuth() {
-  const token = getToken();
-  if (!token) return showAuthSection();
-  try {
-    const res = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
-    const data = await res.json();
-    if (data.success) {
-      currentUser = data.user;
-      showDashboard();
-    } else {
-      clearToken();
-      showAuthSection();
-    }
-  } catch { showAuthSection(); }
+  // Auth is now handled via /dashboard page with cookies
+  // This function is kept for compatibility but does nothing on home page
+  const authEl = document.getElementById('auth-section');
+  if (authEl) showAuthSection(); // only show auth section if on account page
 }
 
 function showAuthSection() {
@@ -2966,7 +2957,8 @@ async function registerUser() {
 }
 
 function logoutUser() {
-  clearToken(); currentUser = null;
+  fetch('/api/auth/logout', { method: 'POST' }).finally(() => { window.location = '/'; });
+  currentUser = null;
   showAuthSection();
 }
 
@@ -3007,8 +2999,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (d.success && btns && userBtn) {
       btns.style.display = 'none';
       userBtn.style.display = 'flex';
-      const label = document.getElementById('nav-account-label');
-      if (label) label.textContent = d.user.name.split(' ')[0];
+      const username = document.getElementById('nav-username');
+      if (username) username.textContent = d.user.name.split(' ')[0] + ' ▸';
     }
   }).catch(()=>{});
 });
