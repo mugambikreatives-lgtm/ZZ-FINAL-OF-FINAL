@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>My Dashboard — Zenith Zoom</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
-:root{--teal:#00c2d4;--dark:#0a0f1a;--card:#111827;--card2:#1a2235;--border:rgba(255,255,255,0.08);--muted:rgba(255,255,255,0.45);--radius:14px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Google Sans','Product Sans','Helvetica Neue',sans-serif}
+:root{--teal:#8AB4F8;--teal-dark:#669DF6;--dark:#202124;--card:#292A2D;--card2:#2d2f36;--border:rgba(255,255,255,0.1);--muted:rgba(232,234,237,0.5);--success:#81C995;--error:#F28B82;--text:#E8EAED;--radius:16px;--pill:100px}
 body{background:var(--dark);color:#fff;min-height:100vh}
 
 /* NAV */
@@ -14,14 +18,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;background:rgba(
 .nav-logo{font-weight:900;font-size:1.15rem;color:#fff;cursor:pointer;text-decoration:none}
 .nav-logo span{color:var(--teal)}
 .nav-tabs{display:flex;gap:4px}
-.nav-tab{background:none;border:none;color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s}
+.nav-tab{background:none;border:none;color:var(--muted);padding:8px 18px;border-radius:var(--pill);cursor:pointer;font-size:0.85rem;font-weight:500;transition:all 0.2s;font-family:'Google Sans',sans-serif}
 .nav-tab:hover{color:#fff;background:rgba(255,255,255,0.06)}
-.nav-tab.active{color:var(--teal);background:rgba(0,194,212,0.1)}
+.nav-tab.active{color:var(--teal);background:rgba(138,180,248,0.12)}
 .nav-right{display:flex;align-items:center;gap:12px}
 .nav-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#000}
 .nav-name{font-size:0.85rem;font-weight:600}
-.btn-signout{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.78rem;transition:all 0.2s}
-.btn-signout:hover{border-color:#ef4444;color:#ef4444}
+.btn-signout{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:var(--pill);cursor:pointer;font-size:0.78rem;transition:all 0.2s;font-family:'Google Sans',sans-serif}
+.btn-signout:hover{border-color:var(--error);color:var(--error)}
 
 /* LAYOUT */
 main{padding-top:64px;display:flex;min-height:100vh}
@@ -58,9 +62,9 @@ main{padding-top:64px;display:flex;min-height:100vh}
 .progress-bar-wrap{background:rgba(255,255,255,0.08);border-radius:100px;height:5px;margin:10px 0 6px}
 .progress-bar{background:var(--teal);border-radius:100px;height:5px;transition:width 0.5s}
 .progress-lbl{font-size:0.7rem;color:var(--muted);display:flex;justify-content:space-between}
-.btn-buy{width:100%;background:var(--teal);color:#000;border:none;border-radius:9px;padding:9px;font-weight:800;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:background 0.2s}
+.btn-buy{width:100%;background:var(--teal);color:#202124;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:background 0.2s;font-family:'Google Sans',sans-serif}
 .btn-buy:hover{background:#00dff0}
-.btn-read{width:100%;background:rgba(0,194,212,0.12);color:var(--teal);border:1px solid rgba(0,194,212,0.3);border-radius:9px;padding:9px;font-weight:800;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:all 0.2s}
+.btn-read{width:100%;background:rgba(138,180,248,0.1);color:var(--teal);border:1px solid rgba(138,180,248,0.25);border-radius:var(--pill);padding:9px;font-weight:600;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:all 0.2s;font-family:'Google Sans',sans-serif}
 .btn-read:hover{background:rgba(0,194,212,0.2)}
 
 /* SEARCH/FILTER */
@@ -84,7 +88,7 @@ main{padding-top:64px;display:flex;min-height:100vh}
 label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:0.5px}
 .pay-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:#fff;font-size:0.92rem;outline:none;transition:border-color 0.2s}
 .pay-input:focus{border-color:var(--teal)}
-.btn-pay{width:100%;background:var(--teal);color:#000;border:none;border-radius:10px;padding:13px;font-weight:800;font-size:0.95rem;cursor:pointer;margin-top:12px;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-pay{width:100%;background:var(--teal);color:#202124;border:none;border-radius:var(--pill);padding:13px;font-weight:700;font-size:0.92rem;cursor:pointer;margin-top:12px;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Google Sans',sans-serif}
 .btn-pay:hover{background:#00dff0}
 .btn-pay:disabled{opacity:0.6;cursor:not-allowed}
 .pay-status{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.82rem;text-align:center;display:none}
@@ -121,7 +125,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
 .cvp-section{margin-bottom:14px}
 .cvp-section-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#374151;border-bottom:2px solid var(--teal);padding-bottom:4px;margin-bottom:8px}
 .cvp-text{font-size:0.78rem;color:#374151;white-space:pre-wrap}
-.btn-pay-cv{background:var(--teal);color:#000;border:none;border-radius:10px;padding:12px 28px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:16px;width:100%}
+.btn-pay-cv{background:var(--teal);color:#202124;border:none;border-radius:var(--pill);padding:12px 28px;font-weight:700;font-size:0.9rem;cursor:pointer;margin-top:16px;width:100%;font-family:"Google Sans",sans-serif}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:#1e293b;border:1px solid var(--border);border-radius:12px;padding:14px 20px;font-size:0.84rem;z-index:9999;animation:toastIn 0.3s ease;max-width:320px}
@@ -151,9 +155,9 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
   <a class="nav-logo" href="/">Zenith <span>Zoom</span></a>
   <a href="/" style="display:flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:0.8rem;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--border);margin-left:8px;transition:all 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">🏠 Home</a>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('my-courses')">📚 My Courses</button>
-    <button class="nav-tab" onclick="showPage('browse')">🛒 Browse</button>
-    <button class="nav-tab" onclick="showPage('cv')">📄 CV Builder</button>
+    <button class="nav-tab active" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open" style="margin-right:6px"></i>My Courses</button>
+    <button class="nav-tab" onclick="showPage('browse')"><i class="fa-solid fa-store" style="margin-right:6px"></i>Browse</button>
+    <button class="nav-tab" onclick="showPage('cv')"><i class="fa-solid fa-file-lines" style="margin-right:6px"></i>CV Builder</button>
   </div>
   <div class="nav-right">
     <div class="nav-avatar" id="nav-avatar">?</div>
@@ -166,12 +170,12 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-section">Learn</div>
-  <button class="sidebar-item active" onclick="showPage('my-courses')">📚 My Courses</button>
-  <button class="sidebar-item" onclick="showPage('browse')">🛒 Browse Courses</button>
+  <button class="sidebar-item active" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</button>
+  <button class="sidebar-item" onclick="showPage('browse')"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</button>
   <div class="sidebar-section">Tools</div>
-  <button class="sidebar-item" onclick="showPage('cv')">📄 CV Builder</button>
+  <button class="sidebar-item" onclick="showPage('cv')"><i class="fa-solid fa-file-lines fa-fw"></i> CV Builder</button>
   <div class="sidebar-section">Account</div>
-  <button class="sidebar-item" onclick="signOut()">🚪 Sign Out</button>
+  <button class="sidebar-item" onclick="signOut()"><i class="fa-solid fa-right-from-bracket fa-fw"></i> Sign Out</button>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -186,7 +190,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
 
   <!-- MY COURSES PAGE -->
   <div id="page-my-courses" class="page active">
-    <div class="page-title">📚 My Courses</div>
+    <div class="page-title"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</div>
     <div class="page-sub">Courses you've purchased — click to read</div>
     <div class="courses-grid" id="my-courses-grid">
       <div style="color:var(--muted);padding:20px">Loading...</div>
@@ -195,7 +199,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
 
   <!-- BROWSE PAGE -->
   <div id="page-browse" class="page">
-    <div class="page-title">🛒 Browse Courses</div>
+    <div class="page-title"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</div>
     <div class="page-sub">Pay via M-Pesa to unlock any course instantly</div>
     <div class="filter-bar">
       <input class="search-input" id="browse-search" placeholder="🔍 Search courses..." oninput="filterCourses()"/>
@@ -212,7 +216,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
 
   <!-- CV BUILDER PAGE -->
   <div id="page-cv" class="page">
-    <div class="page-title">📄 CV Builder</div>
+    <div class="page-title"><i class="fa-solid fa-file-lines fa-fw"></i> CV Builder</div>
     <div class="page-sub">Build a professional CV. Pay KES 100 via M-Pesa to download as PDF.</div>
     <div class="cv-wrap">
       <div class="cv-panel">
@@ -225,7 +229,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
         <div class="cv-field"><label>EXPERIENCE</label><textarea id="cv-exp" rows="4" placeholder="Job title — Company (Year-Year)&#10;Key responsibilities..." oninput="updatePreview()"></textarea></div>
         <div class="cv-field"><label>EDUCATION</label><textarea id="cv-edu" rows="2" placeholder="Degree — University (Year)" oninput="updatePreview()"></textarea></div>
         <div class="cv-field"><label>SKILLS</label><input id="cv-skills" placeholder="Excel, Communication, Leadership" oninput="updatePreview()"/></div>
-        <button class="btn-pay-cv" onclick="openCVPay()">💚 Download CV — KES 100 via M-Pesa</button>
+        <button class="btn-pay-cv" onclick="openCVPay()"><i class="fa-solid fa-download"></i> Download CV — KES 100 via M-Pesa</button>
       </div>
       <div>
         <div class="cv-preview-box" id="cv-preview">
@@ -262,7 +266,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:700;color:var(--mute
     </div>
     <label class="field-lbl">M-PESA PHONE NUMBER</label>
     <input class="pay-input" id="pay-phone" placeholder="0716762062" type="tel"/>
-    <button class="btn-pay" id="pay-btn" onclick="submitPayment()">💚 Pay & Unlock Course</button>
+    <button class="btn-pay" id="pay-btn" onclick="submitPayment()"><i class="fa-solid fa-lock-open"></i> Pay & Unlock Course</button>
     <div class="pay-status" id="pay-status"></div>
   </div>
 </div>
@@ -326,13 +330,20 @@ function renderMyCourses() {
   const owned = user.purchasedCourses || [];
   if (!owned.length) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div class="empty-icon">📚</div><h3>No courses yet</h3>
+      <div style="font-size:3rem;color:var(--teal);margin-bottom:16px"><i class="fa-solid fa-book-open"></i></div><h3>No courses yet</h3>
       <p>Browse and purchase courses to start learning</p>
       <button class="btn-browse" onclick="showPage('browse')">Browse Courses</button>
     </div>`;
     return;
   }
-  const icons = {Business:'💼',Marketing:'📣',Technology:'💻',Finance:'💰','Career Development':'🚀',Leadership:'🏆'};
+  const icons = {
+      Business:'<i class="fa-solid fa-briefcase"></i>',
+      Marketing:'<i class="fa-solid fa-bullhorn"></i>',
+      Technology:'<i class="fa-solid fa-laptop-code"></i>',
+      Finance:'<i class="fa-solid fa-chart-line"></i>',
+      'Career Development':'<i class="fa-solid fa-rocket"></i>',
+      Leadership:'<i class="fa-solid fa-users-line"></i>'
+    };
   grid.innerHTML = owned.map(c => {
     const course = c.courseId;
     if (!course) return '';
@@ -346,7 +357,7 @@ function renderMyCourses() {
         <div class="progress-bar-wrap"><div class="progress-bar" style="width:${prog}%"></div></div>
         <div class="progress-lbl"><span>Progress</span><span>${prog}%</span></div>
         <button class="btn-read" onclick="openViewer('${course._id}','${course.title.replace(/'/g,"\\'")}')">
-          ${prog>0 ? '▶ Continue Reading' : '▶ Start Reading'}
+          ${prog>0 ? '<i class="fa-solid fa-play"></i> Continue Reading' : '<i class="fa-solid fa-play"></i> Start Reading'}
         </button>
       </div>
     </div>`;
@@ -375,7 +386,14 @@ function filterCourses() {
 
 function renderBrowse(courses) {
   const grid = document.getElementById('browse-grid');
-  const icons = {Business:'💼',Marketing:'📣',Technology:'💻',Finance:'💰','Career Development':'🚀',Leadership:'🏆'};
+  const icons = {
+      Business:'<i class="fa-solid fa-briefcase"></i>',
+      Marketing:'<i class="fa-solid fa-bullhorn"></i>',
+      Technology:'<i class="fa-solid fa-laptop-code"></i>',
+      Finance:'<i class="fa-solid fa-chart-line"></i>',
+      'Career Development':'<i class="fa-solid fa-rocket"></i>',
+      Leadership:'<i class="fa-solid fa-users-line"></i>'
+    };
   const ownedIds = (user.purchasedCourses||[]).map(c=>c.courseId?._id||c.courseId).filter(Boolean).map(String);
   if (!courses.length) { grid.innerHTML = '<div style="color:var(--muted);padding:20px">No courses found.</div>'; return; }
   grid.innerHTML = courses.map(c => {
@@ -388,8 +406,8 @@ function renderBrowse(courses) {
         <div class="course-cat">${c.category}</div>
         <div class="course-price">KES ${c.price?.toLocaleString()}</div>
         ${owned
-          ? `<button class="btn-read" onclick="openViewer('${c._id}','${c.title.replace(/'/g,"\\'")}')">▶ Read Now</button>`
-          : `<button class="btn-buy" onclick="openCoursePay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')">🛒 Buy — KES ${c.price}</button>`
+          ? `<button class="btn-read" onclick="openViewer('${c._id}','${c.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-play"></i> Read Now</button>`
+          : `<button class="btn-buy" onclick="openCoursePay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-cart-shopping"></i> Buy — KES ${c.price}</button>`
         }
       </div>
     </div>`;
@@ -401,7 +419,7 @@ function openCoursePay(id, price, title) {
   payType = 'course'; payResourceId = id;
   document.getElementById('modal-price').textContent = 'KES ' + price.toLocaleString();
   document.getElementById('modal-course-name').textContent = title;
-  document.getElementById('pay-btn').textContent = '💚 Pay & Unlock Course';
+  document.getElementById('pay-btn').textContent = '<i class="fa-solid fa-lock-open"></i> Pay & Unlock Course';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' Course unlocks in your dashboard';
   // Pre-fill phone from user profile
   const phone = user.phone || '';
@@ -416,7 +434,7 @@ function openCVPay() {
   payType = 'cv'; payResourceId = null;
   document.getElementById('modal-price').textContent = 'KES 100';
   document.getElementById('modal-course-name').textContent = 'CV Download';
-  document.getElementById('pay-btn').textContent = '💚 Pay & Download CV';
+  document.getElementById('pay-btn').textContent = '<i class="fa-solid fa-download"></i> Pay & Download CV';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' CV download link appears below';
   const phone = user.phone || document.getElementById('cv-phone-cv').value || '';
   document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
@@ -455,7 +473,7 @@ async function submitPayment() {
     const endpoint = payType === 'course' ? '/api/mpesa/pay-resource' : '/api/mpesa/pay-cv';
     const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
-    if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.textContent='💚 Try Again'; return; }
+    if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; return; }
     const checkoutId = data.checkoutRequestId;
     setStatus('📱 Check your phone and enter your M-Pesa PIN...', 'pending');
     btn.textContent = '⏳ Waiting for payment...';
@@ -463,7 +481,7 @@ async function submitPayment() {
     let tries = 0;
     pollInterval = setInterval(async () => {
       tries++;
-      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timeout. If you paid, refresh your courses.', 'error'); btn.disabled=false; btn.textContent='💚 Try Again'; return; }
+      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timeout. If you paid, refresh your courses.', 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; return; }
       try {
         const pr = await fetch('/api/mpesa/status/' + checkoutId);
         const pd = await pr.json();
@@ -483,11 +501,11 @@ async function submitPayment() {
         } else if (pd.status === 'failed') {
           clearInterval(pollInterval);
           setStatus('❌ Payment failed. Please try again.', 'error');
-          btn.disabled=false; btn.textContent='💚 Try Again';
+          btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again';
         }
       } catch {}
     }, 5000);
-  } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.textContent='💚 Try Again'; }
+  } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; }
 }
 
 // ── PDF VIEWER ──

@@ -5,25 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zenith Zoom — Empowering Growth</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 :root {
-  --teal: #00C2D4;
-  --teal-dark: #009BAB;
-  --teal-glow: rgba(0,194,212,0.12);
-  --dark: #070B14;
-  --dark2: #0D1525;
-  --dark3: #141E32;
-  --card: #111827;
-  --border: rgba(0,194,212,0.15);
-  --text: #E8EDF5;
-  --muted: #8896AE;
+  --teal: #8AB4F8;
+  --teal-dark: #669DF6;
+  --teal-glow: rgba(138,180,248,0.12);
+  --dark: #202124;
+  --dark2: #292A2D;
+  --dark3: #2d2f36;
+  --card: #35363A;
+  --border: rgba(255,255,255,0.1);
+  --text: #E8EAED;
+  --muted: #9AA0A6;
   --white: #ffffff;
-  --success: #10B981;
-  --error: #EF4444;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --radius: 12px;
+  --success: #81C995;
+  --error: #F28B82;
+  --accent-green: #81C995;
+  --accent-yellow: #FDD663;
+  --font-display: 'Google Sans Display', 'Google Sans', 'Product Sans', sans-serif;
+  --font-body: 'Google Sans', 'Product Sans', 'Helvetica Neue', sans-serif;
+  --radius: 16px;
+  --radius-pill: 100px;
   --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1010,10 +1015,10 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <label class="form-label">M-Pesa Phone Number</label>
       <input class="form-input" id="pay-phone" placeholder="0712 345 678 or 254712345678" maxlength="13">
     </div>
-    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;">💚 Pay Now via M-Pesa</button>
+    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;"><i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa</button>
     <div class="pay-status" id="pay-status"></div>
     <div style="display:none;text-align:center;margin-top:16px;" id="dl-wrap">
-      <a class="btn btn-primary" id="dl-link" href="#" target="_blank">⬇️ Download Now</a>
+      <a class="btn btn-primary" id="dl-link" href="#" target="_blank"><i class="fa-solid fa-download"></i> Download Now</a>
     </div>
   </div>
 </div>
@@ -1109,7 +1114,7 @@ function renderCourses(list) {
       <div class="resource-desc">${escHtml(r.description)}</div>
       <div class="resource-footer">
         <div class="resource-price">KES ${r.price}</div>
-        <button class="btn btn-primary btn-sm" onclick="openResPay('${r._id}',${r.price},'${escJs(r.title)}')">⬇️ Download</button>
+        <button class="btn btn-primary btn-sm" onclick="openResPay('${r._id}',${r.price},'${escJs(r.title)}')"><i class="fa-solid fa-cart-shopping"></i> Buy Course</button>
       </div>
     </div>
   `).join('');
@@ -1361,7 +1366,7 @@ function resetPayModal() {
   document.getElementById('dl-wrap').style.display = 'none';
   const btn = document.getElementById('pay-btn');
   btn.disabled = false;
-  btn.textContent = '💚 Pay Now via M-Pesa';
+  btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
   btn.style.display = '';
   clearInterval(pollInterval);
   currentCheckoutId = null;
@@ -1421,7 +1426,7 @@ async function submitPayment() {
       status.className = 'pay-status error';
       status.textContent = '❌ ' + data.message;
       btn.disabled = false;
-      btn.textContent = '💚 Pay Now via M-Pesa';
+      btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
       return;
     }
 
@@ -1435,7 +1440,7 @@ async function submitPayment() {
         status.className = 'pay-status error';
         status.textContent = '⏰ Payment timed out. Please try again.';
         btn.disabled = false;
-        btn.textContent = '💚 Pay Now via M-Pesa';
+        btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
         return;
       }
       try {
@@ -1444,7 +1449,7 @@ async function submitPayment() {
         if (pd.status === 'completed') {
           clearInterval(pollInterval);
           status.className = 'pay-status success';
-          status.textContent = '✅ Payment confirmed! Your download is ready below.';
+          status.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#81C995"></i> Payment confirmed! Your download is ready below.';
           document.getElementById('dl-wrap').style.display = 'block';
           document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
           btn.style.display = 'none';
@@ -1452,18 +1457,18 @@ async function submitPayment() {
         } else if (pd.status === 'failed') {
           clearInterval(pollInterval);
           status.className = 'pay-status error';
-          status.textContent = '❌ Payment failed or cancelled. Please try again.';
+          status.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#F28B82"></i> Payment failed or cancelled. Please try again.';
           btn.disabled = false;
-          btn.textContent = '💚 Pay Now via M-Pesa';
+          btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
         }
       } catch {}
     }, 5000);
 
   } catch {
     status.className = 'pay-status error';
-    status.textContent = '❌ Network error. Please check your connection.';
+    status.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#F28B82"></i> Network error. Please check your connection.';
     btn.disabled = false;
-    btn.textContent = '💚 Pay Now via M-Pesa';
+    btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
   }
 }
 
@@ -1509,9 +1514,9 @@ loadCVPrice();
     const el = document.getElementById('nav-auth-btn');
     if (!el) return;
     if (d.success) {
-      el.innerHTML = `<a href="/dashboard" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(0,194,212,0.12);border:1px solid rgba(0,194,212,0.35);border-radius:8px;padding:6px 14px;color:#00c2d4;font-size:0.8rem;font-weight:700;white-space:nowrap;">📚 My Courses</a>`;
+      el.innerHTML = `<a href="/dashboard" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(138,180,248,0.12);border:1px solid rgba(138,180,248,0.3);border-radius:100px;padding:6px 16px;color:#8AB4F8;font-size:0.8rem;font-weight:600;white-space:nowrap;font-family:'Google Sans',sans-serif;"><i class="fa-solid fa-book-open"></i> My Courses</a>`;
     } else {
-      el.innerHTML = `<a href="/login" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(0,194,212,0.12);border:1px solid rgba(0,194,212,0.35);border-radius:8px;padding:6px 14px;color:#00c2d4;font-size:0.8rem;font-weight:700;white-space:nowrap;">Sign In</a>`;
+      el.innerHTML = `<a href="/login" style="display:flex;align-items:center;gap:6px;text-decoration:none;background:rgba(138,180,248,0.12);border:1px solid rgba(138,180,248,0.3);border-radius:100px;padding:6px 16px;color:#8AB4F8;font-size:0.8rem;font-weight:600;white-space:nowrap;font-family:'Google Sans',sans-serif;">Sign In</a>`;
     }
   } catch {}
 })();
