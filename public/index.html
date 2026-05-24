@@ -2099,7 +2099,7 @@ footer { background: #080d18 !important; }
     <div class="section-header">
       <div class="section-tag">Course Library</div>
       <h2 class="section-title">Premium Courses</h2>
-      <p class="section-sub">Download expert-crafted PDFs to accelerate your professional growth. Secure payment via M-Pesa Lipa Na M-Pesa.</p>
+      <p class="section-sub">Access expert-crafted PDFs to accelerate your professional growth. Pay via M-Pesa. Access your courses anytime from your dashboard.</p>
     </div>
     <div style="max-width:1100px;margin:0 auto;">
       <div class="filter-bar">
@@ -2250,16 +2250,16 @@ footer { background: #080d18 !important; }
       <div class="pay-step"><div class="step-num">1</div>Enter your Safaricom M-Pesa number below</div>
       <div class="pay-step"><div class="step-num">2</div>Click Pay Now — you'll get a prompt on your phone</div>
       <div class="pay-step"><div class="step-num">3</div>Enter your M-Pesa PIN to confirm payment</div>
-      <div class="pay-step"><div class="step-num">4</div>Your download link appears here automatically</div>
+      <div class="pay-step"><div class="step-num">4</div>Course unlocks in your dashboard automatically</div>
     </div>
     <div class="form-group">
       <label class="form-label">M-Pesa Phone Number</label>
       <input class="form-input" id="pay-phone" placeholder="0712 345 678 or 254712345678" maxlength="13">
     </div>
-    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;">💚 Pay Now via M-Pesa</button>
+    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;">💚 Pay & Unlock Course</button>
     <div class="pay-status" id="pay-status"></div>
     <div style="display:none;text-align:center;margin-top:16px;" id="dl-wrap">
-      <a class="btn btn-primary" id="dl-link" href="#" target="_blank">⬇️ Download Now</a>
+      <a class="btn btn-primary" id="dl-link" href="/dashboard" style="display:none">📚 Go to My Courses</a>
     </div>
   </div>
 </div>
@@ -2360,7 +2360,7 @@ function renderCourses(list) {
       <div class="resource-desc">${escHtml(r.description)}</div>
       <div class="resource-footer">
         <div class="resource-price">KES ${r.price}</div>
-        <button class="btn btn-primary btn-sm" onclick="openResPay('${r._id}',${r.price},'${escJs(r.title)}')">⬇️ Download</button>
+        <button class="btn btn-primary btn-sm" onclick="openResPay('${r._id}',${r.price},'${escJs(r.title)}')">🛒 Buy Course</button>
       </div>
     </div>
   `).join('');
@@ -2572,7 +2572,7 @@ function openResPay(id, price, title) {
   }
   currentPayType = 'resource';
   currentResourceId = id;
-  document.getElementById('pay-modal-title').textContent = 'Download Course';
+  document.getElementById('pay-modal-title').textContent = 'Buy Course';
   document.getElementById('pay-modal-amount').textContent = `KES ${price}`;
   document.getElementById('pay-modal-item').textContent = title;
   resetPayModal();
@@ -2681,21 +2681,27 @@ async function submitPayment() {
         if (pd.status === 'completed') {
           clearInterval(pollInterval);
           status.className = 'pay-status success';
-          status.textContent = '✅ Payment confirmed! Your download is ready below.';
-          document.getElementById('dl-wrap').style.display = 'block';
-          // Redirect to dashboard if logged in, otherwise show link
+          btn.style.display = 'none';
+          // Always redirect to dashboard - course is now in user account
           fetch('/api/auth/me').then(r=>r.json()).then(d => {
             if (d.success) {
-              status.textContent = '✅ Payment complete! Redirecting to your dashboard...';
+              status.innerHTML = '✅ Payment confirmed! Taking you to your courses...';
+              showToast('Payment successful! Course unlocked.', 'success');
               setTimeout(() => window.location = '/dashboard', 2000);
             } else {
-              document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+              // Not logged in - prompt to create account
+              status.innerHTML = `✅ Payment confirmed!<br>
+                <small style="opacity:0.8">Create an account to read your course anytime.</small>`;
+              document.getElementById('dl-wrap').style.display = 'block';
+              const dlLink = document.getElementById('dl-link');
+              dlLink.href = '/login#register';
+              dlLink.textContent = '📚 Create Account to Read Course';
+              dlLink.style.display = 'inline-block';
+              showToast('Payment successful! Create an account to access your course.', 'success');
             }
           }).catch(() => {
-            document.getElementById('dl-link').href = `/api/mpesa/download/${pd.downloadToken}`;
+            status.innerHTML = '✅ Payment confirmed! <a href="/login#register" style="color:#00c2d4">Create account to read →</a>';
           });
-          btn.style.display = 'none';
-          showToast('Payment successful! Your file is ready.', 'success');
         } else if (pd.status === 'failed') {
           clearInterval(pollInterval);
           status.className = 'pay-status error';
@@ -2787,7 +2793,7 @@ function renderHomeCourses(courses) {
       <div style="flex:1;min-width:0">
         <div class="h-ci-name">${c.title}</div>
         <div class="h-ci-meta">${c.category} · KES ${c.price}</div>
-        <button class="h-ci-btn" onclick="event.stopPropagation();openResPay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')" >GET VIA M-PESA</button>
+        <button class="h-ci-btn" onclick="event.stopPropagation();openResPay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')" >🛒 Buy Course</button>
       </div>
     </div>
   `).join('');
