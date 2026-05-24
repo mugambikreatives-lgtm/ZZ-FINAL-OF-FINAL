@@ -115,6 +115,9 @@ async function register() {
   } catch { showError('Network error. Try again.'); btn.disabled=false; btn.textContent='Create Account'; }
 }
 function googleLogin() { window.location = '/api/auth/google'; }
+// Auto-switch to register tab if URL has #register
+if (window.location.hash === '#register') switchTab('register');
+
 // Enter key support
 document.addEventListener('keydown', e => { if (e.key==='Enter') { const lf=document.getElementById('login-form'); if(lf.style.display!=='none') login(); else register(); } });
 </script>
