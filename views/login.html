@@ -108,6 +108,7 @@ async function login() {
 async function register() {
   const name = document.getElementById('reg-name').value.trim();
   const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value;
   if (!name||!email||!password) return showError('Please fill in all fields');
   if (password.length < 6) return showError('Password must be at least 6 characters');
