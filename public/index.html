@@ -2840,19 +2840,31 @@ async function initAuth() {
 }
 
 function showAuthSection() {
-  document.getElementById('auth-section').style.display = 'block';
-  document.getElementById('dashboard-section').style.display = 'none';
-  document.getElementById('nav-account-label').textContent = 'Sign In';
+  const authEl = document.getElementById('auth-section');
+  const dashEl = document.getElementById('dashboard-section');
+  const labelEl = document.getElementById('nav-account-label');
+  if (authEl) authEl.style.display = 'block';
+  if (dashEl) dashEl.style.display = 'none';
+  if (labelEl) labelEl.textContent = 'Sign In';
+  // If on home page, redirect to /login
+  if (!authEl) window.location = '/login';
 }
 
 function showDashboard() {
-  document.getElementById('auth-section').style.display = 'none';
-  document.getElementById('dashboard-section').style.display = 'block';
-  document.getElementById('nav-account-label').textContent = currentUser.name.split(' ')[0];
-  document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
-  document.getElementById('user-greeting').textContent = 'Hi, ' + currentUser.name.split(' ')[0] + '! 👋';
-  document.getElementById('user-email-display').textContent = currentUser.email;
-  renderDashboard();
+  const authEl = document.getElementById('auth-section');
+  const dashEl = document.getElementById('dashboard-section');
+  const labelEl = document.getElementById('nav-account-label');
+  const avatarEl = document.getElementById('user-avatar');
+  const greetEl = document.getElementById('user-greeting');
+  const emailEl = document.getElementById('user-email-display');
+  if (authEl) authEl.style.display = 'none';
+  if (dashEl) dashEl.style.display = 'block';
+  if (labelEl) labelEl.textContent = currentUser.name.split(' ')[0];
+  if (avatarEl) avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
+  if (greetEl) greetEl.textContent = 'Hi, ' + currentUser.name.split(' ')[0] + '! 👋';
+  if (emailEl) emailEl.textContent = currentUser.email;
+  if (typeof renderDashboard === 'function') renderDashboard();
+  else window.location = '/dashboard';
 }
 
 function renderDashboard() {
