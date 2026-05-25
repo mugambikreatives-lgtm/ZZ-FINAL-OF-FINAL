@@ -1338,6 +1338,7 @@ section { padding:80px 80px; background:#fff; }
   #mobile-menu-btn { display:block; }
 }
 
+/* ══ HOME HERO ══ */
 </style>
 </head>
 <body>
@@ -2604,114 +2605,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 
-<!-- ═══ ACCOUNT PAGE ═══ -->
-<div id="page-account" class="page" style="padding-top:88px;min-height:100vh;background:#f8f9fc;">
-
-  <!-- NOT LOGGED IN -->
-  <div id="auth-section" style="max-width:440px;margin:60px auto;padding:0 24px;">
-    
-    <!-- TABS -->
-    <div style="display:flex;background:#fff;border:1px solid #e8eaf0;border-radius:14px;padding:4px;margin-bottom:28px;">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;border-radius:10px;background:#0f1923;color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;"><i class="fa-solid fa-right-to-bracket" style="margin-right:6px"></i>Sign In</button>
-      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:10px;border:none;border-radius:transparent;background:transparent;color:#6b7280;font-weight:700;font-size:0.9rem;cursor:pointer;">Create Account</button>
-    </div>
-
-    <!-- LOGIN FORM -->
-    <div id="login-form">
-      <h2 style="font-size:1.5rem;font-weight:900;color:#0f1923;margin:0 0 8px;">Welcome back</h2>
-      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 24px;">Sign in to access your courses</p>
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">EMAIL</label>
-        <input id="login-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;background:#fff;color:#0f1923;" />
-      </div>
-      <div style="margin-bottom:24px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PASSWORD</label>
-        <input id="login-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;background:#fff;color:#0f1923;" onkeydown="if(event.key==='Enter')loginUser()" />
-      </div>
-      <button onclick="loginUser()" style="width:100%;padding:14px;background:#00c2d4;color:#000;border:none;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;margin-bottom:12px;"><i class="fa-solid fa-right-to-bracket" style="margin-right:6px"></i>Sign In</button>
-      <div id="login-error" style="color:#ef4444;font-size:0.82rem;text-align:center;min-height:20px;"></div>
-      <div style="text-align:center;margin-top:16px;color:#6b7280;font-size:0.85rem;">
-        Don't have an account? <button onclick="switchAuthTab('register')" style="background:none;border:none;color:#00a8b8;font-weight:700;cursor:pointer;">Create one</button>
-      </div>
-    </div>
-
-    <!-- REGISTER FORM -->
-    <div id="register-form" style="display:none;">
-      <h2 style="font-size:1.5rem;font-weight:900;color:#0f1923;margin:0 0 8px;">Create account</h2>
-      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 24px;">Start learning today</p>
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">FULL NAME</label>
-        <input id="reg-name" type="text" placeholder="John Doe" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
-      </div>
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">EMAIL</label>
-        <input id="reg-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
-      </div>
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PHONE (M-Pesa)</label>
-        <input id="reg-phone" type="tel" placeholder="0712345678" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" />
-      </div>
-      <div style="margin-bottom:24px;">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:6px;">PASSWORD</label>
-        <input id="reg-password" type="password" placeholder="Min 6 characters" style="width:100%;padding:12px 16px;border:1.5px solid #e8eaf0;border-radius:10px;font-size:0.95rem;outline:none;box-sizing:border-box;color:#0f1923;" onkeydown="if(event.key==='Enter')registerUser()" />
-      </div>
-      <button onclick="registerUser()" style="width:100%;padding:14px;background:#00c2d4;color:#000;border:none;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;margin-bottom:12px;">Create Account</button>
-      <div id="register-error" style="color:#ef4444;font-size:0.82rem;text-align:center;min-height:20px;"></div>
-      <div style="text-align:center;margin-top:16px;color:#6b7280;font-size:0.85rem;">
-        Already have an account? <button onclick="switchAuthTab('login')" style="background:none;border:none;color:#00a8b8;font-weight:700;cursor:pointer;">Sign in</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOGGED IN DASHBOARD -->
-  <div id="dashboard-section" style="display:none;max-width:1100px;margin:0 auto;padding:40px 24px;">
-    
-    <!-- HEADER -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div id="user-avatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#00c2d4,#0077b6);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;flex-shrink:0;"></div>
-        <div>
-          <div id="user-greeting" style="font-size:1.4rem;font-weight:900;color:#0f1923;"></div>
-          <div id="user-email-display" style="font-size:0.85rem;color:#6b7280;"></div>
-        </div>
-      </div>
-      <button onclick="logoutUser()" style="background:transparent;border:1.5px solid #e8eaf0;color:#6b7280;border-radius:10px;padding:8px 20px;font-size:0.85rem;font-weight:700;cursor:pointer;">Sign Out</button>
-    </div>
-
-    <!-- STATS -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;">
-      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
-        <div id="stat-courses" style="font-size:2rem;font-weight:900;color:#00c2d4;">0</div>
-        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">Courses Owned</div>
-      </div>
-      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
-        <div id="stat-progress" style="font-size:2rem;font-weight:900;color:#22c55e;">0%</div>
-        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">Avg Progress</div>
-      </div>
-      <div style="background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:24px;text-align:center;">
-        <div id="stat-spent" style="font-size:2rem;font-weight:900;color:#7c3aed;">0</div>
-        <div style="font-size:0.82rem;color:#6b7280;margin-top:4px;">KES Invested</div>
-      </div>
-    </div>
-
-    <!-- MY COURSES -->
-    <div>
-      <h2 style="font-size:1.2rem;font-weight:900;color:#0f1923;margin:0 0 20px;"><i class="fa-solid fa-book-open"></i> My Courses</h2>
-      <div id="my-courses-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-        <div style="color:#6b7280;font-size:0.9rem;padding:40px;text-align:center;background:#fff;border:1px solid #e8eaf0;border-radius:16px;grid-column:1/-1;">
-          You haven't purchased any courses yet.<br>
-          <button onclick="showPage('courses')" style="margin-top:12px;background:#00c2d4;color:#000;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer;">Browse Courses</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 <!-- ═══ PDF VIEWER PAGE ═══ -->
 <div id="page-viewer" class="page" style="padding-top:68px;height:100vh;display:flex;flex-direction:column;background:#1a1a2e;">
   <div style="background:#0d1117;border-bottom:1px solid rgba(255,255,255,0.1);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;">
-    <button onclick="showPage('account')" style="background:rgba(255,255,255,0.1);border:none;color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:0.85rem;">← Back to Dashboard</button>
+    <button onclick="window.location='/dashboard'" style="background:rgba(255,255,255,0.1);border:none;color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:0.85rem;"><i class='fa-solid fa-arrow-left' style='margin-right:6px'></i>My Dashboard</button>
     <div id="viewer-title" style="font-size:0.95rem;font-weight:700;color:#fff;"></div>
     <div id="viewer-progress-label" style="font-size:0.82rem;color:rgba(255,255,255,0.5);"></div>
   </div>
@@ -2719,4 +2616,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 </body>
-</html>/* ══ HOME HERO ══ */
+</html>
