@@ -893,7 +893,9 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 nav {
   position: fixed; top:0; left:0; right:0; z-index:1000;
   padding: 0 48px; height: 68px;
-  display: flex; align-items: center; justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0,0,0,0.06);
@@ -901,15 +903,15 @@ nav {
 .nav-logo {
   display:flex; align-items:center; gap:10px;
   font-family:var(--font-display); font-weight:700; font-size:1.2rem;
-  color:#111827; cursor:pointer; text-decoration:none;
+  color:#111827; cursor:pointer; text-decoration:none; justify-self:start;
 }
 .nav-logo .accent { color:#7C3AED; }
 .logo-box { width:32px; height:32px; background:#7C3AED; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
-.nav-links { display:flex; gap:4px; }
+.nav-links { display:flex; gap:4px; justify-content:center; }
 .nav-link { padding:8px 16px; font-family:var(--font-body); font-size:0.88rem; font-weight:400; color:#374151; background:transparent; border:none; border-radius:100px; cursor:pointer; transition:all 0.2s; }
 .nav-link:hover { color:#111827; background:rgba(0,0,0,0.05); }
 .nav-link.active { color:#111827; background:rgba(0,0,0,0.07); font-weight:600; }
-.nav-auth-wrap { display:flex; align-items:center; gap:10px; }
+.nav-auth-wrap { display:flex; align-items:center; gap:10px; justify-content:flex-end; }
 .nav-login-btn { background:transparent; border:1.5px solid #D1D5DB; color:#374151; padding:8px 20px; border-radius:100px; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s; font-family:var(--font-body); }
 .nav-login-btn:hover { border-color:#111827; color:#111827; }
 .nav-signup-btn { background:#111827; color:#fff; border:none; padding:8px 20px; border-radius:100px; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:var(--font-body); }
@@ -1200,11 +1202,11 @@ nav {
 
 /* ══ FOOTER ══ */
 footer { background:#0F0E17; padding:60px 80px 32px; }
-.footer-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; }
+.footer-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; align-items:start; }
 .footer-brand { }
-.footer-logo { font-family:var(--font-display); font-weight:700; font-size:1.2rem; color:#fff; margin-bottom:12px; }
+.footer-logo { font-family:var(--font-display); font-weight:700; font-size:1.2rem; color:#fff; margin-bottom:12px; text-align:left; }
 .footer-logo span { color:#7C3AED; }
-.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.4); line-height:1.7; max-width:240px; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.4); line-height:1.7; max-width:240px; text-align:left; }
 .footer-col-title { font-size:0.8rem; font-weight:700; color:#fff; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; }
 .footer-link { display:block; font-size:0.85rem; color:rgba(255,255,255,0.4); margin-bottom:10px; cursor:pointer; background:none; border:none; text-align:left; font-family:var(--font-body); transition:color 0.2s; }
 .footer-link:hover { color:#A78BFA; }
@@ -1713,7 +1715,7 @@ section { padding:80px 80px; background:#fff; }
   <!-- ══════════ FOOTER (WebTeck dark) ══════════ -->
   <footer>
     <div class="footer-top">
-      <div class="footer-brand">
+      <div class="footer-brand" style="text-align:left">
         <div class="footer-logo">Zenith<span> Zoom</span></div>
         <p class="footer-tagline">Kenya's #1 platform for career growth. Expert courses, CV builder, and curated jobs — all via M-Pesa.</p>
       </div>
@@ -1738,7 +1740,7 @@ section { padding:80px 80px; background:#fff; }
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2025 Zenith Zoom · Payments secured by KCB M-Pesa</div>
+      <div class="footer-copy">© 2026 Zenith Zoom · Payments secured by KCB M-Pesa</div>
       <div class="footer-links">
         <button class="footer-link">Privacy Policy</button>
         <button class="footer-link">Terms of Service</button>
