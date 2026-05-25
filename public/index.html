@@ -1339,6 +1339,62 @@ section { padding:80px 80px; background:#fff; }
 }
 
 /* ══ HOME HERO ══ */
+
+/* ══ 3D APPLY BUTTON ══ */
+.h-ji-apply {
+  background: #7C3AED;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  /* 3D effect */
+  box-shadow:
+    0 4px 0 #5B21B6,
+    0 6px 12px rgba(124,58,237,0.35);
+  transform: translateY(0);
+  transition: all 0.12s ease;
+}
+.h-ji-apply:hover {
+  box-shadow:
+    0 6px 0 #5B21B6,
+    0 8px 16px rgba(124,58,237,0.4);
+  transform: translateY(-2px);
+}
+.h-ji-apply:active {
+  box-shadow:
+    0 1px 0 #5B21B6,
+    0 2px 6px rgba(124,58,237,0.3);
+  transform: translateY(3px);
+}
+
+/* Fix job item layout */
+.h-job-item {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+}
+.h-job-item:hover { border-color: #7C3AED; box-shadow: 0 4px 16px rgba(124,58,237,0.08); }
+.h-ji-logo {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #EDE9FE; display: flex; align-items: center;
+  justify-content: center; font-size: 1rem; flex-shrink: 0; color: #7C3AED;
+}
+.h-ji-title { font-size: 0.88rem; font-weight: 600; color: #111827; margin-bottom: 3px; }
+.h-ji-company { font-size: 0.72rem; color: #6B7280; }
+
 </style>
 </head>
 <body>
@@ -2404,7 +2460,7 @@ function renderHomeJobs(jobs) {
   if (!top.length) { list.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">No jobs yet.</p>'; return; }
   list.innerHTML = top.map(j => `
     <div class="h-job-item">
-      <div class="h-ji-logo">💼</div>
+      <div class="h-ji-logo"><i class="fa-solid fa-briefcase"></i></div>
       <div style="flex:1;min-width:0">
         <div class="h-ji-title">${j.title}</div>
         <div class="h-ji-company">${j.company || 'Company'} · ${j.location || 'Kenya'}</div>
