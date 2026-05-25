@@ -888,6 +888,456 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 
 
 
+
+/* ══ GLOBAL NAV FIX ══ */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  padding: 0 48px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.nav-logo {
+  display:flex; align-items:center; gap:10px;
+  font-family:var(--font-display); font-weight:700; font-size:1.2rem;
+  color:#111827; cursor:pointer; text-decoration:none;
+}
+.nav-logo .accent { color:#7C3AED; }
+.logo-box { width:32px; height:32px; background:#7C3AED; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.nav-links { display:flex; gap:4px; }
+.nav-link { padding:8px 16px; font-family:var(--font-body); font-size:0.88rem; font-weight:400; color:#374151; background:transparent; border:none; border-radius:100px; cursor:pointer; transition:all 0.2s; }
+.nav-link:hover { color:#111827; background:rgba(0,0,0,0.05); }
+.nav-link.active { color:#111827; background:rgba(0,0,0,0.07); font-weight:600; }
+.nav-auth-wrap { display:flex; align-items:center; gap:10px; }
+.nav-login-btn { background:transparent; border:1.5px solid #D1D5DB; color:#374151; padding:8px 20px; border-radius:100px; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.2s; font-family:var(--font-body); }
+.nav-login-btn:hover { border-color:#111827; color:#111827; }
+.nav-signup-btn { background:#111827; color:#fff; border:none; padding:8px 20px; border-radius:100px; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:var(--font-body); }
+.nav-signup-btn:hover { background:#374151; }
+.nav-user-pill { display:flex; align-items:center; gap:8px; cursor:pointer; padding:5px 14px 5px 5px; border-radius:999px; background:#F3F4F6; border:1px solid #E5E7EB; transition:all 0.2s; }
+.nav-user-pill:hover { background:#E5E7EB; }
+.nav-avatar-sm { width:30px; height:30px; border-radius:50%; background:#7C3AED; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:700; color:#fff; }
+#nav-username { font-size:0.85rem; font-weight:600; color:#111827; }
+.nav-auth-btns { display:flex; gap:8px; align-items:center; }
+#nav-user-btn { display:none; }
+#mobile-menu-btn { display:none; background:none; border:none; color:#111827; font-size:1.4rem; cursor:pointer; }
+.mobile-nav { display:none; position:fixed; top:68px; left:0; right:0; background:#fff; border-bottom:1px solid #E5E7EB; padding:12px 16px; z-index:999; flex-direction:column; gap:4px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+.mobile-nav.open { display:flex; }
+
+/* PAGE SYSTEM */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ══ FEATURE BLOCKS (WebTeck style) ══ */
+.h-features {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 0;
+  background: #0F0E17;
+  padding: 80px 60px;
+}
+.h-feature-card {
+  padding: 48px 36px;
+  border-right: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.h-feature-card:last-child { border-right: none; }
+.h-feature-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(124,58,237,0.08) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.h-feature-card:hover::before { opacity: 1; }
+.h-feature-card:hover { transform: translateY(-4px); }
+.h-fc-bg-img { display:none; }
+.h-fc-glass { position:relative; z-index:1; }
+.h-feat-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.h-feat-icon-wrap {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.h-feat-icon-wrap.blue { background: rgba(99,102,241,0.15); color: #818CF8; }
+.h-feat-icon-wrap.green { background: rgba(16,185,129,0.15); color: #34D399; }
+.h-feat-icon-wrap.purple { background: rgba(124,58,237,0.15); color: #A78BFA; }
+.h-feat-arrow { font-size:1.2rem; color:rgba(255,255,255,0.2); transition:all 0.2s; }
+.h-feature-card:hover .h-feat-arrow { color:#7C3AED; transform:translateX(4px); }
+.h-fc-glass h3 { font-family:var(--font-display); font-size:1.25rem; font-weight:700; color:#fff; margin-bottom:12px; }
+.h-fc-glass p { font-size:0.88rem; color:rgba(255,255,255,0.5); line-height:1.7; margin-bottom:20px; }
+.h-feat-footer { display:flex; align-items:center; justify-content:space-between; }
+.h-feat-tag { font-size:0.72rem; font-weight:600; padding:4px 10px; border-radius:100px; background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.5); }
+.glass-tag.green { background:rgba(52,211,153,0.12); color:#34D399; }
+.h-feat-cta { font-size:0.82rem; font-weight:600; color:#7C3AED; cursor:pointer; }
+.h-live-dot { display:flex; align-items:center; gap:6px; font-size:0.72rem; color:rgba(255,255,255,0.4); }
+.h-live-dot span { width:7px; height:7px; border-radius:50%; background:#34D399; animation:pulse 2s infinite; }
+.h-cv-mock { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.h-cv-bar { height:6px; background:rgba(255,255,255,0.1); border-radius:3px; }
+.h-cv-bar.thick { height:10px; background:rgba(124,58,237,0.3); width:60%; }
+.h-cv-bar.short { width:40%; }
+
+/* ══ STATS ROW (WebTeck dark with purple accent) ══ */
+.h-stats {
+  background: #7C3AED;
+  padding: 48px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.h-stat {
+  display:flex; flex-direction:column; align-items:center;
+  padding: 0 60px; text-align:center;
+}
+.h-stat strong { font-family:var(--font-display); font-size:2.2rem; font-weight:700; color:#fff; }
+.h-stat span { font-size:0.85rem; color:rgba(255,255,255,0.7); margin-top:4px; }
+.h-stat-div { width:1px; height:60px; background:rgba(255,255,255,0.2); }
+
+/* ══ ABOUT/WHY SECTION (WebTeck style) ══ */
+.h-about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  padding: 100px 80px;
+  background: #fff;
+}
+.h-about-img-wrap { position:relative; }
+.h-about-img-circle {
+  width: 420px; height: 420px; border-radius: 50%;
+  overflow: hidden; background: #F3F4F6;
+  border: 6px solid #E5E7EB;
+  position:relative;
+}
+.h-about-img-circle img { width:100%; height:100%; object-fit:cover; }
+.h-about-blob {
+  position:absolute; width:120px; height:120px;
+  background:#7C3AED; border-radius:50%;
+  bottom:-20px; right:40px; opacity:0.15;
+}
+.h-about-blob2 {
+  position:absolute; width:80px; height:80px;
+  background:#7C3AED; border-radius:50%;
+  top:30px; left:-20px; opacity:0.1;
+}
+.h-about-right {}
+.h-about-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:0.72rem; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; color:#7C3AED; margin-bottom:16px;
+}
+.h-about-eyebrow i { font-size:0.8rem; }
+.h-about-title {
+  font-family:var(--font-display); font-size:2rem; font-weight:700;
+  color:#111827; line-height:1.2; margin-bottom:20px;
+}
+.h-about-title span { color:#7C3AED; }
+.h-about-body { font-size:0.95rem; color:#6B7280; line-height:1.8; margin-bottom:32px; }
+.h-about-tabs { display:flex; gap:4px; margin-bottom:24px; }
+.h-about-tab {
+  padding:9px 20px; border-radius:100px; font-size:0.82rem; font-weight:600;
+  cursor:pointer; border:none; font-family:var(--font-body); transition:all 0.2s;
+}
+.h-about-tab.active { background:#7C3AED; color:#fff; }
+.h-about-tab:not(.active) { background:#F3F4F6; color:#374151; }
+.h-about-feature {
+  display:flex; gap:14px; align-items:flex-start;
+  padding:18px; background:#F9FAFB; border-radius:14px;
+  border:1px solid #F3F4F6; margin-bottom:12px;
+}
+.h-about-feat-icon {
+  width:40px; height:40px; border-radius:10px; flex-shrink:0;
+  background:#EDE9FE; color:#7C3AED;
+  display:flex; align-items:center; justify-content:center; font-size:1rem;
+}
+.h-about-feat-title { font-size:0.9rem; font-weight:700; color:#111827; margin-bottom:3px; }
+.h-about-feat-desc { font-size:0.8rem; color:#6B7280; }
+.h-about-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#7C3AED; color:#fff; border:none;
+  border-radius:100px; padding:13px 28px;
+  font-size:0.9rem; font-weight:600; cursor:pointer;
+  font-family:var(--font-body); transition:all 0.2s; margin-top:8px;
+}
+.h-about-btn:hover { background:#6D28D9; }
+
+/* ══ DARK SERVICES SECTION (WebTeck) ══ */
+.h-services {
+  background: #0F0E17;
+  padding: 100px 80px;
+  position:relative; overflow:hidden;
+}
+.h-services::before {
+  content:''; position:absolute;
+  width:400px; height:400px; border-radius:50%;
+  background:radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+  top:-100px; right:-100px; pointer-events:none;
+}
+.h-services-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:52px; }
+.h-services-eyebrow { font-size:0.72rem; font-weight:700; color:#7C3AED; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.h-services-title { font-family:var(--font-display); font-size:2rem; font-weight:700; color:#fff; line-height:1.2; max-width:380px; }
+.h-services-title span { color:#7C3AED; }
+.h-see-all-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  border:1.5px solid rgba(255,255,255,0.2); color:#fff; background:transparent;
+  border-radius:100px; padding:11px 24px;
+  font-size:0.85rem; font-weight:500; cursor:pointer;
+  font-family:var(--font-body); transition:all 0.2s; white-space:nowrap; align-self:flex-end;
+}
+.h-see-all-btn:hover { border-color:#7C3AED; color:#A78BFA; }
+.h-services-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.h-service-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px; padding: 28px 24px;
+  transition:all 0.3s; cursor:pointer;
+}
+.h-service-card:hover { background:rgba(124,58,237,0.12); border-color:rgba(124,58,237,0.3); transform:translateY(-4px); }
+.h-svc-icon {
+  width:54px; height:54px; border-radius:14px; margin-bottom:16px;
+  background:rgba(124,58,237,0.15); color:#A78BFA;
+  display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+}
+.h-svc-title { font-family:var(--font-display); font-size:1rem; font-weight:700; color:#fff; margin-bottom:10px; }
+.h-svc-desc { font-size:0.82rem; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:16px; }
+.h-svc-link { font-size:0.8rem; font-weight:600; color:#7C3AED; display:flex; align-items:center; gap:6px; }
+.h-svc-link:hover { color:#A78BFA; }
+
+/* ══ LATEST COURSES + JOBS (WebTeck two col) ══ */
+.h-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: #fff;
+}
+.h-col { padding: 80px 60px; }
+.h-col:first-child { border-right: 1px solid #F3F4F6; }
+.h-col-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; }
+.h-col-eyebrow { font-size:0.72rem; font-weight:700; color:#7C3AED; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.h-col-title { font-family:var(--font-display); font-size:1.5rem; font-weight:700; color:#111827; }
+.h-see-all { background:transparent; border:1.5px solid #E5E7EB; color:#374151; border-radius:100px; padding:7px 18px; font-size:0.8rem; font-weight:500; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; }
+.h-see-all:hover { border-color:#7C3AED; color:#7C3AED; }
+
+/* Course list items */
+.h-course-list { display:flex; flex-direction:column; gap:12px; }
+.h-course-item {
+  display:flex; gap:14px; align-items:center;
+  padding:14px 16px; border:1px solid #F3F4F6;
+  border-radius:14px; cursor:pointer; transition:all 0.2s;
+  background:#fff;
+}
+.h-course-item:hover { border-color:#7C3AED; box-shadow:0 4px 16px rgba(124,58,237,0.08); }
+.h-ci-icon {
+  width:44px; height:44px; border-radius:12px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+}
+.h-ci-icon.blue { background:#EEF2FF; color:#4F46E5; }
+.h-ci-icon.green { background:#ECFDF5; color:#059669; }
+.h-ci-icon.purple { background:#EDE9FE; color:#7C3AED; }
+.h-ci-icon.orange { background:#FFF7ED; color:#EA580C; }
+.h-ci-body { flex:1; }
+.h-ci-title { font-size:0.88rem; font-weight:600; color:#111827; margin-bottom:3px; }
+.h-ci-cat { font-size:0.72rem; color:#9CA3AF; }
+.h-ci-price { font-size:0.9rem; font-weight:700; color:#7C3AED; white-space:nowrap; }
+.h-ci-btn { background:#7C3AED; color:#fff; border:none; border-radius:100px; padding:7px 16px; font-size:0.75rem; font-weight:600; cursor:pointer; font-family:var(--font-body); white-space:nowrap; }
+.h-ci-btn:hover { background:#6D28D9; }
+
+/* Job list */
+.h-job-list { display:flex; flex-direction:column; gap:12px; }
+.h-job-item {
+  padding:16px; border:1px solid #F3F4F6;
+  border-radius:14px; cursor:pointer; transition:all 0.2s;
+}
+.h-job-item:hover { border-color:#7C3AED; box-shadow:0 4px 16px rgba(124,58,237,0.08); }
+.h-job-title { font-size:0.9rem; font-weight:600; color:#111827; margin-bottom:3px; }
+.h-job-company { font-size:0.78rem; color:#7C3AED; margin-bottom:8px; }
+.h-job-tags { display:flex; gap:6px; flex-wrap:wrap; }
+.h-job-tag { font-size:0.68rem; font-weight:500; padding:3px 10px; border-radius:100px; background:#F3F4F6; color:#6B7280; }
+
+/* Skeleton */
+.h-skeleton { height:70px; background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%); background-size:200% 100%; border-radius:12px; animation:shimmer 1.5s infinite; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ══ CTA BANNER (WebTeck purple) ══ */
+.h-cta-banner {
+  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
+  padding: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position:relative; overflow:hidden;
+}
+.h-cta-banner::before {
+  content:''; position:absolute;
+  width:300px; height:300px; border-radius:50%;
+  background:rgba(255,255,255,0.05);
+  right:-60px; top:-60px;
+}
+.h-cta-banner::after {
+  content:''; position:absolute;
+  width:200px; height:200px; border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  left:40%; bottom:-60px;
+}
+.h-cta-left { position:relative; z-index:1; }
+.h-cta-tag { font-size:0.72rem; font-weight:700; color:rgba(255,255,255,0.6); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+.h-cta-title { font-family:var(--font-display); font-size:2rem; font-weight:700; color:#fff; line-height:1.2; }
+.h-cta-title span { color:#FCD34D; }
+.h-cta-btns { display:flex; gap:12px; margin-top:28px; position:relative; z-index:1; }
+.h-cta-btn-primary { background:#fff; color:#7C3AED; border:none; border-radius:100px; padding:13px 28px; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; }
+.h-cta-btn-primary:hover { background:#F9FAFB; }
+.h-cta-btn-ghost { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.4); border-radius:100px; padding:13px 28px; font-size:0.9rem; font-weight:600; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; }
+.h-cta-btn-ghost:hover { border-color:#fff; }
+.h-cta-right { display:flex; gap:20px; position:relative; z-index:1; }
+.h-cta-stat { text-align:center; background:rgba(255,255,255,0.1); border-radius:16px; padding:20px 28px; }
+.h-cta-stat .num { font-size:2rem; font-weight:700; color:#fff; }
+.h-cta-stat .lbl { font-size:0.75rem; color:rgba(255,255,255,0.7); }
+
+/* ══ FOOTER ══ */
+footer { background:#0F0E17; padding:60px 80px 32px; }
+.footer-top { display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; }
+.footer-brand { }
+.footer-logo { font-family:var(--font-display); font-weight:700; font-size:1.2rem; color:#fff; margin-bottom:12px; }
+.footer-logo span { color:#7C3AED; }
+.footer-tagline { font-size:0.85rem; color:rgba(255,255,255,0.4); line-height:1.7; max-width:240px; }
+.footer-col-title { font-size:0.8rem; font-weight:700; color:#fff; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; }
+.footer-link { display:block; font-size:0.85rem; color:rgba(255,255,255,0.4); margin-bottom:10px; cursor:pointer; background:none; border:none; text-align:left; font-family:var(--font-body); transition:color 0.2s; }
+.footer-link:hover { color:#A78BFA; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,0.07); padding-top:24px; display:flex; align-items:center; justify-content:space-between; }
+.footer-copy { font-size:0.78rem; color:rgba(255,255,255,0.3); }
+.footer-links { display:flex; gap:20px; }
+
+/* ══ PAY MODAL ══ */
+#pay-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  z-index:500; align-items:center; justify-content:center;
+}
+#pay-modal.open { display:flex; }
+.pay-card {
+  background:#ffffff; border-radius:24px;
+  padding:36px; width:100%; max-width:440px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.3);
+  position:relative;
+}
+.pay-close { position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.2rem; color:#9CA3AF; cursor:pointer; }
+.pay-close:hover { color:#111827; }
+.pay-title { text-align:center; font-size:0.72rem; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.pay-amount { text-align:center; font-family:var(--font-display); font-size:2.4rem; font-weight:700; color:#7C3AED; margin-bottom:24px; }
+.pay-steps { list-style:none; margin-bottom:20px; display:flex; flex-direction:column; gap:8px; }
+.pay-steps li { display:flex; gap:10px; align-items:center; font-size:0.82rem; color:#6B7280; }
+.pay-step-num { width:22px; height:22px; border-radius:50%; background:#EDE9FE; color:#7C3AED; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; }
+.pay-label { display:block; font-size:0.75rem; font-weight:600; color:#6B7280; margin-bottom:6px; letter-spacing:0.5px; }
+.pay-input { width:100%; padding:12px 18px; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:100px; color:#111827; font-size:0.95rem; outline:none; transition:all 0.2s; font-family:var(--font-body); }
+.pay-input:focus { border-color:#7C3AED; background:#fff; }
+#pay-btn { width:100%; background:#7C3AED; color:#fff; border:none; border-radius:100px; padding:13px; font-weight:700; font-size:0.92rem; cursor:pointer; margin-top:12px; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; font-family:var(--font-body); }
+#pay-btn:hover { background:#6D28D9; }
+#pay-btn:disabled { opacity:0.6; cursor:not-allowed; }
+.pay-status { margin-top:12px; padding:10px 14px; border-radius:10px; font-size:0.82rem; text-align:center; display:none; }
+.pay-status.show { display:block; }
+.pay-status.pending { background:#FFF7ED; border:1px solid #FED7AA; color:#92400E; }
+.pay-status.success { background:#ECFDF5; border:1px solid #A7F3D0; color:#065F46; }
+.pay-status.error { background:#FEF2F2; border:1px solid #FECACA; color:#991B1B; }
+.dl-wrap { margin-top:12px; text-align:center; display:none; }
+.dl-link { display:inline-flex; align-items:center; gap:8px; background:#7C3AED; color:#fff; padding:10px 24px; border-radius:100px; text-decoration:none; font-weight:600; font-size:0.88rem; }
+
+/* ══ JOB MODAL ══ */
+#job-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:500; align-items:center; justify-content:center; }
+#job-modal.open { display:flex; }
+.job-modal-card { background:#fff; border-radius:24px; padding:36px; width:100%; max-width:500px; max-height:80vh; overflow-y:auto; }
+.job-modal-title { font-family:var(--font-display); font-size:1.3rem; font-weight:700; color:#111827; margin-bottom:6px; }
+.job-modal-company { color:#7C3AED; font-size:0.9rem; margin-bottom:16px; }
+.job-modal-close { position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.2rem; color:#9CA3AF; cursor:pointer; }
+.modal-close { background:none; border:none; font-size:1.2rem; color:#9CA3AF; cursor:pointer; float:right; }
+
+/* ══ INNER PAGES ══ */
+.page-header { padding:120px 80px 60px; background:#F9FAFB; border-bottom:1px solid #F3F4F6; }
+.page-header h1 { font-family:var(--font-display); font-size:2.2rem; font-weight:700; color:#111827; margin-bottom:8px; }
+.page-header p { font-size:0.95rem; color:#6B7280; }
+.page-content { padding:60px 80px; background:#fff; }
+
+/* Resource cards */
+.resources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+.resource-card { background:#fff; border:1px solid #E5E7EB; border-radius:20px; padding:24px; transition:all 0.2s; }
+.resource-card:hover { border-color:#7C3AED; transform:translateY(-3px); box-shadow:0 4px 20px rgba(124,58,237,0.1); }
+.resource-icon { width:48px; height:48px; background:#EDE9FE; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#7C3AED; margin-bottom:14px; }
+.resource-cat { display:inline-block; padding:3px 10px; background:#EDE9FE; color:#7C3AED; border-radius:100px; font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; }
+.resource-title { font-family:var(--font-display); font-size:1rem; font-weight:600; color:#111827; margin-bottom:8px; line-height:1.3; }
+.resource-desc { font-size:0.82rem; color:#6B7280; line-height:1.6; margin-bottom:20px; }
+.resource-price { font-family:var(--font-display); font-size:1.15rem; font-weight:600; color:#7C3AED; }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:10px 22px; border-radius:100px; font-family:var(--font-body); font-size:0.88rem; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; text-decoration:none; }
+.btn-primary { background:#7C3AED; color:#fff; }
+.btn-primary:hover { background:#6D28D9; }
+.btn-ghost { background:transparent; color:#374151; border:1.5px solid #D1D5DB; }
+.btn-ghost:hover { border-color:#7C3AED; color:#7C3AED; }
+.btn-sm { padding:7px 16px; font-size:0.78rem; }
+.btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+/* Filter bar */
+.filter-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:28px; }
+.search-input { flex:1; min-width:200px; padding:11px 20px; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:100px; color:#111827; font-family:var(--font-body); font-size:0.88rem; outline:none; transition:all 0.2s; }
+.search-input:focus { border-color:#7C3AED; background:#fff; }
+.search-input::placeholder { color:#9CA3AF; }
+.filter-select { padding:11px 20px; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:100px; color:#111827; font-family:var(--font-body); font-size:0.88rem; outline:none; cursor:pointer; }
+
+/* Job cards */
+.job-card { background:#fff; border:1px solid #E5E7EB; border-radius:16px; padding:20px 24px; cursor:pointer; transition:all 0.2s; }
+.job-card:hover { border-color:#7C3AED; transform:translateY(-2px); box-shadow:0 4px 16px rgba(124,58,237,0.08); }
+.job-title { font-weight:600; color:#111827; margin-bottom:4px; }
+.job-company { font-size:0.82rem; color:#7C3AED; margin-bottom:10px; }
+.job-tag { background:#EDE9FE; color:#7C3AED; font-size:0.7rem; font-weight:600; padding:3px 10px; border-radius:100px; }
+
+/* CV form */
+.cv-layout { display:grid; grid-template-columns:1fr 1fr; gap:32px; max-width:1200px; margin:0 auto; }
+.cv-form-box { background:#fff; border:1px solid #E5E7EB; border-radius:20px; padding:32px; }
+.form-label { display:block; font-size:0.8rem; font-weight:600; color:#6B7280; margin-bottom:6px; }
+.form-input { width:100%; padding:10px 14px; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:10px; color:#111827; font-family:var(--font-body); font-size:0.88rem; outline:none; transition:all 0.2s; }
+.form-input:focus { border-color:#7C3AED; background:#fff; }
+.form-input::placeholder { color:#9CA3AF; }
+.section-tag { display:inline-block; padding:4px 14px; background:#EDE9FE; color:#7C3AED; border-radius:999px; font-size:0.73rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:12px; }
+.section-title { font-family:var(--font-display); font-size:clamp(1.5rem,3.5vw,2.2rem); font-weight:700; color:#111827; margin-bottom:12px; letter-spacing:-0.3px; }
+.section-sub { color:#6B7280; font-size:0.95rem; max-width:540px; margin:0 auto; line-height:1.6; }
+.section-header { text-align:center; margin-bottom:52px; }
+section { padding:80px 80px; background:#fff; }
+
+/* Toast */
+.toast { position:fixed; bottom:24px; right:24px; background:#111827; border:none; border-radius:14px; padding:14px 20px; font-size:0.84rem; z-index:9999; color:#fff; box-shadow:0 4px 20px rgba(0,0,0,0.25); max-width:320px; }
+.toast.success { background:#059669; }
+.toast.error { background:#DC2626; }
+
+/* Animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+/* Responsive */
+@media(max-width:1024px) {
+  .h-features { grid-template-columns:1fr; padding:40px 24px; }
+  .h-feature-card { border-right:none; border-bottom:1px solid rgba(255,255,255,0.07); }
+  .h-stats { flex-wrap:wrap; padding:40px 24px; gap:24px; }
+  .h-stat { padding:0 20px; }
+  .h-about { grid-template-columns:1fr; padding:60px 24px; gap:40px; }
+  .h-about-img-circle { width:280px; height:280px; }
+  .h-services { padding:60px 24px; }
+  .h-services-grid { grid-template-columns:repeat(2,1fr); }
+  .h-two-col { grid-template-columns:1fr; }
+  .h-col { padding:40px 24px; border-right:none; }
+  .h-cta-banner { flex-direction:column; padding:48px 24px; }
+  .h-cta-right { justify-content:center; }
+  footer { padding:48px 24px 24px; }
+  .footer-top { grid-template-columns:1fr 1fr; gap:32px; }
+  section { padding:60px 24px; }
+  .page-header { padding:100px 24px 40px; }
+  .page-content { padding:40px 24px; }
+  nav { padding:0 16px; }
+  .nav-links { display:none; }
+  #mobile-menu-btn { display:block; }
+}
+
 </style>
 </head>
 <body>
@@ -1007,32 +1457,28 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     </div>
   </section>
 
-  <!-- ══════════ 3 FEATURE BLOCKS ══════════ -->
+  <!-- ══════════ 3 FEATURE BLOCKS (WebTeck dark) ══════════ -->
   <section class="h-features">
 
-    <!-- COURSES CARD -->
-    <div class="h-feature-card h-fc-courses" onclick="showPage('courses')">
-      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80&fit=crop')"></div>
+    <div class="h-feature-card" onclick="showPage('courses')">
       <div class="h-fc-glass">
         <div class="h-feat-header">
-          <div class="h-feat-icon-wrap blue">📚</div>
-          <div class="h-feat-arrow">→</div>
+          <div class="h-feat-icon-wrap blue"><i class="fa-solid fa-book-open"></i></div>
+          <div class="h-feat-arrow"><i class="fa-solid fa-arrow-right"></i></div>
         </div>
         <h3>Premium Courses</h3>
-        <p>Expert PDF guides on business, tech, marketing & finance. Download instantly after M-Pesa payment.</p>
+        <p>Expert PDF guides on business, tech, marketing & finance. Access instantly after M-Pesa payment.</p>
         <div class="h-feat-footer">
-          <span class="h-feat-tag glass-tag">50+ courses</span>
+          <span class="h-feat-tag">50+ courses</span>
           <span class="h-feat-cta">Browse library</span>
         </div>
       </div>
     </div>
 
-    <!-- CV CARD -->
-    <div class="h-feature-card h-fc-cv" onclick="showPage('cv')">
-      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80&fit=crop')"></div>
+    <div class="h-feature-card" onclick="showPage('cv')">
       <div class="h-fc-glass">
         <div class="h-feat-header">
-          <div class="h-feat-icon-wrap green">📄</div>
+          <div class="h-feat-icon-wrap green"><i class="fa-solid fa-file-lines"></i></div>
           <div class="h-live-dot"><span></span>Live Preview</div>
         </div>
         <h3>Instant CV Builder</h3>
@@ -1050,18 +1496,16 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       </div>
     </div>
 
-    <!-- JOBS CARD -->
-    <div class="h-feature-card h-fc-jobs" onclick="showPage('jobs')">
-      <div class="h-fc-bg-img" style="background-image:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80&fit=crop')"></div>
+    <div class="h-feature-card" onclick="showPage('jobs')">
       <div class="h-fc-glass">
         <div class="h-feat-header">
-          <div class="h-feat-icon-wrap purple">💼</div>
-          <div class="h-feat-arrow">→</div>
+          <div class="h-feat-icon-wrap purple"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="h-feat-arrow"><i class="fa-solid fa-arrow-right"></i></div>
         </div>
         <h3>Job Matching</h3>
         <p>Browse curated job listings across Kenya. Find roles that match your skills and experience level.</p>
         <div class="h-feat-footer">
-          <span class="h-feat-tag glass-tag">Active listings</span>
+          <span class="h-feat-tag">Active listings</span>
           <span class="h-feat-cta">Find jobs</span>
         </div>
       </div>
@@ -1069,7 +1513,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 
   </section>
 
-  <!-- ══════════ STATS ROW ══════════ -->
+  <!-- ══════════ STATS (WebTeck purple bar) ══════════ -->
   <section class="h-stats">
     <div class="h-stat"><strong>500+</strong><span>Learners trained</span></div>
     <div class="h-stat-div"></div>
@@ -1080,15 +1524,91 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     <div class="h-stat"><strong>KES 100</strong><span>CV download price</span></div>
   </section>
 
-  <!-- ══════════ LATEST COURSES + FEATURED JOBS ══════════ -->
+  <!-- ══════════ ABOUT / WHY US (WebTeck circle image + tabs) ══════════ -->
+  <section class="h-about">
+    <div class="h-about-img-wrap">
+      <div class="h-about-img-circle">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=85&fit=crop&crop=faces" alt="Team learning" />
+      </div>
+      <div class="h-about-blob"></div>
+      <div class="h-about-blob2"></div>
+    </div>
+    <div class="h-about-right">
+      <div class="h-about-eyebrow"><i class="fa-solid fa-circle-info"></i> About Zenith Zoom</div>
+      <h2 class="h-about-title">We Are Increasing <span>Career Success</span> With Knowledge</h2>
+      <p class="h-about-body">Zenith Zoom is Kenya's #1 digital learning platform. We provide expert PDF courses, a professional CV builder, and curated job listings — all accessible instantly via M-Pesa. No subscriptions. No wait times. Just results.</p>
+      <div class="h-about-tabs">
+        <button class="h-about-tab active">Our Mission</button>
+        <button class="h-about-tab">Why M-Pesa</button>
+      </div>
+      <div class="h-about-feature">
+        <div class="h-about-feat-icon"><i class="fa-solid fa-rocket"></i></div>
+        <div>
+          <div class="h-about-feat-title">Instant Access</div>
+          <div class="h-about-feat-desc">Pay via M-Pesa and unlock your course or CV in under 60 seconds.</div>
+        </div>
+      </div>
+      <div class="h-about-feature">
+        <div class="h-about-feat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div>
+          <div class="h-about-feat-title">Secure Payments</div>
+          <div class="h-about-feat-desc">All transactions handled by KCB M-Pesa — Kenya's most trusted payment system.</div>
+        </div>
+      </div>
+      <button class="h-about-btn" onclick="showPage('courses')">
+        <i class="fa-solid fa-arrow-right"></i> Explore Courses
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════ DARK SERVICES (WebTeck) ══════════ -->
+  <section class="h-services">
+    <div class="h-services-header">
+      <div>
+        <div class="h-services-eyebrow"><i class="fa-solid fa-star"></i> What We Offer</div>
+        <h2 class="h-services-title">We Provide <span>Exclusive Services</span> For Your Career</h2>
+      </div>
+      <button class="h-see-all-btn" onclick="showPage('courses')">
+        View All Services <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+    <div class="h-services-grid">
+      <div class="h-service-card" onclick="showPage('courses')">
+        <div class="h-svc-icon"><i class="fa-solid fa-laptop-code"></i></div>
+        <div class="h-svc-title">Tech Courses</div>
+        <div class="h-svc-desc">Data analysis, digital tools, and software skills to future-proof your career.</div>
+        <div class="h-svc-link">Read More <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+      <div class="h-service-card" onclick="showPage('courses')">
+        <div class="h-svc-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <div class="h-svc-title">Digital Marketing</div>
+        <div class="h-svc-desc">Social media, SEO, content strategy, and affiliate marketing guides.</div>
+        <div class="h-svc-link">Read More <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+      <div class="h-service-card" onclick="showPage('cv')">
+        <div class="h-svc-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <div class="h-svc-title">CV Builder</div>
+        <div class="h-svc-desc">Professional, ATS-optimised CVs built in minutes. Download for KES 100.</div>
+        <div class="h-svc-link">Build Now <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+      <div class="h-service-card" onclick="showPage('jobs')">
+        <div class="h-svc-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="h-svc-title">Job Listings</div>
+        <div class="h-svc-desc">Curated Kenyan job listings matched to your skills and experience level.</div>
+        <div class="h-svc-link">Find Jobs <i class="fa-solid fa-arrow-right"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ LATEST COURSES + FEATURED JOBS (WebTeck two col) ══════════ -->
   <section class="h-two-col">
     <div class="h-col">
       <div class="h-col-header">
         <div>
-          <div class="h-col-eyebrow">📥 Fresh content</div>
+          <div class="h-col-eyebrow">Fresh Content</div>
           <h2 class="h-col-title">Latest Courses</h2>
         </div>
-        <button class="h-see-all" onclick="showPage('courses')">See all →</button>
+        <button class="h-see-all" onclick="showPage('courses')">See all <i class="fa-solid fa-arrow-right"></i></button>
       </div>
       <div id="home-courses-grid" class="h-course-list">
         <div class="h-skeleton"></div>
@@ -1099,10 +1619,10 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     <div class="h-col">
       <div class="h-col-header">
         <div>
-          <div class="h-col-eyebrow">💡 Hiring now</div>
+          <div class="h-col-eyebrow">Hiring Now</div>
           <h2 class="h-col-title">Featured Jobs</h2>
         </div>
-        <button class="h-see-all" onclick="showPage('jobs')">See all →</button>
+        <button class="h-see-all" onclick="showPage('jobs')">See all <i class="fa-solid fa-arrow-right"></i></button>
       </div>
       <div id="home-jobs-list" class="h-job-list">
         <div class="h-skeleton"></div>
@@ -1112,57 +1632,61 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     </div>
   </section>
 
-  <!-- ══════════ COMPARISON: OLD WAY VS ZENITH ZOOM ══════════ -->
-  <section class="h-compare-section">
-    <div class="h-compare-header">
-      <div class="h-pill dark">The difference</div>
-      <h2>Old way vs. <span class="h-teal">the Zenith Zoom way</span></h2>
-    </div>
-    <div class="h-compare-grid">
-      <div class="h-compare-col bad">
-        <div class="h-compare-col-title">❌ Traditional job seeking</div>
-        <div class="h-compare-row"><span>Getting skilled</span><span class="h-tag-bad">Months of classes</span></div>
-        <div class="h-compare-row"><span>CV quality</span><span class="h-tag-bad">Inconsistent</span></div>
-        <div class="h-compare-row"><span>Course access</span><span class="h-tag-bad">Expensive & slow</span></div>
-        <div class="h-compare-row"><span>Payment</span><span class="h-tag-bad">Bank transfers</span></div>
-        <div class="h-compare-row"><span>Download speed</span><span class="h-tag-bad">Days or never</span></div>
-      </div>
-      <div class="h-compare-col good">
-        <div class="h-compare-col-title">✅ Zenith Zoom</div>
-        <div class="h-compare-row"><span>Getting skilled</span><span class="h-tag-good">Instant PDF download</span></div>
-        <div class="h-compare-row"><span>CV quality</span><span class="h-tag-good">Professional template</span></div>
-        <div class="h-compare-row"><span>Course access</span><span class="h-tag-good">From KES 500</span></div>
-        <div class="h-compare-row"><span>Payment</span><span class="h-tag-good">M-Pesa STK push</span></div>
-        <div class="h-compare-row"><span>Download speed</span><span class="h-tag-good">Under 60 seconds</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════ CTA BANNER ══════════ -->
+  <!-- ══════════ CTA BANNER (WebTeck purple gradient) ══════════ -->
   <section class="h-cta-banner">
-    <div class="h-cta-inner">
-      <div>
-        <h2>Your first download in under 60 seconds</h2>
-        <p>Enter your M-Pesa number, pay, and get your PDF instantly.</p>
+    <div class="h-cta-left">
+      <div class="h-cta-tag">Start Today — No Subscription</div>
+      <h2 class="h-cta-title">Your Career Growth<br>Starts With <span>One Click</span></h2>
+      <div class="h-cta-btns">
+        <button class="h-cta-btn-primary" onclick="showPage('courses')">
+          <i class="fa-solid fa-book-open"></i> Browse Courses
+        </button>
+        <button class="h-cta-btn-ghost" onclick="showPage('cv')">
+          <i class="fa-solid fa-file-lines"></i> Build My CV
+        </button>
       </div>
-      <div class="h-cta-actions">
-        <button class="h-btn-primary" onclick="showPage('courses')">Start Learning</button>
-        <button class="h-btn-ghost white" onclick="showPage('cv')">Build CV</button>
-      </div>
+    </div>
+    <div class="h-cta-right">
+      <div class="h-cta-stat"><div class="num">500+</div><div class="lbl">Learners</div></div>
+      <div class="h-cta-stat"><div class="num">50+</div><div class="lbl">Courses</div></div>
+      <div class="h-cta-stat"><div class="num">92%</div><div class="lbl">Satisfaction</div></div>
     </div>
   </section>
 
+  <!-- ══════════ FOOTER (WebTeck dark) ══════════ -->
   <footer>
-    <div class="footer-logo">Zenith<span class="accent">Zoom</span></div>
-    <div class="footer-tagline">Empowering Growth. Transforming Lives.</div>
-    <div class="footer-links">
-      <button class="footer-link" onclick="showPage('home')">Home</button>
-      <button class="footer-link" onclick="showPage('courses')">Courses</button>
-      <button class="footer-link" onclick="showPage('cv')">CV Builder</button>
-      <button class="footer-link" onclick="showPage('jobs')">Jobs</button>
-      <a class="footer-link" href="/admin/login">Admin</a>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">Zenith<span> Zoom</span></div>
+        <p class="footer-tagline">Kenya's #1 platform for career growth. Expert courses, CV builder, and curated jobs — all via M-Pesa.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <button class="footer-link" onclick="showPage('courses')">Courses</button>
+        <button class="footer-link" onclick="showPage('cv')">CV Builder</button>
+        <button class="footer-link" onclick="showPage('jobs')">Job Listings</button>
+        <a class="footer-link" href="/dashboard">My Dashboard</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Account</div>
+        <a class="footer-link" href="/login">Sign In</a>
+        <a class="footer-link" href="/login#register">Create Account</a>
+        <a class="footer-link" href="/dashboard">My Courses</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <button class="footer-link">About Us</button>
+        <button class="footer-link">Contact</button>
+        <a class="footer-link" href="/admin/login">Admin</a>
+      </div>
     </div>
-    <div class="footer-copy">© 2025 Zenith Zoom · Payments secured by KCB M-Pesa</div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Zenith Zoom · Payments secured by KCB M-Pesa</div>
+      <div class="footer-links">
+        <button class="footer-link">Privacy Policy</button>
+        <button class="footer-link">Terms of Service</button>
+      </div>
+    </div>
   </footer>
 </div>
 
