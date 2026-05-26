@@ -16,6 +16,8 @@
   --green: #34A853;
   --green-light: #E6F4EA;
   --dark: #202124;
+  --dark2: #2d2f31;
+  --dark3: #3c4043;
   --nav-bg: #202124;
   --card: #ffffff;
   --card-alt: #F8F9FA;
@@ -267,24 +269,24 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 .pay-modal { max-width: 440px; }
 .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .modal-close {
-  background: var(--dark3); border: none; color: var(--muted);
+  background: var(--dark3); border: none; color: #E8EAED;
   width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.modal-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--white); }
-.modal-company { color: var(--muted); font-size: 0.88rem; margin-top: 3px; }
+.modal-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: #ffffff; }
+.modal-company { color: #BDC1C6; font-size: 0.88rem; margin-top: 3px; }
 .modal-section { margin-bottom: 20px; }
-.modal-section-title { font-size: 0.73rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-.modal-text { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+.modal-section-title { font-size: 0.73rem; font-weight: 600; color: #8AB4F8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.modal-text { color: #E8EAED; font-size: 0.88rem; line-height: 1.7; }
 .req-list { list-style: none; }
-.req-list li { padding: 5px 0; color: var(--muted); font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; }
+.req-list li { padding: 5px 0; color: #E8EAED; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; }
 .req-list li::before { content: '→'; color: var(--teal); flex-shrink: 0; }
 
 /* PAYMENT */
 .pay-amount { font-family: var(--font-display); font-size: 2.5rem; font-weight: 800; color: var(--teal); text-align: center; margin: 16px 0 4px; }
 .pay-item { color: var(--muted); text-align: center; font-size: 0.88rem; margin-bottom: 24px; }
 .pay-steps { margin-bottom: 22px; }
-.pay-step { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.83rem; color: var(--muted); }
+.pay-step { display: flex; gap: 12px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.83rem; color: #E8EAED; }
 .pay-step:last-child { border-bottom: none; }
 .step-num { width: 22px; height: 22px; flex-shrink: 0; background: var(--teal-glow); color: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; }
 .pay-status { text-align: center; padding: 14px; border-radius: var(--radius); font-size: 0.88rem; font-weight: 500; margin-top: 14px; display: none; }
@@ -1529,3 +1531,4 @@ loadCVPrice();
 </script>
 </body>
 </html>
+
