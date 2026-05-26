@@ -4,9 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Login — ZenithZoom</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font-display: 'Google Sans Display', 'Google Sans', sans-serif;
+      --font-body: 'Google Sans', sans-serif;
+    }
 
     body {
       min-height: 100vh;
@@ -14,7 +21,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       position: relative;
       overflow: hidden;
     }
@@ -26,35 +33,15 @@
       pointer-events: none;
       z-index: 0;
     }
-    .blob-purple {
-      width: 420px; height: 420px;
-      background: #c4b5fd;
-      opacity: 0.45;
-      top: -100px; left: -80px;
-    }
-    .blob-green {
-      width: 260px; height: 260px;
-      background: #86efac;
-      opacity: 0.35;
-      bottom: -60px; left: 60px;
-    }
-    .blob-yellow {
-      width: 280px; height: 280px;
-      background: #fde68a;
-      opacity: 0.4;
-      bottom: -80px; right: -50px;
-    }
-    .blob-purple2 {
-      width: 220px; height: 220px;
-      background: #a78bfa;
-      opacity: 0.25;
-      top: 40px; right: -40px;
-    }
+    .blob-purple { width: 420px; height: 420px; background: #c4b5fd; opacity: 0.45; top: -100px; left: -80px; }
+    .blob-green  { width: 260px; height: 260px; background: #86efac; opacity: 0.35; bottom: -60px; left: 60px; }
+    .blob-yellow { width: 280px; height: 280px; background: #fde68a; opacity: 0.4;  bottom: -80px; right: -50px; }
+    .blob-purple2{ width: 220px; height: 220px; background: #a78bfa; opacity: 0.25; top: 40px;  right: -40px; }
 
     .card {
       position: relative;
       z-index: 1;
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(0,0,0,0.07);
@@ -67,32 +54,26 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
       justify-content: center;
       margin-bottom: 6px;
     }
-    .logo-icon {
-      width: 30px; height: 30px;
-      background: #7c3aed;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-icon svg { width: 17px; height: 17px; }
-    .logo-text {
-      font-size: 21px;
+
+    .logo-wordmark {
+      font-family: var(--font-display);
+      font-size: 22px;
       font-weight: 700;
       color: #0f172a;
       letter-spacing: -0.3px;
     }
-    .logo-text span { color: #7c3aed; }
+    .logo-wordmark span { color: #7c3aed; }
 
     .subtitle {
       text-align: center;
-      font-size: 12.5px;
+      font-size: 13px;
       color: #94a3b8;
       margin-bottom: 32px;
       font-weight: 400;
-      letter-spacing: 0.01em;
     }
 
     .divider {
@@ -106,19 +87,23 @@
       font-size: 11px;
       color: #cbd5e1;
       font-weight: 500;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       white-space: nowrap;
+      font-family: var(--font-body);
     }
 
     .field { margin-bottom: 16px; }
+
     label {
       display: block;
       font-size: 13px;
       font-weight: 500;
       color: #374151;
       margin-bottom: 7px;
+      font-family: var(--font-body);
     }
+
     input[type="email"],
     input[type="password"] {
       width: 100%;
@@ -126,7 +111,7 @@
       border: 1.5px solid #e2e8f0;
       border-radius: 10px;
       color: #1e293b;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       font-size: 14px;
       padding: 11px 14px;
       outline: none;
@@ -147,7 +132,7 @@
       border: none;
       border-radius: 10px;
       color: #fff;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -174,6 +159,7 @@
       gap: 5px;
       font-size: 12px;
       color: #64748b;
+      font-family: var(--font-body);
     }
     .trust-item svg { width: 13px; height: 13px; flex-shrink: 0; }
 
@@ -184,6 +170,7 @@
       font-size: 13px;
       color: #94a3b8;
       text-decoration: none;
+      font-family: var(--font-body);
       transition: color 0.15s;
     }
     .back:hover { color: #7c3aed; }
@@ -197,12 +184,7 @@
 
   <div class="card">
     <div class="logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 4.5l5.5 4-5.5 4V4.5zm5.5 0L14 8.5l-5.5 4V4.5z" fill="white" opacity="0.9"/>
-        </svg>
-      </div>
-      <div class="logo-text">Zenith<span>Zoom</span></div>
+      <div class="logo-wordmark">Zenith<span>Zoom</span></div>
     </div>
     <p class="subtitle">Admin Panel — Authorized Access Only</p>
 
@@ -261,7 +243,6 @@
         alert('Please enter your email and password.');
         return;
       }
-      // Hook up to your auth logic here
     }
   </script>
 </body>
