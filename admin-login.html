@@ -33,10 +33,10 @@
       pointer-events: none;
       z-index: 0;
     }
-    .blob-purple { width: 420px; height: 420px; background: #c4b5fd; opacity: 0.45; top: -100px; left: -80px; }
-    .blob-green  { width: 260px; height: 260px; background: #86efac; opacity: 0.35; bottom: -60px; left: 60px; }
-    .blob-yellow { width: 280px; height: 280px; background: #fde68a; opacity: 0.4;  bottom: -80px; right: -50px; }
-    .blob-purple2{ width: 220px; height: 220px; background: #a78bfa; opacity: 0.25; top: 40px;  right: -40px; }
+    .blob-purple  { width: 420px; height: 420px; background: #c4b5fd; opacity: 0.45; top: -100px; left: -80px; }
+    .blob-green   { width: 260px; height: 260px; background: #86efac; opacity: 0.35; bottom: -60px; left: 60px; }
+    .blob-yellow  { width: 280px; height: 280px; background: #fde68a; opacity: 0.4;  bottom: -80px; right: -50px; }
+    .blob-purple2 { width: 220px; height: 220px; background: #a78bfa; opacity: 0.25; top: 40px; right: -40px; }
 
     .card {
       position: relative;
@@ -51,20 +51,14 @@
       box-shadow: 0 8px 40px rgba(0,0,0,0.08);
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 6px;
-    }
-
     .logo-wordmark {
       font-family: var(--font-display);
       font-size: 22px;
       font-weight: 700;
       color: #0f172a;
       letter-spacing: -0.3px;
+      text-align: center;
+      margin-bottom: 6px;
     }
     .logo-wordmark span { color: #7c3aed; }
 
@@ -73,7 +67,6 @@
       font-size: 13px;
       color: #94a3b8;
       margin-bottom: 32px;
-      font-weight: 400;
     }
 
     .divider {
@@ -90,7 +83,6 @@
       letter-spacing: 0.07em;
       text-transform: uppercase;
       white-space: nowrap;
-      font-family: var(--font-body);
     }
 
     .field { margin-bottom: 16px; }
@@ -101,7 +93,6 @@
       font-weight: 500;
       color: #374151;
       margin-bottom: 7px;
-      font-family: var(--font-body);
     }
 
     input[type="email"],
@@ -124,6 +115,19 @@
     }
     input::placeholder { color: #cbd5e1; }
 
+    .error-msg {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      font-size: 13px;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+    .error-msg.show { display: block; }
+
     .btn {
       width: 100%;
       margin-top: 22px;
@@ -143,9 +147,20 @@
       transition: background 0.15s, transform 0.1s;
       letter-spacing: 0.01em;
     }
-    .btn:hover { background: #1e293b; }
-    .btn:active { transform: scale(0.99); }
+    .btn:hover:not(:disabled) { background: #1e293b; }
+    .btn:active:not(:disabled) { transform: scale(0.99); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn svg { width: 16px; height: 16px; }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .trust {
       display: flex;
@@ -159,7 +174,6 @@
       gap: 5px;
       font-size: 12px;
       color: #64748b;
-      font-family: var(--font-body);
     }
     .trust-item svg { width: 13px; height: 13px; flex-shrink: 0; }
 
@@ -170,7 +184,6 @@
       font-size: 13px;
       color: #94a3b8;
       text-decoration: none;
-      font-family: var(--font-body);
       transition: color 0.15s;
     }
     .back:hover { color: #7c3aed; }
@@ -183,9 +196,7 @@
   <div class="blob blob-purple2"></div>
 
   <div class="card">
-    <div class="logo">
-      <div class="logo-wordmark">Zenith<span>Zoom</span></div>
-    </div>
+    <div class="logo-wordmark">Zenith<span>Zoom</span></div>
     <p class="subtitle">Admin Panel — Authorized Access Only</p>
 
     <div class="divider">
@@ -204,30 +215,27 @@
       <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
     </div>
 
-    <button class="btn" onclick="handleLogin()">
-      Sign In to Admin Panel
-      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="error-msg" id="error-msg"></div>
+
+    <button class="btn" id="login-btn" onclick="handleLogin()">
+      <span id="btn-text">Sign In to Admin Panel</span>
+      <div class="spinner" id="spinner"></div>
+      <svg id="btn-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </button>
 
     <div class="trust">
       <div class="trust-item">
-        <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Secure access
       </div>
       <div class="trust-item">
-        <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Authorized only
       </div>
       <div class="trust-item">
-        <svg viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5l3 3 5-5" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Encrypted
       </div>
     </div>
@@ -236,13 +244,70 @@
   </div>
 
   <script>
-    function handleLogin() {
-      const email = document.getElementById('email').value;
+    // Allow Enter key to submit
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    async function handleLogin() {
+      const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+      const btn = document.getElementById('login-btn');
+      const spinner = document.getElementById('spinner');
+      const arrow = document.getElementById('btn-arrow');
+      const btnText = document.getElementById('btn-text');
+      const errorMsg = document.getElementById('error-msg');
+
+      errorMsg.classList.remove('show');
+
       if (!email || !password) {
-        alert('Please enter your email and password.');
+        showError('Please enter your email and password.');
         return;
       }
+
+      // Loading state
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      arrow.style.display = 'none';
+      btnText.textContent = 'Signing in...';
+
+      try {
+        const res = await fetch('/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          btnText.textContent = 'Redirecting...';
+          window.location.href = data.redirect || '/admin/dashboard';
+        } else {
+          showError(data.message || 'Invalid credentials. Please try again.');
+          resetBtn();
+        }
+      } catch (err) {
+        showError('Connection error. Please try again.');
+        resetBtn();
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function resetBtn() {
+      const btn = document.getElementById('login-btn');
+      const spinner = document.getElementById('spinner');
+      const arrow = document.getElementById('btn-arrow');
+      const btnText = document.getElementById('btn-text');
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      arrow.style.display = 'block';
+      btnText.textContent = 'Sign In to Admin Panel';
     }
   </script>
 </body>
