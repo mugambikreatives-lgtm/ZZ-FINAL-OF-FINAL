@@ -96,7 +96,7 @@ router.patch('/progress', authMiddleware, async (req, res) => {
     if (!course) return res.status(404).json({ success: false, message: 'Course not purchased' });
     if (progress !== undefined) course.progress = progress;
     if (lastPage !== undefined) course.lastPage = lastPage;
-    if (completed !== undefined) course.completed = completed;
+    if (completed !== undefined) { course.completed = completed; if (completed) course.completedAt = course.completedAt || new Date(); }
     await user.save();
     res.json({ success: true });
   } catch (err) {
