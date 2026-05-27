@@ -97,6 +97,28 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 .pay-status.success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ade80}
 .pay-status.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171}
 
+
+/* CERTIFICATE BUTTON */
+.btn-cert{width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:8px;transition:all 0.2s;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-cert:hover{background:linear-gradient(135deg,#d97706,#b45309);box-shadow:0 4px 14px rgba(217,119,6,0.4)}
+.btn-mark-done{width:100%;background:linear-gradient(135deg,#34A853,#1e7e34);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:600;font-size:0.82rem;cursor:pointer;margin-top:8px;transition:all 0.2s;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-mark-done:hover{background:linear-gradient(135deg,#1e7e34,#155724)}
+
+/* CERTIFICATE MODAL */
+.cert-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;align-items:center;justify-content:center;padding:20px}
+.cert-modal-overlay.open{display:flex;flex-direction:column;gap:16px}
+.cert-modal{background:#fff;border-radius:16px;padding:20px;max-width:860px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
+.cert-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cert-modal-title{font-size:1rem;font-weight:700;color:#202124}
+.cert-modal-close{background:#f1f3f4;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:#5f6368}
+.cert-modal-close:hover{background:#e2e6ea}
+.cert-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-dl-cert{background:#1A73E8;color:#fff;border:none;border-radius:100px;padding:11px 28px;font-weight:600;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Google Sans',sans-serif;transition:all 0.2s}
+.btn-dl-cert:hover{background:#1557B0;box-shadow:0 4px 14px rgba(26,115,232,0.4)}
+.btn-dl-cert.gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.btn-dl-cert.gold:hover{background:linear-gradient(135deg,#d97706,#b45309)}
+#cert-canvas{border-radius:8px;max-width:100%;height:auto;display:block}
+
 /* PDF VIEWER */
 .viewer-overlay{display:none;position:fixed;inset:0;z-index:300;background:#000;flex-direction:column}
 .viewer-overlay.open{display:flex}
@@ -318,6 +340,8 @@ function updateStats() {
 
 // ── PAGES ──
 function showPage(name) {
+  // handle certificates page render
+  if (name === 'certificates') { setTimeout(renderCertificatesPage, 50); }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab,.sidebar-item').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name)?.classList.add('active');
@@ -359,6 +383,10 @@ function renderMyCourses() {
         <button class="btn-read" onclick="openViewer('${course._id}','${course.title.replace(/'/g,"\\'")}')">
           ${prog>0 ? '<i class="fa-solid fa-play"></i> Continue Reading' : '<i class="fa-solid fa-play"></i> Start Reading'}
         </button>
+        ${c.completed
+          ? `<button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-medal"></i> View Certificate</button>`
+          : `<button class="btn-mark-done" onclick="markComplete('${course._id}','${course.title.replace(/'/g,"\\'")}')" style="${prog<50?'opacity:0.5;':''}" ${prog<50?'title="Read at least 50% to complete"':''}><i class="fa-solid fa-circle-check"></i> Mark as Complete</button>`
+        }
       </div>
     </div>`;
   }).join('');
@@ -578,7 +606,250 @@ function showToast(msg, type='success') {
 // Close modals on backdrop click
 document.getElementById('pay-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closePayModal(); });
 
+
+// ── CERTIFICATES ──
+function renderCertificatesPage() {
+  const grid = document.getElementById('cert-grid');
+  const completed = (user.purchasedCourses||[]).filter(c => c.completed);
+  if (!completed.length) {
+    grid.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:0.9rem"><i class="fa-solid fa-medal" style="font-size:2rem;color:#DADCE0;display:block;margin-bottom:10px"></i>Complete a course to earn your first certificate.</div>';
+    return;
+  }
+  const icons = {Business:'💼',Marketing:'📢',Technology:'💻',Finance:'📈','Career Development':'🚀',Leadership:'👥'};
+  grid.innerHTML = completed.map(c => {
+    const course = c.courseId;
+    if (!course) return '';
+    const icon = icons[course.category] || '📄';
+    const date = c.completedAt ? new Date(c.completedAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : 'Completed';
+    return `<div class="course-card">
+      <div class="course-thumb" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#D97706;font-size:2.4rem">${icon}
+        <span class="badge badge-owned" style="background:#FEF3C7;color:#D97706;border-color:rgba(217,119,6,0.3)">🏆 Certified</span>
+      </div>
+      <div class="course-body">
+        <div class="course-title">${course.title}</div>
+        <div class="course-cat">${course.category}</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin:6px 0 10px"><i class="fa-regular fa-calendar"></i> ${date}</div>
+        <button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\'")}')">
+          <i class="fa-solid fa-medal"></i> View & Download Certificate
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function markComplete(courseId, title) {
+  const c = (user.purchasedCourses||[]).find(x=>(x.courseId?._id||x.courseId)===courseId||String(x.courseId?._id||x.courseId)===String(courseId));
+  if (!c) return;
+  if ((c.progress||0) < 50) { showToast('Read at least 50% of the course before completing', 'error'); return; }
+  if (!confirm(`Mark "${title}" as completed and earn your certificate?`)) return;
+  try {
+    await fetch('/api/auth/progress', {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ courseId, progress: 100, completed: true })
+    });
+    c.progress = 100; c.completed = true; c.completedAt = new Date().toISOString();
+    updateStats(); renderMyCourses();
+    showToast('🎉 Course completed! Your certificate is ready.', 'success');
+    setTimeout(() => showCertificate(courseId, title), 800);
+  } catch { showToast('Could not save completion. Try again.', 'error'); }
+}
+
+let currentCertData = null;
+
+function showCertificate(courseId, title) {
+  const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
+  const date = (c && c.completedAt) ? new Date(c.completedAt) : new Date();
+  const dateStr = date.toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'});
+  const name = user.name || user.email?.split('@')[0] || 'Graduate';
+  currentCertData = { courseId, title, name, dateStr };
+  drawCertificate(title, name, dateStr);
+  document.getElementById('cert-modal-overlay').classList.add('open');
+}
+
+function closeCertModal() {
+  document.getElementById('cert-modal-overlay').classList.remove('open');
+}
+
+function drawCertificate(courseTitle, recipientName, dateStr) {
+  const canvas = document.getElementById('cert-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = 800, H = 566;
+  canvas.width = W; canvas.height = H;
+
+  // Background — cream white
+  ctx.fillStyle = '#FFFDF5';
+  ctx.fillRect(0, 0, W, H);
+
+  // Outer border
+  ctx.strokeStyle = '#D97706';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(14, 14, W-28, H-28);
+
+  // Inner border
+  ctx.strokeStyle = '#FDE68A';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(26, 26, W-52, H-52);
+
+  // Corner ornaments
+  const corners = [[36,36],[W-36,36],[36,H-36],[W-36,H-36]];
+  corners.forEach(([x,y]) => {
+    ctx.fillStyle = '#D97706';
+    ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fill();
+  });
+
+  // Top decorative band
+  const grad = ctx.createLinearGradient(0, 36, W, 36);
+  grad.addColorStop(0, 'rgba(217,119,6,0)');
+  grad.addColorStop(0.5, 'rgba(217,119,6,0.12)');
+  grad.addColorStop(1, 'rgba(217,119,6,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(28, 28, W-56, 80);
+
+  // Logo area — ZenithZoom wordmark
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#202124';
+  ctx.font = 'bold 18px Google Sans, sans-serif';
+  ctx.fillText('ZENITH', W/2 - 34, 80);
+  ctx.fillStyle = '#1A73E8';
+  ctx.fillText('ZOOM', W/2 + 30, 80);
+
+  // Thin separator line
+  ctx.strokeStyle = '#FDE68A';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(80, 96); ctx.lineTo(W-80, 96); ctx.stroke();
+
+  // "CERTIFICATE OF COMPLETION" heading
+  ctx.fillStyle = '#D97706';
+  ctx.font = 'bold 13px Google Sans, sans-serif';
+  ctx.letterSpacing = '4px';
+  ctx.fillText('CERTIFICATE OF COMPLETION', W/2, 126);
+
+  // "This is to certify that"
+  ctx.fillStyle = '#5F6368';
+  ctx.font = '14px Georgia, serif';
+  ctx.fillText('This is to certify that', W/2, 165);
+
+  // Recipient name
+  ctx.fillStyle = '#202124';
+  ctx.font = 'italic bold 40px Georgia, serif';
+  ctx.fillText(recipientName, W/2, 222);
+
+  // Underline name
+  const nameW = ctx.measureText(recipientName).width;
+  ctx.strokeStyle = '#D97706';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - nameW/2, 230);
+  ctx.lineTo(W/2 + nameW/2, 230);
+  ctx.stroke();
+
+  // "has successfully completed"
+  ctx.fillStyle = '#5F6368';
+  ctx.font = '14px Georgia, serif';
+  ctx.fillText('has successfully completed the course', W/2, 265);
+
+  // Course title
+  ctx.fillStyle = '#1A73E8';
+  ctx.font = 'bold 22px Google Sans, sans-serif';
+  // Wrap long titles
+  const maxW = W - 160;
+  const words = courseTitle.split(' ');
+  let line = ''; const lines = [];
+  words.forEach(w => {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  });
+  if (line) lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, W/2, 305 + i*32));
+
+  const afterTitle = 305 + (lines.length-1)*32;
+
+  // Date & signature area
+  const sigY = afterTitle + 80;
+  ctx.strokeStyle = '#DADCE0'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(120, sigY); ctx.lineTo(320, sigY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(480, sigY); ctx.lineTo(680, sigY); ctx.stroke();
+
+  ctx.fillStyle = '#5F6368'; ctx.font = '12px Google Sans, sans-serif';
+  ctx.fillText(dateStr, 220, sigY + 18);
+  ctx.fillText('Zenith Zoom Academy', 580, sigY + 18);
+  ctx.fillStyle = '#9AA0A6'; ctx.font = '10px Google Sans, sans-serif';
+  ctx.fillText('Date of Completion', 220, sigY + 32);
+  ctx.fillText('Authorised Signatory', 580, sigY + 32);
+
+  // Medal emoji area
+  ctx.font = '28px serif';
+  ctx.fillText('🏆', W/2, afterTitle + 48);
+
+  // Bottom seal
+  ctx.fillStyle = '#1A73E8';
+  ctx.beginPath(); ctx.arc(W/2, H-52, 22, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Google Sans, sans-serif';
+  ctx.fillText('VERIFIED', W/2, H-55);
+  ctx.font = '8px Google Sans, sans-serif';
+  ctx.fillText('ZENITH ZOOM', W/2, H-44);
+}
+
+function downloadCertPDF() {
+  if (!currentCertData) return;
+  const canvas = document.getElementById('cert-canvas');
+  const dataUrl = canvas.toDataURL('image/png', 1.0);
+  // Open in new tab for print-to-PDF
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <title>Certificate — ${currentCertData.title}</title>
+    <style>
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { background:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+      img { max-width:100%; height:auto; display:block; }
+      @media print {
+        body { margin:0; }
+        img { width:100%; height:auto; page-break-inside:avoid; }
+        .no-print { display:none; }
+      }
+    </style>
+  </head><body>
+    <img src="${dataUrl}" alt="Certificate"/>
+    <div class="no-print" style="position:fixed;bottom:20px;right:20px">
+      <button onclick="window.print()" style="background:#1A73E8;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;cursor:pointer">🖨️ Print / Save as PDF</button>
+    </div>
+    <script>setTimeout(()=>window.print(),600)<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function downloadCertImage() {
+  if (!currentCertData) return;
+  const canvas = document.getElementById('cert-canvas');
+  const link = document.createElement('a');
+  link.download = 'ZenithZoom_Certificate_' + currentCertData.title.replace(/[^a-z0-9]/gi,'_') + '.png';
+  link.href = canvas.toDataURL('image/png', 1.0);
+  link.click();
+}
+
+document.getElementById('cert-modal-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeCertModal();
+});
+
 init();
 </script>
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-overlay" id="cert-modal-overlay">
+  <div class="cert-modal">
+    <div class="cert-modal-header">
+      <div class="cert-modal-title"><i class="fa-solid fa-medal" style="color:#f59e0b;margin-right:6px"></i>Certificate of Completion</div>
+      <button class="cert-modal-close" onclick="closeCertModal()">✕</button>
+    </div>
+    <canvas id="cert-canvas" width="800" height="566"></canvas>
+  </div>
+  <div class="cert-actions">
+    <button class="btn-dl-cert gold" onclick="downloadCertPDF()"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+    <button class="btn-dl-cert" onclick="downloadCertImage()"><i class="fa-solid fa-image"></i> Save as Image</button>
+    <button class="btn-dl-cert" style="background:#5F6368" onclick="closeCertModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+  </div>
+</div>
+
 </body>
 </html>
