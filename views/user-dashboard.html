@@ -177,8 +177,8 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
   <a class="nav-logo" href="/">Zenith <span>Zoom</span></a>
   <a href="/" style="display:flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:0.8rem;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--border);margin-left:8px;transition:all 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">🏠 Home</a>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open" style="margin-right:6px"></i>My Courses</button>
-    <button class="nav-tab" onclick="showPage('browse')"><i class="fa-solid fa-store" style="margin-right:6px"></i>Browse</button>
+    <button class="nav-tab active" id="nav-my-courses" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open" style="margin-right:6px"></i>My Courses</button>
+    <button class="nav-tab" id="nav-browse" onclick="showPage('browse')"><i class="fa-solid fa-store" style="margin-right:6px"></i>Browse</button>
     <button class="nav-tab" onclick="showPage('cv')"><i class="fa-solid fa-file-lines" style="margin-right:6px"></i>CV Builder</button>
   </div>
   <div class="nav-right">
@@ -192,8 +192,8 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-section">Learn</div>
-  <button class="sidebar-item active" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</button>
-  <button class="sidebar-item" onclick="showPage('browse')"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</button>
+  <button class="sidebar-item active" id="sidebar-my-courses" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</button>
+  <button class="sidebar-item" id="sidebar-browse" onclick="showPage('browse')"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</button>
   <div class="sidebar-section">Tools</div>
   <button class="sidebar-item" onclick="showPage('cv')"><i class="fa-solid fa-file-lines fa-fw"></i> CV Builder</button>
   <div class="sidebar-section">Account</div>
@@ -275,6 +275,22 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 </main>
 
 <!-- PAY MODAL -->
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal-overlay" id="cert-modal-overlay">
+  <div class="cert-modal">
+    <div class="cert-modal-header">
+      <div class="cert-modal-title"><i class="fa-solid fa-medal" style="color:#f59e0b;margin-right:6px"></i>Certificate of Completion</div>
+      <button class="cert-modal-close" onclick="closeCertModal()">✕</button>
+    </div>
+    <canvas id="cert-canvas" width="800" height="566"></canvas>
+  </div>
+  <div class="cert-actions">
+    <button class="btn-dl-cert gold" onclick="downloadCertPDF()"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+    <button class="btn-dl-cert" onclick="downloadCertImage()"><i class="fa-solid fa-image"></i> Save as Image</button>
+    <button class="btn-dl-cert" style="background:#5F6368" onclick="closeCertModal()"><i class="fa-solid fa-xmark"></i> Close</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="pay-modal">
   <div class="modal">
     <button class="modal-close" onclick="closePayModal()">✕</button>
@@ -312,21 +328,24 @@ let pollInterval = null;
 
 // ── INIT ──
 async function init() {
+  // Safe event listener — DOM guaranteed here
+  const certOverlay = document.getElementById('cert-modal-overlay');
+  if (certOverlay) certOverlay.addEventListener('click', e => { if (e.target === e.currentTarget) closeCertModal(); });
   try {
     const res = await fetch('/api/auth/me');
     const data = await res.json();
     if (!data.success) { window.location = '/login'; return; }
     user = data.user;
-    document.getElementById('nav-name').textContent = user.name.split(' ')[0];
-    document.getElementById('nav-avatar').textContent = user.name[0].toUpperCase();
+    document.getElementById('nav-name').textContent = (user.name||user.email||'User').split(' ')[0];
+    document.getElementById('nav-avatar').textContent = (user.name||user.email||'U')[0].toUpperCase();
     updateStats();
     renderMyCourses();
     loadAllCourses();
     // Pre-fill CV with user name/email
-    document.getElementById('cv-name').value = user.name;
-    document.getElementById('cv-email').value = user.email;
-    updatePreview();
-  } catch { window.location = '/login'; }
+    const cvName = document.getElementById('cv-name'); if(cvName) cvName.value = user.name||'';
+    const cvEmail = document.getElementById('cv-email'); if(cvEmail) cvEmail.value = user.email||'';
+    if(document.getElementById('cv-name')) updatePreview();
+  } catch(err) { console.error('Init error:', err); window.location = '/login'; }
 }
 
 function updateStats() {
@@ -340,8 +359,15 @@ function updateStats() {
 
 // ── PAGES ──
 function showPage(name) {
-  // handle certificates page render
   if (name === 'certificates') { setTimeout(renderCertificatesPage, 50); }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab, .sidebar-item').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  const navBtn = document.getElementById('nav-' + name);
+  if (navBtn) navBtn.classList.add('active');
+  const sideBtn = document.getElementById('sidebar-' + name);
+  if (sideBtn) sideBtn.classList.add('active');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab,.sidebar-item').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name)?.classList.add('active');
@@ -828,28 +854,8 @@ function downloadCertImage() {
   link.click();
 }
 
-document.getElementById('cert-modal-overlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeCertModal();
-});
-
 init();
 </script>
-
-<!-- CERTIFICATE MODAL -->
-<div class="cert-modal-overlay" id="cert-modal-overlay">
-  <div class="cert-modal">
-    <div class="cert-modal-header">
-      <div class="cert-modal-title"><i class="fa-solid fa-medal" style="color:#f59e0b;margin-right:6px"></i>Certificate of Completion</div>
-      <button class="cert-modal-close" onclick="closeCertModal()">✕</button>
-    </div>
-    <canvas id="cert-canvas" width="800" height="566"></canvas>
-  </div>
-  <div class="cert-actions">
-    <button class="btn-dl-cert gold" onclick="downloadCertPDF()"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
-    <button class="btn-dl-cert" onclick="downloadCertImage()"><i class="fa-solid fa-image"></i> Save as Image</button>
-    <button class="btn-dl-cert" style="background:#5F6368" onclick="closeCertModal()"><i class="fa-solid fa-xmark"></i> Close</button>
-  </div>
-</div>
 
 </body>
 </html>
