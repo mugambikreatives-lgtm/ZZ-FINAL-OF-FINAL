@@ -13,7 +13,8 @@ const userSchema = new mongoose.Schema({
     purchasedAt: { type: Date, default: Date.now },
     progress: { type: Number, default: 0 }, // percentage
     lastPage: { type: Number, default: 1 },
-    completed: { type: Boolean, default: false }
+    completed: { type: Boolean, default: false },
+      completedAt: { type: Date }
   }],
   createdAt: { type: Date, default: Date.now }
 });
