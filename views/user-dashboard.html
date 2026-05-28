@@ -98,6 +98,36 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 .pay-status.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171}
 
 
+
+/* ── ASSIGNMENT ── */
+.assignment-section{margin-top:10px;border-top:1px solid #f1f3f4;padding-top:10px}
+.assignment-status{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:8px}
+.assignment-status.pending{background:#FEF3C7;color:#B45309}
+.assignment-status.approved{background:#D1FAE5;color:#065F46}
+.assignment-status.rejected{background:#FEE2E2;color:#991B1B}
+.assignment-status.none{background:#F3F4F6;color:#6B7280}
+.btn-submit-assignment{width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:6px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s}
+.btn-submit-assignment:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-resubmit{background:linear-gradient(135deg,#f59e0b,#d97706)!important}
+.assignment-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:600;align-items:center;justify-content:center;padding:20px}
+.assignment-modal-overlay.open{display:flex}
+.assignment-modal{background:#fff;border-radius:16px;width:100%;max-width:500px;box-shadow:0 24px 60px rgba(0,0,0,0.3);overflow:hidden}
+.assignment-modal-header{padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between}
+.assignment-modal-title{font-size:1rem;font-weight:700;color:#111827}
+.assignment-modal-close{background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:#6b7280;flex-shrink:0}
+.assignment-modal-body{padding:20px 24px 24px}
+.file-drop-zone{border:2px dashed #e5e7eb;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:#f9fafb}
+.file-drop-zone:hover,.file-drop-zone.drag{border-color:#7c3aed;background:#f5f3ff}
+.file-drop-zone svg{width:36px;height:36px;color:#d1d5db;display:block;margin:0 auto 10px}
+.file-drop-zone.has-file{border-color:#10b981;background:#f0fdf4}
+.file-drop-zone.has-file svg{color:#10b981}
+.assignment-note{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;width:100%;padding:10px 12px;font-size:0.85rem;font-family:'Google Sans',sans-serif;color:#374151;resize:vertical;min-height:70px;outline:none;margin-top:14px;box-sizing:border-box}
+.assignment-note:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.btn-submit-final{width:100%;margin-top:14px;background:#7c3aed;color:#fff;border:none;border-radius:50px;padding:12px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Google Sans',sans-serif;transition:all 0.2s}
+.btn-submit-final:hover:not(:disabled){background:#6d28d9}
+.btn-submit-final:disabled{opacity:0.5;cursor:not-allowed}
+.tutor-note-box{background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:0.82rem;color:#92400E;line-height:1.5}
+.tutor-note-box.rejected{background:#FEE2E2;border-color:#FECACA;color:#991B1B}
 /* CERTIFICATE BUTTON */
 .btn-cert{width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:8px;transition:all 0.2s;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
 .btn-cert:hover{background:linear-gradient(135deg,#d97706,#b45309);box-shadow:0 4px 14px rgba(217,119,6,0.4)}
@@ -354,6 +384,7 @@ async function init() {
     document.getElementById('nav-name').textContent = (user.name||user.email||'User').split(' ')[0];
     document.getElementById('nav-avatar').textContent = (user.name||user.email||'U')[0].toUpperCase();
     updateStats();
+    await loadAssignments();
     renderMyCourses();
     loadAllCourses();
     // Pre-fill CV with user name/email
@@ -856,7 +887,47 @@ function downloadCertPDF() {
       <button onclick="window.print()" style="background:#1A73E8;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;cursor:pointer">🖨️ Print / Save as PDF</button>
     </div>
     <script>setTimeout(()=>window.print(),600)<\/script>
-  </body></html>`);
+  
+<!-- ASSIGNMENT SUBMISSION MODAL -->
+<div class="assignment-modal-overlay" id="assignment-modal">
+  <div class="assignment-modal">
+    <div class="assignment-modal-header">
+      <div>
+        <div class="assignment-modal-title">📝 Submit Assignment</div>
+        <div style="font-size:0.78rem;color:#6b7280;margin-top:2px" id="asgn-course-name"></div>
+      </div>
+      <button class="assignment-modal-close" onclick="closeAssignmentModal()">✕</button>
+    </div>
+    <div class="assignment-modal-body">
+      <p style="font-size:0.85rem;color:#6b7280;margin-bottom:14px;line-height:1.5">
+        Upload your completed assignment. Your tutor will review it and award your certificate once approved.
+      </p>
+
+      <div class="file-drop-zone" id="asgn-drop-zone"
+        onclick="document.getElementById('asgn-file-input').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleAsgnDrop(event)">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="asgn-drop-icon"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
+        <div style="font-size:0.88rem;color:#6b7280;font-weight:500" id="asgn-drop-text">Click to browse or drag & drop</div>
+        <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px">PDF or DOCX · Max 20MB</div>
+        <div style="font-size:0.8rem;color:#10b981;font-weight:600;margin-top:6px;display:none" id="asgn-file-name"></div>
+      </div>
+      <input type="file" id="asgn-file-input" accept=".pdf,.doc,.docx" style="display:none" onchange="onAsgnFileSelect(this)">
+
+      <textarea class="assignment-note" id="asgn-note" placeholder="Optional: Add a note to your tutor (e.g. questions, context about your submission)"></textarea>
+
+      <div id="asgn-submit-error" style="display:none;background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:0.83rem;margin-top:10px"></div>
+
+      <button class="btn-submit-final" id="asgn-submit-btn" onclick="submitAssignment()">
+        <span id="asgn-btn-text">Submit Assignment</span>
+        <div class="spinner" id="asgn-spinner" style="display:none;border-color:rgba(255,255,255,0.3);border-top-color:white"></div>
+      </button>
+    </div>
+  </div>
+</div>
+
+</body></html>`);
   win.document.close();
 }
 
@@ -869,8 +940,211 @@ function downloadCertImage() {
   link.click();
 }
 
+
+// ── ASSIGNMENTS ──────────────────────────────────────────────────────────────
+let userAssignments = [];
+let currentAsgnCourseId = null;
+let currentAsgnFile = null;
+
+async function loadAssignments() {
+  try {
+    const res = await fetch('/api/assignments/my');
+    const data = await res.json();
+    if (data.success) {
+      userAssignments = data.assignments || [];
+      // Re-render course cards to update status badges
+      renderMyCourses();
+    }
+  } catch {}
+}
+
+function renderAssignmentStatus(courseId) {
+  const asgn = userAssignments.find(a => {
+    const cid = a.courseId?._id || a.courseId;
+    return String(cid) === String(courseId);
+  });
+  const course = (user.purchasedCourses||[]).find(c => String(c.courseId?._id||c.courseId) === String(courseId));
+
+  // Already certified — no need to show assignment
+  if (course?.completed) return '';
+
+  if (!asgn) {
+    return `<button class="btn-submit-assignment" onclick="openAssignmentModal('${courseId}')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
+      Submit Assignment for Certificate
+    </button>`;
+  }
+
+  const statusMap = { pending:'⏳ Under Review', approved:'✅ Approved', rejected:'❌ Needs Revision' };
+  const statusClass = { pending:'pending', approved:'approved', rejected:'rejected' };
+  let html = `<div class="assignment-status ${statusClass[asgn.status]}">${statusMap[asgn.status]}</div>`;
+
+  if (asgn.status === 'rejected') {
+    if (asgn.tutorNote) {
+      html += `<div class="tutor-note-box rejected"><strong>Tutor feedback:</strong> ${asgn.tutorNote}</div>`;
+    }
+    html += `<button class="btn-submit-assignment btn-resubmit" onclick="openAssignmentModal('${courseId}')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+      Re-submit Assignment
+    </button>`;
+  } else if (asgn.status === 'pending') {
+    if (asgn.tutorNote) {
+      html += `<div class="tutor-note-box"><strong>Tutor note:</strong> ${asgn.tutorNote}</div>`;
+    }
+    html += `<div style="font-size:0.75rem;color:#6b7280;margin-top:6px">Submitted: ${new Date(asgn.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'})}</div>`;
+  }
+
+  return html;
+}
+
+function openAssignmentModal(courseId) {
+  currentAsgnCourseId = courseId;
+  currentAsgnFile = null;
+  // Reset modal
+  document.getElementById('asgn-drop-zone').className = 'file-drop-zone';
+  document.getElementById('asgn-drop-text').textContent = 'Click to browse or drag & drop';
+  document.getElementById('asgn-file-name').style.display = 'none';
+  document.getElementById('asgn-file-input').value = '';
+  document.getElementById('asgn-note').value = '';
+  document.getElementById('asgn-submit-error').style.display = 'none';
+  document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
+  document.getElementById('asgn-spinner').style.display = 'none';
+  document.getElementById('asgn-submit-btn').disabled = false;
+  // Set course name
+  const course = (user.purchasedCourses||[]).find(c => String(c.courseId?._id||c.courseId) === String(courseId));
+  document.getElementById('asgn-course-name').textContent = course?.courseId?.title || '';
+  document.getElementById('assignment-modal').classList.add('open');
+}
+
+function closeAssignmentModal() {
+  document.getElementById('assignment-modal').classList.remove('open');
+  currentAsgnCourseId = null;
+  currentAsgnFile = null;
+}
+
+function onAsgnFileSelect(input) {
+  if (input.files[0]) setAsgnFile(input.files[0]);
+}
+
+function handleAsgnDrop(e) {
+  e.preventDefault();
+  document.getElementById('asgn-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) setAsgnFile(file);
+}
+
+function setAsgnFile(file) {
+  const allowed = ['application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/msword'];
+  if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|docx|doc)$/i)) {
+    document.getElementById('asgn-submit-error').textContent = 'Only PDF or DOCX files are allowed.';
+    document.getElementById('asgn-submit-error').style.display = 'block';
+    return;
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    document.getElementById('asgn-submit-error').textContent = 'File must be under 20MB.';
+    document.getElementById('asgn-submit-error').style.display = 'block';
+    return;
+  }
+  currentAsgnFile = file;
+  document.getElementById('asgn-submit-error').style.display = 'none';
+  const zone = document.getElementById('asgn-drop-zone');
+  zone.className = 'file-drop-zone has-file';
+  document.getElementById('asgn-drop-text').textContent = '✓ File selected';
+  const nameEl = document.getElementById('asgn-file-name');
+  nameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+  nameEl.style.display = 'block';
+}
+
+async function submitAssignment() {
+  if (!currentAsgnFile) {
+    document.getElementById('asgn-submit-error').textContent = 'Please select a file to submit.';
+    document.getElementById('asgn-submit-error').style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('asgn-submit-btn');
+  btn.disabled = true;
+  document.getElementById('asgn-btn-text').textContent = 'Submitting...';
+  document.getElementById('asgn-spinner').style.display = 'block';
+  document.getElementById('asgn-submit-error').style.display = 'none';
+
+  try {
+    const fd = new FormData();
+    fd.append('assignment', currentAsgnFile);
+    fd.append('courseId', currentAsgnCourseId);
+    fd.append('note', document.getElementById('asgn-note').value);
+
+    const res = await fetch('/api/assignments/submit', { method: 'POST', body: fd });
+    const data = await res.json();
+
+    if (data.success) {
+      closeAssignmentModal();
+      showToast('📝 Assignment submitted! Your tutor will review it soon.', 'success');
+      await loadAssignments();
+    } else {
+      document.getElementById('asgn-submit-error').textContent = data.message || 'Submission failed.';
+      document.getElementById('asgn-submit-error').style.display = 'block';
+      btn.disabled = false;
+      document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
+      document.getElementById('asgn-spinner').style.display = 'none';
+    }
+  } catch {
+    document.getElementById('asgn-submit-error').textContent = 'Network error. Please try again.';
+    document.getElementById('asgn-submit-error').style.display = 'block';
+    btn.disabled = false;
+    document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
+    document.getElementById('asgn-spinner').style.display = 'none';
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('assignment-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeAssignmentModal();
+});
+
 init();
 </script>
+
+
+<!-- ASSIGNMENT SUBMISSION MODAL -->
+<div class="assignment-modal-overlay" id="assignment-modal">
+  <div class="assignment-modal">
+    <div class="assignment-modal-header">
+      <div>
+        <div class="assignment-modal-title">📝 Submit Assignment</div>
+        <div style="font-size:0.78rem;color:#6b7280;margin-top:2px" id="asgn-course-name"></div>
+      </div>
+      <button class="assignment-modal-close" onclick="closeAssignmentModal()">✕</button>
+    </div>
+    <div class="assignment-modal-body">
+      <p style="font-size:0.85rem;color:#6b7280;margin-bottom:14px;line-height:1.5">
+        Upload your completed assignment. Your tutor will review it and award your certificate once approved.
+      </p>
+
+      <div class="file-drop-zone" id="asgn-drop-zone"
+        onclick="document.getElementById('asgn-file-input').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleAsgnDrop(event)">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="asgn-drop-icon"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
+        <div style="font-size:0.88rem;color:#6b7280;font-weight:500" id="asgn-drop-text">Click to browse or drag & drop</div>
+        <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px">PDF or DOCX · Max 20MB</div>
+        <div style="font-size:0.8rem;color:#10b981;font-weight:600;margin-top:6px;display:none" id="asgn-file-name"></div>
+      </div>
+      <input type="file" id="asgn-file-input" accept=".pdf,.doc,.docx" style="display:none" onchange="onAsgnFileSelect(this)">
+
+      <textarea class="assignment-note" id="asgn-note" placeholder="Optional: Add a note to your tutor (e.g. questions, context about your submission)"></textarea>
+
+      <div id="asgn-submit-error" style="display:none;background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:0.83rem;margin-top:10px"></div>
+
+      <button class="btn-submit-final" id="asgn-submit-btn" onclick="submitAssignment()">
+        <span id="asgn-btn-text">Submit Assignment</span>
+        <div class="spinner" id="asgn-spinner" style="display:none;border-color:rgba(255,255,255,0.3);border-top-color:white"></div>
+      </button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(morgan('combined'));
 app.use(cookieParser());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -40,6 +40,7 @@ app.use('/api/resources', require('./routes/resources'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/admin', require('./routes/admin'));
 app.use('/api/user', require('./routes/user'));
+app.use('/api/assignments', require('./routes/assignments'));
 
 
 // User pages

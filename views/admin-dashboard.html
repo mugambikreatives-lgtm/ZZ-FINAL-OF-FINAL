@@ -255,6 +255,10 @@ tbody tr:hover { background: #f8f9ff; }
     <span class="sidebar-icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg></span>
     Payments
   </button>
+  <button class="sidebar-item" id="nav-assignments" onclick="showPanel('assignments')">
+    <span class="sidebar-icon"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg></span>
+    Assignments
+  </button>
   <button class="sidebar-item" id="nav-settings" onclick="showPanel('settings')">
     <span class="sidebar-icon"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg></span>
     Settings
@@ -396,6 +400,24 @@ tbody tr:hover { background: #f8f9ff; }
             <tbody id="payments-tbody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted);"><div class="spinner"></div>Loading...</td></tr></tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+
+    <!-- ASSIGNMENTS -->
+    <div class="panel" id="panel-assignments">
+      <div class="section-header">
+        <div><div class="section-title">Student Assignments</div><div class="section-sub">Review submissions and award certificates</div></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="filterAssignments('all')" id="asgn-filter-all" style="border-color:#1A73E8;color:#1A73E8">All</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterAssignments('pending')" id="asgn-filter-pending">Pending</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterAssignments('approved')" id="asgn-filter-approved">Approved</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterAssignments('rejected')" id="asgn-filter-rejected">Rejected</button>
+        </div>
+      </div>
+
+      <div id="assignments-list">
+        <div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div>Loading assignments...</div>
       </div>
     </div>
 
@@ -561,12 +583,128 @@ function closeSidebar() {
 }
 
 let resources = [], jobs = [], payments = [];
+
+// ── ASSIGNMENTS ──────────────────────────────────────────────────────────────
+let allAssignments = [];
+let asgnFilter = 'all';
+let currentReviewId = null;
+
+async function loadAdminAssignments() {
+  try {
+    const res = await fetch('/api/assignments/all');
+    const data = await res.json();
+    allAssignments = data.assignments || [];
+    renderAssignments();
+  } catch {
+    document.getElementById('assignments-list').innerHTML =
+      '<div style="text-align:center;padding:40px;color:var(--muted)">Failed to load assignments.</div>';
+  }
+}
+
+function filterAssignments(filter) {
+  asgnFilter = filter;
+  ['all','pending','approved','rejected'].forEach(f => {
+    const btn = document.getElementById('asgn-filter-' + f);
+    if (btn) {
+      btn.style.borderColor = f === filter ? '#1A73E8' : '';
+      btn.style.color = f === filter ? '#1A73E8' : '';
+    }
+  });
+  renderAssignments();
+}
+
+function renderAssignments() {
+  const list = document.getElementById('assignments-list');
+  const filtered = asgnFilter === 'all' ? allAssignments : allAssignments.filter(a => a.status === asgnFilter);
+
+  if (!filtered.length) {
+    const msgs = { all:'No assignments submitted yet.', pending:'No pending assignments.', approved:'No approved assignments.', rejected:'No rejected assignments.' };
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted)">${msgs[asgnFilter]}</div>`;
+    return;
+  }
+
+  const statusBadge = s => ({
+    pending: '<span class="badge" style="background:#FEF3C7;color:#B45309">⏳ Pending Review</span>',
+    approved: '<span class="badge" style="background:#D1FAE5;color:#065F46">✅ Approved</span>',
+    rejected: '<span class="badge" style="background:#FEE2E2;color:#991B1B">❌ Revision Requested</span>',
+  }[s] || s);
+
+  list.innerHTML = filtered.map(a => {
+    const student = a.userId?.name || 'Unknown';
+    const email = a.userId?.email || '';
+    const course = a.courseId?.title || 'Unknown Course';
+    const date = new Date(a.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const size = a.fileSize ? (a.fileSize / 1024).toFixed(0) + ' KB' : '';
+
+    return `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border);transition:background 0.15s" onmouseover="this.style.background='#f8f9ff'" onmouseout="this.style.background=''">
+      <div style="width:42px;height:42px;border-radius:12px;background:${a.fileType==='pdf'?'#FEE2E2':'#EFF6FF'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem">
+        ${a.fileType==='pdf'?'📄':'📝'}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:0.88rem;color:var(--text)">${esc(student)} <span style="color:var(--muted);font-weight:400;font-size:0.78rem">${esc(email)}</span></div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-top:2px">${esc(course)}</div>
+        <div style="font-size:0.73rem;color:var(--muted);margin-top:3px">${esc(a.fileOriginalName)} ${size ? '· '+size : ''} · ${date}</div>
+        ${a.tutorNote ? `<div style="font-size:0.75rem;color:#6B7280;margin-top:4px;font-style:italic">"${esc(a.tutorNote)}"</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        ${statusBadge(a.status)}
+        ${a.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="openReviewModal('${a._id}')">Review</button>` : `<button class="btn btn-ghost btn-sm" onclick="openReviewModal('${a._id}')">View</button>`}
+      </div>
+    </div>`;
+  }).join('');
+
+  list.style.border = '1px solid var(--border)';
+  list.style.borderRadius = '12px';
+  list.style.overflow = 'hidden';
+  list.style.background = 'var(--card)';
+}
+
+function openReviewModal(id) {
+  const a = allAssignments.find(x => x._id === id);
+  if (!a) return;
+  currentReviewId = id;
+  document.getElementById('rv-student').textContent = (a.userId?.name || 'Unknown') + ' — ' + (a.userId?.email || '');
+  document.getElementById('rv-course').textContent = '📚 ' + (a.courseId?.title || 'Unknown Course');
+  document.getElementById('rv-submitted').textContent = '🕐 Submitted: ' + new Date(a.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('rv-note').value = a.tutorNote || '';
+  document.getElementById('rv-error').style.display = 'none';
+  document.getElementById('rv-download-btn').href = '/api/assignments/download/' + id;
+  document.getElementById('review-modal').classList.add('open');
+}
+
+async function submitReview(status) {
+  if (!currentReviewId) return;
+  const note = document.getElementById('rv-note').value.trim();
+  const errEl = document.getElementById('rv-error');
+  errEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/assignments/' + currentReviewId + '/review', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, tutorNote: note })
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeModal('review-modal');
+      showToast(status === 'approved' ? '✅ Assignment approved — certificate awarded!' : '📝 Revision requested — student notified.', 'success');
+      loadAdminAssignments();
+    } else {
+      errEl.textContent = data.message || 'Failed to submit review.';
+      errEl.style.display = 'block';
+    }
+  } catch {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  }
+}
+
 const panelTitles = {
   overview: ['Overview','Dashboard summary'],
   courses: ['Courses','Manage course library'],
   jobs: ['Job Listings','Manage job postings'],
   payments: ['Payments','All M-Pesa transactions'],
-  settings: ['Settings','Platform configuration']
+  settings: ['Settings','Platform configuration'],
+  assignments: ['Assignments','Review student submissions']
 };
 
 function showPanel(name) {
@@ -579,6 +717,7 @@ function showPanel(name) {
   document.getElementById('topbar-title').textContent = title;
   document.getElementById('topbar-sub').textContent = sub;
   if (name === 'overview') loadStats();
+  if (name === 'assignments') loadAdminAssignments();
   if (name === 'courses') loadResources();
   if (name === 'jobs') loadJobs();
   if (name === 'payments') loadPayments();
@@ -826,5 +965,42 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 
 loadStats();
 </script>
+
+<!-- ASSIGNMENT REVIEW MODAL -->
+<div class="modal-overlay" id="review-modal" style="z-index:600">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div class="modal-title">Review Assignment</div>
+      <button class="modal-close" onclick="closeModal('review-modal')">✕</button>
+    </div>
+    <div style="padding:20px 24px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="font-weight:600;font-size:0.92rem;color:var(--text)" id="rv-student"></div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:3px" id="rv-course"></div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:3px" id="rv-submitted"></div>
+      </div>
+      <a id="rv-download-btn" href="#" target="_blank" class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:16px;text-decoration:none;border-radius:8px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download & Review File
+      </a>
+      <div class="form-group">
+        <label>Tutor Feedback / Note (optional)</label>
+        <textarea id="rv-note" rows="3" placeholder="e.g. Great work! / Please redo section 3 and resubmit."></textarea>
+      </div>
+      <div id="rv-error" style="display:none;background:#FEE2E2;border:1px solid #FECACA;color:#DC2626;padding:10px 14px;border-radius:8px;font-size:0.83rem;margin-bottom:10px"></div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button class="btn" style="flex:1;justify-content:center;background:#10B981;color:white;border-radius:8px" onclick="submitReview('approved')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Approve & Award Certificate
+        </button>
+        <button class="btn" style="flex:1;justify-content:center;background:#EF4444;color:white;border-radius:8px" onclick="submitReview('rejected')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          Request Revision
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
