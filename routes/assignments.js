@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 const Assignment = require('../models/Assignment');
 const User = require('../models/User');
-const { Resource } = require('../models');
+const Resource = require('../models/Resource');
 
 const JWT_SECRET = process.env.SESSION_SECRET || 'zenithzoom-secret';
 

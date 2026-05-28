@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const { Resource, Payment, Job } = require('../models');
 const { initiateStkPush } = require('../utils/mpesa');
 const { generateCVPdf } = require('../utils/cvGenerator');
-const { requireAdmin } = require('../middleware/auth');
+const { isAdminAPI } = require('../middleware/auth');
 
 // Multer setup for PDF uploads
 const storage = multer.diskStorage({
@@ -60,7 +60,7 @@ router.get('/resources', async (req, res) => {
   }
 });
 
-router.post('/admin/resources', requireAdmin, upload.single('pdf'), async (req, res) => {
+router.post('/admin/resources', isAdminAPI, upload.single('pdf'), async (req, res) => {
   try {
     const { title, description, category, price } = req.body;
     if (!req.file) return res.status(400).json({ error: 'PDF file required' });
@@ -80,7 +80,7 @@ router.post('/admin/resources', requireAdmin, upload.single('pdf'), async (req, 
   }
 });
 
-router.delete('/admin/resources/:id', requireAdmin, async (req, res) => {
+router.delete('/admin/resources/:id', isAdminAPI, async (req, res) => {
   try {
     const resource = await Resource.findByIdAndDelete(req.params.id);
     if (resource && fs.existsSync(resource.filepath)) {
@@ -121,7 +121,7 @@ router.get('/jobs/:id', async (req, res) => {
   }
 });
 
-router.post('/admin/jobs', requireAdmin, async (req, res) => {
+router.post('/admin/jobs', isAdminAPI, async (req, res) => {
   try {
     const job = new Job(req.body);
     await job.save();
@@ -131,7 +131,7 @@ router.post('/admin/jobs', requireAdmin, async (req, res) => {
   }
 });
 
-router.put('/admin/jobs/:id', requireAdmin, async (req, res) => {
+router.put('/admin/jobs/:id', isAdminAPI, async (req, res) => {
   try {
     const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json({ success: true, job });
@@ -140,7 +140,7 @@ router.put('/admin/jobs/:id', requireAdmin, async (req, res) => {
   }
 });
 
-router.delete('/admin/jobs/:id', requireAdmin, async (req, res) => {
+router.delete('/admin/jobs/:id', isAdminAPI, async (req, res) => {
   try {
     await Job.findByIdAndDelete(req.params.id);
     res.json({ success: true });
@@ -313,7 +313,7 @@ router.get('/download/cv/:paymentId', async (req, res) => {
 });
 
 // Admin: Get all payments
-router.get('/admin/payments', requireAdmin, async (req, res) => {
+router.get('/admin/payments', isAdminAPI, async (req, res) => {
   try {
     const payments = await Payment.find().populate('resourceId', 'title').sort({ createdAt: -1 }).limit(100);
     res.json(payments);
