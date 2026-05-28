@@ -1049,22 +1049,42 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <div class="modal-title" id="pay-modal-title">Complete Payment</div>
       <button class="modal-close" onclick="closePayModal()">✕</button>
     </div>
-    <div class="pay-amount" id="pay-modal-amount">KES 50</div>
-    <div class="pay-item" id="pay-modal-item"></div>
-    <div class="pay-steps">
-      <div class="pay-step"><div class="step-num">1</div>Enter your Safaricom M-Pesa number below</div>
-      <div class="pay-step"><div class="step-num">2</div>Click Pay Now — you'll get a prompt on your phone</div>
-      <div class="pay-step"><div class="step-num">3</div>Enter your M-Pesa PIN to confirm payment</div>
-      <div class="pay-step"><div class="step-num">4</div>Your download link appears here automatically</div>
+
+    <!-- LOGIN GATE (shown when not logged in) -->
+    <div id="pay-login-gate" style="display:none;text-align:center;padding:20px 0 8px;">
+      <div style="font-size:2rem;margin-bottom:10px;">🔒</div>
+      <div style="font-weight:700;font-size:1rem;color:#E8EAED;margin-bottom:6px;">Sign in to purchase</div>
+      <div style="font-size:0.85rem;color:#9AA0A6;margin-bottom:20px;line-height:1.5;">You need an account to buy courses.<br>It's free and takes 30 seconds.</div>
+      <div style="display:flex;gap:10px;">
+        <a href="/login" style="flex:1;padding:11px;border:1.5px solid rgba(255,255,255,0.15);border-radius:50px;color:#E8EAED;font-weight:600;font-size:0.88rem;text-decoration:none;text-align:center;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'">Log In</a>
+        <a href="/login#register" style="flex:1;padding:11px;border:none;border-radius:50px;background:#1A73E8;color:white;font-weight:700;font-size:0.88rem;text-decoration:none;text-align:center;">Sign Up Free →</a>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">M-Pesa Phone Number</label>
-      <input class="form-input" id="pay-phone" placeholder="0712 345 678 or 254712345678" maxlength="13">
-    </div>
-    <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;"><i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa</button>
-    <div class="pay-status" id="pay-status"></div>
-    <div style="display:none;text-align:center;margin-top:16px;" id="dl-wrap">
-      <a class="btn btn-primary" id="dl-link" href="#" target="_blank"><i class="fa-solid fa-download"></i> Download Now</a>
+
+    <!-- PAYMENT FORM (shown when logged in) -->
+    <div id="pay-form-section">
+      <div class="pay-amount" id="pay-modal-amount">KES 50</div>
+      <div class="pay-item" id="pay-modal-item"></div>
+      <div class="pay-steps">
+        <div class="pay-step"><div class="step-num">1</div>Enter your Safaricom M-Pesa number below</div>
+        <div class="pay-step"><div class="step-num">2</div>Click Pay Now — you'll get a prompt on your phone</div>
+        <div class="pay-step"><div class="step-num">3</div>Enter your M-Pesa PIN to confirm payment</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">M-Pesa Phone Number</label>
+        <input class="form-input" id="pay-phone" placeholder="0712 345 678 or 254712345678" maxlength="13">
+      </div>
+      <button class="btn btn-primary" id="pay-btn" onclick="submitPayment()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        Pay via M-Pesa
+      </button>
+      <div class="pay-status" id="pay-status"></div>
+      <div style="display:none;text-align:center;margin-top:16px;" id="dl-wrap">
+        <a class="btn btn-primary" id="dl-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download Now
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -1384,6 +1404,8 @@ function openResPay(id, price, title) {
   document.getElementById('pay-modal-amount').textContent = `KES ${price}`;
   document.getElementById('pay-modal-item').textContent = title;
   resetPayModal();
+  // Check if user is logged in
+  checkLoginThenPay();
   document.getElementById('pay-modal').classList.add('open');
 }
 
@@ -1418,6 +1440,30 @@ async function loadCVPrice() {
   } catch {}
 }
 
+function checkLoginThenPay() {
+  fetch('/api/auth/me').then(r => r.json()).then(data => {
+    const gate = document.getElementById('pay-login-gate');
+    const form = document.getElementById('pay-form-section');
+    const title = document.getElementById('pay-modal-title');
+    if (!data.success) {
+      // Not logged in — show gate
+      if (gate) gate.style.display = 'block';
+      if (form) form.style.display = 'none';
+      if (title) title.textContent = 'Sign In to Purchase';
+    } else {
+      // Logged in — show form
+      if (gate) gate.style.display = 'none';
+      if (form) form.style.display = 'block';
+    }
+  }).catch(() => {
+    // On error assume not logged in
+    const gate = document.getElementById('pay-login-gate');
+    const form = document.getElementById('pay-form-section');
+    if (gate) gate.style.display = 'block';
+    if (form) form.style.display = 'none';
+  });
+}
+
 function resetPayModal() {
   document.getElementById('pay-phone').value = '';
   document.getElementById('pay-status').className = 'pay-status';
@@ -1425,7 +1471,7 @@ function resetPayModal() {
   document.getElementById('dl-wrap').style.display = 'none';
   const btn = document.getElementById('pay-btn');
   btn.disabled = false;
-  btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
   btn.style.display = '';
   clearInterval(pollInterval);
   currentCheckoutId = null;
@@ -1485,7 +1531,7 @@ async function submitPayment() {
       status.className = 'pay-status error';
       status.textContent = '❌ ' + data.message;
       btn.disabled = false;
-      btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
       return;
     }
 
@@ -1499,7 +1545,7 @@ async function submitPayment() {
         status.className = 'pay-status error';
         status.textContent = '⏰ Payment timed out. Please try again.';
         btn.disabled = false;
-        btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
         return;
       }
       try {
@@ -1518,7 +1564,7 @@ async function submitPayment() {
           status.className = 'pay-status error';
           status.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#F28B82"></i> Payment failed or cancelled. Please try again.';
           btn.disabled = false;
-          btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
+          btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
         }
       } catch {}
     }, 5000);
@@ -1527,7 +1573,7 @@ async function submitPayment() {
     status.className = 'pay-status error';
     status.innerHTML = '<i class="fa-solid fa-circle-xmark" style="color:#F28B82"></i> Network error. Please check your connection.';
     btn.disabled = false;
-    btn.textContent = '<i class="fa-solid fa-mobile-screen"></i> Pay via M-Pesa';
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
   }
 }
 
