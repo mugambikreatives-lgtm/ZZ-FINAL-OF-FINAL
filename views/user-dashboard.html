@@ -390,7 +390,7 @@ async function init() {
     const cvName = document.getElementById('cv-name'); if(cvName) cvName.value = user.name||'';
     const cvEmail = document.getElementById('cv-email'); if(cvEmail) cvEmail.value = user.email||'';
     if(document.getElementById('cv-name')) updatePreview();
-  } catch(err) { console.error('Init error:', err); window.location = '/login'; }
+  } catch(err) { console.error('Init error:', err); if(err.message && err.message.includes('fetch')) { document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>Connection error</h2><p>Please refresh the page</p></div>'; } else { window.location = '/login'; } }
 }
 
 function updateStats() {
@@ -519,7 +519,7 @@ function openCoursePay(id, price, title) {
   payType = 'course'; payResourceId = id;
   document.getElementById('modal-price').textContent = 'KES ' + price.toLocaleString();
   document.getElementById('modal-course-name').textContent = title;
-  document.getElementById('pay-btn').textContent = '<i class="fa-solid fa-lock-open"></i> Pay & Unlock Course';
+  document.getElementById('pay-btn').innerHTML = '<i class="fa-solid fa-lock-open"></i> Pay & Unlock Course';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' Course unlocks in your dashboard';
   // Pre-fill phone from user profile
   const phone = user.phone || '';
@@ -534,7 +534,7 @@ function openCVPay() {
   payType = 'cv'; payResourceId = null;
   document.getElementById('modal-price').textContent = 'KES 100';
   document.getElementById('modal-course-name').textContent = 'CV Download';
-  document.getElementById('pay-btn').textContent = '<i class="fa-solid fa-download"></i> Pay & Download CV';
+  document.getElementById('pay-btn').innerHTML = '<i class="fa-solid fa-download"></i> Pay & Download CV';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' CV download link appears below';
   const phone = user.phone || document.getElementById('cv-phone-cv').value || '';
   document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
@@ -564,7 +564,7 @@ async function submitPayment() {
   const phone = document.getElementById('pay-phone').value.trim();
   if (!phone) { setStatus('Enter your M-Pesa number', 'error'); return; }
   const btn = document.getElementById('pay-btn');
-  btn.disabled = true; btn.textContent = '⏳ Sending prompt...';
+  btn.disabled = true; btn.innerHTML = '⏳ Sending prompt...';
   setStatus('Sending M-Pesa prompt to your phone...', 'pending');
   try {
     const body = payType === 'course'
@@ -576,7 +576,7 @@ async function submitPayment() {
     if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; return; }
     const checkoutId = data.checkoutRequestId;
     setStatus('📱 Check your phone and enter your M-Pesa PIN...', 'pending');
-    btn.textContent = '⏳ Waiting for payment...';
+    btn.innerHTML = '⏳ Waiting for payment...';
     // Poll for status
     let tries = 0;
     pollInterval = setInterval(async () => {
@@ -609,21 +609,55 @@ async function submitPayment() {
 }
 
 // ── PDF VIEWER ──
+let readingTimer = null;
+let readingSeconds = 0;
+let activeReadingCourseId = null;
+const READING_INTERVAL = 15;
+const SECONDS_FOR_100 = 600; // 10 min = 100%
+
 async function openViewer(courseId, title) {
   document.getElementById('viewer-title').textContent = title;
   document.getElementById('viewer-iframe').src = '';
   document.getElementById('viewer-overlay').classList.add('open');
+  activeReadingCourseId = courseId;
+  const timerEl = document.getElementById('viewer-timer');
+  if (timerEl) timerEl.style.display = 'flex';
   try {
     const res = await fetch('/api/auth/view/' + courseId);
     const data = await res.json();
     if (!data.success) { showToast('Could not load course. Try again.', 'error'); closeViewer(); return; }
     document.getElementById('viewer-iframe').src = data.url;
-    // Update progress
-    updateProgress(courseId, 10);
+    const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
+    readingSeconds = Math.round(((c?.progress||0)/100)*SECONDS_FOR_100);
+    startReadingTimer(courseId);
   } catch { showToast('Failed to load course', 'error'); closeViewer(); }
 }
 
+function startReadingTimer(courseId) {
+  clearInterval(readingTimer);
+  readingTimer = setInterval(async () => {
+    readingSeconds++;
+    const newProgress = Math.min(100, Math.round((readingSeconds/SECONDS_FOR_100)*100));
+    const mins = Math.floor(readingSeconds/60);
+    const secs = readingSeconds%60;
+    const timerText = document.getElementById('viewer-timer-text');
+    if (timerText) timerText.textContent = `${mins}:${secs.toString().padStart(2,'0')} read`;
+    const viewerBar = document.getElementById('viewer-progress-bar');
+    if (viewerBar) viewerBar.style.width = newProgress+'%';
+    const viewerPct = document.getElementById('viewer-progress-pct');
+    if (viewerPct) viewerPct.textContent = newProgress+'%';
+    if (readingSeconds % READING_INTERVAL === 0) await updateProgress(courseId, newProgress);
+  }, 1000);
+}
+
 function closeViewer() {
+  if (activeReadingCourseId && readingSeconds > 0) {
+    const finalProgress = Math.min(100, Math.round((readingSeconds/SECONDS_FOR_100)*100));
+    updateProgress(activeReadingCourseId, finalProgress);
+  }
+  clearInterval(readingTimer);
+  readingTimer = null;
+  activeReadingCourseId = null;
   document.getElementById('viewer-overlay').classList.remove('open');
   document.getElementById('viewer-iframe').src = '';
 }
@@ -631,7 +665,7 @@ function closeViewer() {
 async function updateProgress(courseId, progress) {
   try {
     await fetch('/api/auth/progress', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({courseId, progress}) });
-    const c = (user.purchasedCourses||[]).find(x=>(x.courseId?._id||x.courseId)===courseId);
+    const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
     if (c) { c.progress = Math.max(c.progress||0, progress); updateStats(); renderMyCourses(); }
   } catch {}
 }

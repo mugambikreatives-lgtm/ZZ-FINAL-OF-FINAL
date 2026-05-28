@@ -60,6 +60,28 @@ router.post('/login', async (req, res) => {
     if (!user || !user.password) return res.status(400).json({ success: false, message: 'Invalid email or password' });
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ success: false, message: 'Invalid email or password' });
+    // Sync completed M-Pesa payments on login
+    try {
+      const Payment = require('../models/Payment');
+      const phone = user.phone || '';
+      if (phone) {
+        const phone254 = phone.replace(/^0/, '254').replace(/^\+/, '');
+        const phoneLocal = phone254.replace(/^254/, '0');
+        const payments = await Payment.find({
+          phone: { $in: [phone, phone254, phoneLocal] },
+          status: 'completed', type: 'resource'
+        });
+        let changed = false;
+        for (const p of payments) {
+          if (p.resourceId) {
+            const already = user.purchasedCourses.some(c => c.courseId?.toString() === p.resourceId.toString());
+            if (!already) { user.purchasedCourses.push({ courseId: p.resourceId }); changed = true; }
+          }
+        }
+        if (changed) await user.save();
+      }
+    } catch(e) { console.log('Payment sync on login:', e.message); }
+
     const token = makeToken(user);
     res.cookie('zz_token', token, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000, sameSite: 'lax' });
     res.json({ success: true, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
@@ -71,11 +93,41 @@ router.post('/login', async (req, res) => {
 // GET /api/auth/me
 router.get('/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
-      .populate('purchasedCourses.courseId', 'title category price thumbnail')
-      .select('-password');
+    const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    res.json({ success: true, user });
+
+    // Sync any completed M-Pesa payments not yet linked to this account
+    try {
+      const Payment = require('../models/Payment');
+      const phone = user.phone || '';
+      if (phone) {
+        const phone254 = phone.replace(/^0/, '254').replace(/^\+/, '');
+        const phoneLocal = phone254.replace(/^254/, '0');
+        const payments = await Payment.find({
+          phone: { $in: [phone, phone254, phoneLocal] },
+          status: 'completed',
+          type: 'resource'
+        });
+        let changed = false;
+        for (const p of payments) {
+          if (p.resourceId) {
+            const alreadyOwns = user.purchasedCourses.some(c => c.courseId?.toString() === p.resourceId.toString());
+            if (!alreadyOwns) {
+              user.purchasedCourses.push({ courseId: p.resourceId });
+              changed = true;
+            }
+          }
+        }
+        if (changed) await user.save();
+      }
+    } catch(e) { console.log('Payment sync on /me:', e.message); }
+
+    // Re-fetch with populated courses
+    const populated = await User.findById(req.user.id)
+      .populate('purchasedCourses.courseId', 'title category price thumbnail description')
+      .select('-password');
+
+    res.json({ success: true, user: populated });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
