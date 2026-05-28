@@ -127,6 +127,11 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 .btn-close-viewer{background:none;border:1px solid var(--border);color:#fff;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:0.8rem}
 .btn-close-viewer:hover{border-color:#ef4444;color:#ef4444}
 .viewer-iframe{width:100%;flex:1;border:none}
+.viewer-progress-bar-wrap{height:3px;background:rgba(255,255,255,0.1);width:100%;flex-shrink:0}
+.viewer-progress-bar-fill{height:3px;background:#1A73E8;transition:width 1s linear}
+.viewer-timer{display:none;align-items:center;gap:8px;font-size:0.75rem;color:#9AA0A6;flex-shrink:0}
+.viewer-timer svg{width:14px;height:14px;color:#1A73E8}
+.viewer-pct{font-size:0.75rem;color:#1A73E8;font-weight:700;min-width:36px;text-align:right}
 .viewer-ftr{padding:10px 24px;background:#202124;border-top:1px solid rgba(255,255,255,0.1);font-size:0.75rem;color:rgba(255,255,255,0.5);text-align:center;flex-shrink:0}
 
 /* CV BUILDER */
@@ -313,7 +318,17 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 <div class="viewer-overlay" id="viewer-overlay">
   <div class="viewer-hdr">
     <div class="viewer-title-txt" id="viewer-title">Course</div>
-    <button class="btn-close-viewer" onclick="closeViewer()">✕ Close</button>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="viewer-timer" id="viewer-timer">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+        <span id="viewer-timer-text">0:00 read</span>
+      </div>
+      <span class="viewer-pct" id="viewer-progress-pct">0%</span>
+      <button class="btn-close-viewer" onclick="closeViewer()">✕ Close</button>
+    </div>
+  </div>
+  <div class="viewer-progress-bar-wrap">
+    <div class="viewer-progress-bar-fill" id="viewer-progress-bar" style="width:0%"></div>
   </div>
   <iframe class="viewer-iframe" id="viewer-iframe" src=""></iframe>
   <div class="viewer-ftr">🔒 Protected content — for personal use only</div>
@@ -411,7 +426,7 @@ function renderMyCourses() {
         </button>
         ${c.completed
           ? `<button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-medal"></i> View Certificate</button>`
-          : `<button class="btn-mark-done" onclick="markComplete('${course._id}','${course.title.replace(/'/g,"\\'")}')" style="${prog<50?'opacity:0.5;':''}" ${prog<50?'title="Read at least 50% to complete"':''}><i class="fa-solid fa-circle-check"></i> Mark as Complete</button>`
+          : `<button class="btn-mark-done" onclick="markComplete('${course._id}','${course.title.replace(/'/g,"\\'")}')" style="${prog<80?'opacity:0.5;cursor:not-allowed;':''}" ${prog<80?'title="Read at least 80% to unlock completion"':''}><i class="fa-solid fa-circle-check"></i> Mark as Complete</button>`
         }
       </div>
     </div>`;
@@ -666,7 +681,7 @@ function renderCertificatesPage() {
 async function markComplete(courseId, title) {
   const c = (user.purchasedCourses||[]).find(x=>(x.courseId?._id||x.courseId)===courseId||String(x.courseId?._id||x.courseId)===String(courseId));
   if (!c) return;
-  if ((c.progress||0) < 50) { showToast('Read at least 50% of the course before completing', 'error'); return; }
+  if ((c.progress||0) < 80) { showToast(`Read at least 80% of the course to complete it. You're at ${c.progress||0}% — keep reading!`, 'error'); return; }
   if (!confirm(`Mark "${title}" as completed and earn your certificate?`)) return;
   try {
     await fetch('/api/auth/progress', {
