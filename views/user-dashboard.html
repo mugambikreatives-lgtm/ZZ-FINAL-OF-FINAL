@@ -250,7 +250,6 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
     <div class="page-title"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</div>
     <div class="page-sub">Courses you've purchased — click to read</div>
     <div class="courses-grid" id="my-courses-grid">
-      <div style="color:var(--muted);padding:20px">Loading...</div>
     </div>
   </div>
 
@@ -385,7 +384,7 @@ async function init() {
     document.getElementById('nav-avatar').textContent = (user.name||user.email||'U')[0].toUpperCase();
     updateStats();
     await loadAssignments();
-    renderMyCourses();
+    renderMyCourses(); // assignments already loaded above
     loadAllCourses();
     // Pre-fill CV with user name/email
     const cvName = document.getElementById('cv-name'); if(cvName) cvName.value = user.name||'';
@@ -459,6 +458,7 @@ function renderMyCourses() {
           ? `<button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-medal"></i> View Certificate</button>`
           : `<button class="btn-mark-done" onclick="markComplete('${course._id}','${course.title.replace(/'/g,"\\'")}')" style="${prog<80?'opacity:0.5;cursor:not-allowed;':''}" ${prog<80?'title="Read at least 80% to unlock completion"':''}><i class="fa-solid fa-circle-check"></i> Mark as Complete</button>`
         }
+        <div class="assignment-section">${renderAssignmentStatus(course._id)}</div>
       </div>
     </div>`;
   }).join('');
@@ -952,8 +952,6 @@ async function loadAssignments() {
     const data = await res.json();
     if (data.success) {
       userAssignments = data.assignments || [];
-      // Re-render course cards to update status badges
-      renderMyCourses();
     }
   } catch {}
 }
