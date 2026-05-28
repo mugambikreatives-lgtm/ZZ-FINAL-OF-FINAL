@@ -21,7 +21,7 @@ function authMiddleware(req, res, next) {
 }
 
 // Admin middleware
-const { requireAdmin } = require('../middleware/auth');
+const { isAdminAPI } = require('../middleware/auth');
 
 // Multer — accept PDF and DOCX
 const storage = multer.diskStorage({
@@ -103,7 +103,7 @@ router.get('/my', authMiddleware, async (req, res) => {
 });
 
 // ── GET /api/assignments/all (admin) ─────────────────────────────────────────
-router.get('/all', requireAdmin, async (req, res) => {
+router.get("/all", isAdminAPI, async (req, res) => {
   try {
     const assignments = await Assignment.find()
       .populate('userId', 'name email')
@@ -116,7 +116,7 @@ router.get('/all', requireAdmin, async (req, res) => {
 });
 
 // ── GET /api/assignments/download/:id (admin) ────────────────────────────────
-router.get('/download/:id', requireAdmin, async (req, res) => {
+router.get('/download/:id', isAdminAPI, async (req, res) => {
   try {
     const a = await Assignment.findById(req.params.id);
     if (!a) return res.status(404).json({ success: false, message: 'Not found' });
@@ -128,7 +128,7 @@ router.get('/download/:id', requireAdmin, async (req, res) => {
 });
 
 // ── PATCH /api/assignments/:id/review (admin) ────────────────────────────────
-router.patch('/:id/review', requireAdmin, async (req, res) => {
+router.patch('/:id/review', isAdminAPI, async (req, res) => {
   try {
     const { status, tutorNote } = req.body;
     if (!['approved', 'rejected'].includes(status)) {
