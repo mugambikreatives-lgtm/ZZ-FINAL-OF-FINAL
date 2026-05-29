@@ -333,13 +333,21 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
     <div class="steps">
       <div class="step"><div class="step-num">1</div>Enter your M-Pesa number below</div>
       <div class="step"><div class="step-num">2</div>Click Pay — get a prompt on your phone</div>
-      <div class="step"><div class="step-num">3</div>Enter PIN to confirm payment</div>
-      <div class="step"><div class="step-num">4</div>Course unlocks in your dashboard</div>
+      <div class="step"><div class="step-num">3</div>Enter your PIN to confirm payment</div>
     </div>
     <label class="field-lbl">M-PESA PHONE NUMBER</label>
     <input class="pay-input" id="pay-phone" placeholder="0716762062" type="tel"/>
-    <button class="btn-pay" id="pay-btn" onclick="submitPayment()"><i class="fa-solid fa-lock-open"></i> Pay & Unlock Course</button>
+    <button class="btn-pay" id="pay-btn" onclick="submitPayment()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+      Pay via M-Pesa
+    </button>
     <div class="pay-status" id="pay-status"></div>
+    <div id="dl-wrap" style="display:none;text-align:center;margin-top:14px">
+      <a id="dl-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:white;padding:11px 24px;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.88rem">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Now
+      </a>
+    </div>
   </div>
 </div>
 
@@ -519,7 +527,7 @@ function openCoursePay(id, price, title) {
   payType = 'course'; payResourceId = id;
   document.getElementById('modal-price').textContent = 'KES ' + price.toLocaleString();
   document.getElementById('modal-course-name').textContent = title;
-  document.getElementById('pay-btn').innerHTML = '<i class="fa-solid fa-lock-open"></i> Pay & Unlock Course';
+  document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' Course unlocks in your dashboard';
   // Pre-fill phone from user profile
   const phone = user.phone || '';
@@ -534,7 +542,7 @@ function openCVPay() {
   payType = 'cv'; payResourceId = null;
   document.getElementById('modal-price').textContent = 'KES 100';
   document.getElementById('modal-course-name').textContent = 'CV Download';
-  document.getElementById('pay-btn').innerHTML = '<i class="fa-solid fa-download"></i> Pay & Download CV';
+  document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Pay & Download CV';
   document.querySelectorAll('.step')[3].lastChild.textContent = ' CV download link appears below';
   const phone = user.phone || document.getElementById('cv-phone-cv').value || '';
   document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
@@ -573,7 +581,7 @@ async function submitPayment() {
     const endpoint = payType === 'course' ? '/api/mpesa/pay-resource' : '/api/mpesa/pay-cv';
     const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
     const data = await res.json();
-    if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; return; }
+    if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; return; }
     const checkoutId = data.checkoutRequestId;
     setStatus('📱 Check your phone and enter your M-Pesa PIN...', 'pending');
     btn.innerHTML = '⏳ Waiting for payment...';
@@ -581,31 +589,41 @@ async function submitPayment() {
     let tries = 0;
     pollInterval = setInterval(async () => {
       tries++;
-      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timeout. If you paid, refresh your courses.', 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; return; }
+      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timeout. If you paid, refresh your courses.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; return; }
       try {
         const pr = await fetch('/api/mpesa/status/' + checkoutId);
         const pd = await pr.json();
         if (pd.status === 'completed') {
           clearInterval(pollInterval);
-          setStatus('✅ Payment confirmed! Refreshing your courses...', 'success');
-          btn.style.display = 'none';
-          setTimeout(async () => {
-            // Refresh user data
-            const ur = await fetch('/api/auth/me');
-            const ud = await ur.json();
-            if (ud.success) { user = ud.user; updateStats(); renderMyCourses(); renderBrowse(allCourses); }
-            closePayModal();
-            showPage('my-courses');
-            showToast('🎉 Course unlocked! Start reading now.', 'success');
-          }, 1500);
+          if (payType === 'course') {
+            setStatus('✅ Payment confirmed! Taking you to your courses...', 'success');
+            btn.style.display = 'none';
+            setTimeout(async () => {
+              const ur = await fetch('/api/auth/me');
+              const ud = await ur.json();
+              if (ud.success) { user = ud.user; updateStats(); await loadAssignments(); renderMyCourses(); renderBrowse(allCourses); }
+              closePayModal();
+              showPage('my-courses');
+              showToast('🎉 Course unlocked! Start reading now.', 'success');
+            }, 1500);
+          } else {
+            // CV payment — show download link
+            setStatus('✅ Payment confirmed! Your CV is ready.', 'success');
+            btn.style.display = 'none';
+            const dlWrap = document.getElementById('dl-wrap');
+            const dlLink = document.getElementById('dl-link');
+            if (dlWrap) dlWrap.style.display = 'block';
+            if (dlLink && pd.downloadToken) dlLink.href = '/api/mpesa/download/' + pd.downloadToken;
+            showToast('✅ CV ready to download!', 'success');
+          }
         } else if (pd.status === 'failed') {
           clearInterval(pollInterval);
           setStatus('❌ Payment failed. Please try again.', 'error');
-          btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again';
+          btn.disabled=false; btn.innerHTML='↺ Try Again';
         }
       } catch {}
     }, 5000);
-  } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.textContent='<i class="fa-solid fa-rotate-right"></i> Try Again'; }
+  } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; }
 }
 
 // ── PDF VIEWER ──
