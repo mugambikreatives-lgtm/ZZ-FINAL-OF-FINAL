@@ -81,17 +81,21 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
 
   const messageId = `ZZ_${Date.now()}_${Math.random().toString(36).slice(2,8).toUpperCase()}`;
 
+  const stkUrl = process.env.KCB_STK_URL || `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`;
+  console.log(`[KCB] STK Push URL: ${stkUrl}`);
+
   const response = await axios.post(
-    `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`,
+    stkUrl,
     payload,
     {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
-        'routeCode': '207',
+        'routeCode': process.env.KCB_ROUTE_CODE || '207',
         'operation': 'STKPush',
         'messageId': messageId
-      }
+      },
+      timeout: 30000
     }
   );
   console.log('KCB STK response:', JSON.stringify(response.data));
