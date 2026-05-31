@@ -12,23 +12,23 @@ const Resource = require('../models/Resource');
 // ─────────────────────────────────────────────
 
 function getBaseUrl() {
-  // Production activated — default to production unless explicitly set to sandbox
   return process.env.KCB_ENV === 'sandbox'
     ? 'https://uat.buni.kcbgroup.com'
-    : 'https://api.buni.kcbgroup.com';  // Production (default)
+    : 'https://api.buni.kcbgroup.com';
 }
 
 // Generate a Bearer access token from KCB BUNI
 async function getAccessToken() {
-  const { KCB_CONSUMER_KEY, KCB_CONSUMER_SECRET } = process.env;
+  const KCB_CONSUMER_KEY = process.env.KCB_CONSUMER_KEY || 'fp0Me33xpYF500M6Nmxsi30UZB8a';
+  const KCB_CONSUMER_SECRET = process.env.KCB_CONSUMER_SECRET || 'tohCNrzsnC3KdU9u4OFZuTTnf8Aa';
 
   // Try all known KCB token endpoints until one works
   // accounts.buni.kcbgroup.com/oauth2/token is the correct URL for both sandbox and production
-  // Production token endpoint
+  // Production token endpoint (from KCB developer portal)
   const isProduction = process.env.KCB_ENV !== 'sandbox';
   const tokenUrl = isProduction
-    ? 'https://api.buni.kcbgroup.com/oauth2/token'
-    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
+    ? 'https://api.buni.kcbgroup.com/token'
+    : 'https://uat.buni.kcbgroup.com/token';
   const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
   console.log(`[KCB] Token URL: ${tokenUrl} | Env: ${process.env.KCB_ENV||'production'} | Key: ${KCB_CONSUMER_KEY?.slice(0,8)}...`);
 
@@ -58,7 +58,8 @@ function formatPhone(phone) {
 
 // Initiate KCB BUNI STK Push
 async function stkPush({ phone, amount, invoiceNumber, description }) {
-  const { KCB_CALLBACK_URL, KCB_SHORT_CODE } = process.env;
+  const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
+  const KCB_SHORT_CODE = process.env.KCB_SHORT_CODE || '';
 
   const token = await getAccessToken();
   console.log('KCB token obtained successfully');
@@ -66,7 +67,7 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const payload = {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
-    invoiceNumber: `8081055-${invoiceNumber || `ZZ-${Date.now()}`}`,
+    invoiceNumber: invoiceNumber || `ZZ-${Date.now()}`,
     sharedShortCode: true,
     orgShortCode: process.env.KCB_ORG_SHORT_CODE || '',
     callbackUrl: KCB_CALLBACK_URL,
@@ -148,7 +149,7 @@ router.post('/pay-resource', async (req, res) => {
       message: 'STK Push sent. Enter your M-Pesa PIN on your phone.'
     });
   } catch (err) {
-    console.error('KCB STK Push (resource) error:', err.response?.data || err.message);
+    console.error('KCB STK Push (resource) error:', JSON.stringify(err.response?.data) || err.message, '| Status:', err.response?.status);
     res.status(500).json({ success: false, message: 'Payment initiation failed. Try again.' });
   }
 });
@@ -196,7 +197,7 @@ router.post('/pay-cv', async (req, res) => {
       message: 'STK Push sent. Enter your M-Pesa PIN on your phone.'
     });
   } catch (err) {
-    console.error('KCB STK Push (CV) error:', err.response?.data || err.message);
+    console.error('KCB STK Push (CV) error:', JSON.stringify(err.response?.data) || err.message, '| Status:', err.response?.status);
     res.status(500).json({ success: false, message: 'Payment initiation failed. Try again.' });
   }
 });
