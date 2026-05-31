@@ -422,7 +422,12 @@ if (window.location.hash === '#register' || new URLSearchParams(window.location.
 
 // URL message (e.g. ?msg=google-coming-soon)
 const urlMsg = new URLSearchParams(window.location.search).get('msg');
-if (urlMsg === 'google-coming-soon') showError('Google sign-in coming soon. Please use email & password for now.');
+const msgMap = {
+  'google-coming-soon': 'Google sign-in is being set up. Please use email & password for now.',
+  'google-not-configured': 'Google sign-in is not configured yet. Please use email & password.',
+  'google-failed': 'Google sign-in failed. Please try again or use email & password.',
+};
+if (urlMsg && msgMap[urlMsg]) showError(msgMap[urlMsg]);
 
 // Enter key support
 document.addEventListener('keydown', e => {

@@ -183,10 +183,111 @@ router.get('/view/:courseId', authMiddleware, async (req, res) => {
 });
 
 
-// Google OAuth - placeholder (needs Google Client ID/Secret in env)
-router.get('/google', (req, res) => {
-  // Redirect to login with message until Google OAuth is configured
-  res.redirect('/login?msg=google-coming-soon');
+// ── GOOGLE OAUTH ────────────────────────────────────────────────────────────
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || 'https://zeithzoom.com/api/auth/google/callback';
+
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
+  passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: CALLBACK_URL,
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const email = profile.emails?.[0]?.value;
+      const name = profile.displayName;
+      const avatar = profile.photos?.[0]?.value;
+      const googleId = profile.id;
+
+      if (!email) return done(null, false, { message: 'No email from Google' });
+
+      let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+      if (!user) {
+        // New user — create account
+        user = await User.create({
+          name,
+          email,
+          googleId,
+          avatar,
+          password: require('bcryptjs').hashSync(require('crypto').randomBytes(20).toString('hex'), 10),
+        });
+      } else {
+        // Existing user — update Google fields if missing
+        if (!user.googleId) { user.googleId = googleId; await user.save(); }
+      }
+
+      // Sync any completed payments
+      try {
+        const Payment = require('../models/Payment');
+        const phone = user.phone || '';
+        if (phone) {
+          const phone254 = phone.replace(/^0/, '254').replace(/^\+/, '');
+          const phoneLocal = phone254.replace(/^254/, '0');
+          const payments = await Payment.find({
+            phone: { $in: [phone, phone254, phoneLocal] },
+            status: 'completed', type: 'resource'
+          });
+          let changed = false;
+          for (const p of payments) {
+            if (p.resourceId) {
+              const already = user.purchasedCourses.some(c => c.courseId?.toString() === p.resourceId.toString());
+              if (!already) { user.purchasedCourses.push({ courseId: p.resourceId }); changed = true; }
+            }
+          }
+          if (changed) await user.save();
+        }
+      } catch(e) { console.log('Payment sync on Google login:', e.message); }
+
+      return done(null, user);
+    } catch (err) {
+      return done(err, null);
+    }
+  }));
+
+  passport.serializeUser((user, done) => done(null, user._id));
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await User.findById(id).select('-password');
+      done(null, user);
+    } catch(err) { done(err, null); }
+  });
+}
+
+// GET /api/auth/google — start OAuth flow
+router.get('/google', (req, res, next) => {
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+    return res.redirect('/login?msg=google-not-configured');
+  }
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    prompt: 'select_account'
+  })(req, res, next);
+});
+
+// GET /api/auth/google/callback — OAuth callback
+router.get('/google/callback', (req, res, next) => {
+  passport.authenticate('google', { failureRedirect: '/login?msg=google-failed' },
+    async (err, user, info) => {
+      if (err || !user) return res.redirect('/login?msg=google-failed');
+      try {
+        // Issue JWT token (same as email login)
+        const token = makeToken(user);
+        res.cookie('zz_token', token, {
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          sameSite: 'lax'
+        });
+        res.redirect('/dashboard');
+      } catch(err) {
+        res.redirect('/login?msg=google-failed');
+      }
+    }
+  )(req, res, next);
 });
 
 module.exports = { router, authMiddleware };

@@ -33,6 +33,11 @@ app.use(session({
   }
 }));
 
+// Passport
+const passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routes
 app.use('/api/auth', require('./routes/auth').router);
 app.use('/api/mpesa', require('./routes/mpesa'));
