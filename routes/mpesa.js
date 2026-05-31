@@ -12,9 +12,10 @@ const Resource = require('../models/Resource');
 // ─────────────────────────────────────────────
 
 function getBaseUrl() {
-  return process.env.KCB_ENV === 'production'
-    ? 'https://api.buni.kcbgroup.com'
-    : 'https://uat.buni.kcbgroup.com';
+  // Production activated — default to production unless explicitly set to sandbox
+  return process.env.KCB_ENV === 'sandbox'
+    ? 'https://uat.buni.kcbgroup.com'
+    : 'https://api.buni.kcbgroup.com';  // Production (default)
 }
 
 // Generate a Bearer access token from KCB BUNI
@@ -23,9 +24,13 @@ async function getAccessToken() {
 
   // Try all known KCB token endpoints until one works
   // accounts.buni.kcbgroup.com/oauth2/token is the correct URL for both sandbox and production
-  const tokenUrl = 'https://accounts.buni.kcbgroup.com/oauth2/token';
+  // Production token endpoint
+  const isProduction = process.env.KCB_ENV !== 'sandbox';
+  const tokenUrl = isProduction
+    ? 'https://api.buni.kcbgroup.com/oauth2/token'
+    : 'https://accounts.buni.kcbgroup.com/oauth2/token';
   const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
-  console.log('Token URL:', tokenUrl, '| Key:', KCB_CONSUMER_KEY?.slice(0,8) + '...');
+  console.log(`[KCB] Token URL: ${tokenUrl} | Env: ${process.env.KCB_ENV||'production'} | Key: ${KCB_CONSUMER_KEY?.slice(0,8)}...`);
 
   const res = await axios.post(
     tokenUrl,
@@ -63,7 +68,7 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     amount: String(Math.ceil(amount)),
     invoiceNumber: `8081055-${invoiceNumber || `ZZ-${Date.now()}`}`,
     sharedShortCode: true,
-    orgShortCode: '',
+    orgShortCode: process.env.KCB_ORG_SHORT_CODE || '',
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: description || 'Zenith Zoom Payment'
   };
