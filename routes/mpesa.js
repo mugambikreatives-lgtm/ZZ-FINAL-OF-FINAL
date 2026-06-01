@@ -63,7 +63,8 @@ function formatPhone(phone) {
 // Initiate KCB BUNI STK Push
 async function stkPush({ phone, amount, invoiceNumber, description }) {
   const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
-  const KCB_SHORT_CODE = process.env.KCB_SHORT_CODE || '';
+  const KCB_SHORT_CODE = process.env.KCB_SHORT_CODE || process.env.KCB_ORG_SHORT_CODE || '';
+  if (!KCB_SHORT_CODE) console.warn('[KCB] WARNING: KCB_SHORT_CODE not set in env vars!');
 
   const token = await getAccessToken();
   console.log('KCB token obtained successfully');
@@ -72,8 +73,8 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
     invoiceNumber: invoiceNumber || `ZZ-${Date.now()}`,
-    sharedShortCode: true,
-    orgShortCode: process.env.KCB_ORG_SHORT_CODE || '',
+    sharedShortCode: !KCB_SHORT_CODE, // false when we have our own short code
+    orgShortCode: KCB_SHORT_CODE,
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: description || 'Zenith Zoom Payment'
   };
@@ -472,10 +473,13 @@ router.get('/test-connection', async (req, res) => {
     const token = await getAccessToken();
     res.json({
       success: true,
-      message: 'KCB BUNI connection successful',
+      message: 'KCB BUNI connection successful ✅',
       env: process.env.KCB_ENV || 'production',
       baseUrl: getBaseUrl(),
-      tokenPreview: token ? token.slice(0, 20) + '...' : 'null'
+      tokenEndpoint: getBaseUrl() + '/token',
+      stkPushEndpoint: getBaseUrl() + '/mm/api/request/1.0.0/stkpush',
+      shortCode: process.env.KCB_SHORT_CODE || process.env.KCB_ORG_SHORT_CODE || '⚠️ NOT SET - add KCB_SHORT_CODE env var',
+      tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
     });
   } catch (err) {
     res.status(500).json({
