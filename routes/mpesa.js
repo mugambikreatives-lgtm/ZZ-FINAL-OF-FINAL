@@ -67,7 +67,9 @@ function formatPhone(phone) {
 async function stkPush({ phone, amount, invoiceNumber, description }) {
   // Production values from KCB BUNI MpesaExpressAPIService 1.0.0 docs
   const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
-  const KCB_SHORT_CODE   = process.env.KCB_SHORT_CODE   || '8081055';
+  // IMPORTANT: orgShortCode must be 174379 per KCB BUNI API docs
+  // KCB_SHORT_CODE env var (8081055) is your merchant account, NOT the orgShortCode
+  const KCB_SHORT_CODE = process.env.KCB_ORG_SHORT_CODE || '174379';
   const KCB_PASS_KEY     = process.env.KCB_PASS_KEY     || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 
   const token = await getAccessToken();
@@ -85,7 +87,7 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     amount: String(Math.ceil(amount)),
     invoiceNumber: invoiceNumber || `ZZ-${ts}`,
     sharedShortCode: true,
-    orgShortCode: KCB_SHORT_CODE,  // Your KCB merchant ID: 8081055
+    orgShortCode: KCB_SHORT_CODE,  // 174379 per KCB BUNI API docs
     orgPassKey: KCB_PASS_KEY,
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: (description || 'Zenith Zoom Payment').slice(0, 50)
@@ -488,7 +490,7 @@ router.get('/test-connection', async (req, res) => {
       tokenEndpoint: getBaseUrl() + '/token',
       stkPushEndpoint: getBaseUrl() + '/mm/api/request/1.0.0/stkpush',
       isProduction: !['sandbox','uat'].includes((process.env.KCB_ENV||'').toLowerCase()),
-      shortCode: process.env.KCB_SHORT_CODE || '174379 (default)',
+      shortCode: process.env.KCB_ORG_SHORT_CODE || '174379 (from KCB docs)',
       passKey: process.env.KCB_PASS_KEY ? '✅ Custom' : '✅ Default (bfb279f9...)',
       consumerKey: process.env.KCB_CONSUMER_KEY ? process.env.KCB_CONSUMER_KEY.slice(0,8)+'...' : 'fp0Me33x... (default)',
       tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
