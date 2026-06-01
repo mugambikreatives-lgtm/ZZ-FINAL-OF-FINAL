@@ -16,7 +16,10 @@ let _cachedToken = null;
 let _tokenExpiry = 0;
 
 function getBaseUrl() {
-  return process.env.KCB_ENV === 'sandbox'
+  // PRODUCTION: always use production URL
+  // Set KCB_ENV=sandbox to revert to UAT/sandbox
+  const env = (process.env.KCB_ENV || 'production').toLowerCase();
+  return env === 'sandbox' || env === 'uat'
     ? 'https://uat.buni.kcbgroup.com'
     : 'https://api.buni.kcbgroup.com';
 }
@@ -474,10 +477,12 @@ router.get('/test-connection', async (req, res) => {
     res.json({
       success: true,
       message: 'KCB BUNI connection successful ✅',
-      env: process.env.KCB_ENV || 'production',
+      env: process.env.KCB_ENV || 'production (default)',
+      envVarSet: process.env.KCB_ENV || 'NOT SET (defaults to production)',
       baseUrl: getBaseUrl(),
       tokenEndpoint: getBaseUrl() + '/token',
       stkPushEndpoint: getBaseUrl() + '/mm/api/request/1.0.0/stkpush',
+      isProduction: !['sandbox','uat'].includes((process.env.KCB_ENV||'').toLowerCase()),
       shortCode: process.env.KCB_SHORT_CODE || '174379 (default)',
       passKey: process.env.KCB_PASS_KEY ? '✅ Custom' : '✅ Default (bfb279f9...)',
       tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
