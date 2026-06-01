@@ -67,7 +67,7 @@ function formatPhone(phone) {
 async function stkPush({ phone, amount, invoiceNumber, description }) {
   // Production values from KCB BUNI MpesaExpressAPIService 1.0.0 docs
   const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
-  const KCB_SHORT_CODE   = process.env.KCB_SHORT_CODE   || '174379';
+  const KCB_SHORT_CODE   = process.env.KCB_SHORT_CODE   || '8081055';
   const KCB_PASS_KEY     = process.env.KCB_PASS_KEY     || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 
   const token = await getAccessToken();
@@ -485,6 +485,7 @@ router.get('/test-connection', async (req, res) => {
       isProduction: !['sandbox','uat'].includes((process.env.KCB_ENV||'').toLowerCase()),
       shortCode: process.env.KCB_SHORT_CODE || '174379 (default)',
       passKey: process.env.KCB_PASS_KEY ? '✅ Custom' : '✅ Default (bfb279f9...)',
+      consumerKey: process.env.KCB_CONSUMER_KEY ? process.env.KCB_CONSUMER_KEY.slice(0,8)+'...' : 'fp0Me33x... (default)',
       tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
     });
   } catch (err) {
