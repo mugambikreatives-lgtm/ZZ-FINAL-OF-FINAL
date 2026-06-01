@@ -84,8 +84,8 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const KCB_PAYBILL = process.env.KCB_PAYBILL || '522533'; // Safaricom shortcode for KCB
   const payload = {
     phoneNumber: formatPhone(phone),
-    amount: String(Math.ceil(amount)),
-    invoiceNumber: invoiceNumber || `ZZ-${ts}`,
+    amount: String(Math.round(Number(amount))),
+    invoiceNumber: (invoiceNumber || `ZZ${ts.toString().slice(-8)}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
     sharedShortCode: true,
     orgShortCode: KCB_SHORT_CODE,  // 174379 per KCB BUNI API docs
     orgPassKey: KCB_PASS_KEY,
