@@ -77,17 +77,21 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const ts = Date.now();
   const messageId = `${Math.floor(ts/1000)}_KCBOrg_${ts}`;
 
+  // KCB BUNI uses 522533 as the Safaricom-registered paybill (shared)
+  // orgShortCode is your merchant/account ID on KCB's system
+  const KCB_PAYBILL = process.env.KCB_PAYBILL || '522533'; // Safaricom shortcode for KCB
   const payload = {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
     invoiceNumber: invoiceNumber || `ZZ-${ts}`,
     sharedShortCode: true,
-    orgShortCode: KCB_SHORT_CODE,
+    orgShortCode: KCB_SHORT_CODE,  // Your KCB merchant ID: 8081055
     orgPassKey: KCB_PASS_KEY,
     callbackUrl: KCB_CALLBACK_URL,
     transactionDescription: (description || 'Zenith Zoom Payment').slice(0, 50)
   };
-  console.log('[KCB] STK payload:', JSON.stringify(payload));
+  console.log('[KCB] STK payload:', JSON.stringify(payload, null, 2));
+  console.log('[KCB] Headers: routeCode=207, operation=STKPush, messageId=', messageId);
 
   const stkUrl = `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`;
   console.log(`[KCB] STK URL: ${stkUrl}`);
@@ -103,7 +107,8 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     timeout: 30000
   });
 
-  console.log('[KCB] STK response:', JSON.stringify(response.data));
+  console.log('[KCB] STK response status:', response.status);
+  console.log('[KCB] STK response data:', JSON.stringify(response.data, null, 2));
   return response.data;
 }
 
