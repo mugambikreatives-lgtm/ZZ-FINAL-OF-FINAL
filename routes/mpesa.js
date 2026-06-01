@@ -62,45 +62,45 @@ function formatPhone(phone) {
 
 // Initiate KCB BUNI STK Push
 async function stkPush({ phone, amount, invoiceNumber, description }) {
+  // Production values from KCB BUNI MpesaExpressAPIService 1.0.0 docs
   const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
-  const KCB_SHORT_CODE = process.env.KCB_SHORT_CODE || process.env.KCB_ORG_SHORT_CODE || '';
-  if (!KCB_SHORT_CODE) console.warn('[KCB] WARNING: KCB_SHORT_CODE not set in env vars!');
+  const KCB_SHORT_CODE   = process.env.KCB_SHORT_CODE   || '174379';
+  const KCB_PASS_KEY     = process.env.KCB_PASS_KEY     || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
 
   const token = await getAccessToken();
-  console.log('KCB token obtained successfully');
+  console.log('[KCB] Token ready, building STK Push payload');
+
+  // messageId format from docs: 232323_KCBOrg_{timestamp}
+  const ts = Date.now();
+  const messageId = `${Math.floor(ts/1000)}_KCBOrg_${ts}`;
 
   const payload = {
     phoneNumber: formatPhone(phone),
     amount: String(Math.ceil(amount)),
-    invoiceNumber: invoiceNumber || `ZZ-${Date.now()}`,
-    sharedShortCode: !KCB_SHORT_CODE, // false when we have our own short code
+    invoiceNumber: invoiceNumber || `ZZ-${ts}`,
+    sharedShortCode: true,
     orgShortCode: KCB_SHORT_CODE,
+    orgPassKey: KCB_PASS_KEY,
     callbackUrl: KCB_CALLBACK_URL,
-    transactionDescription: description || 'Zenith Zoom Payment'
+    transactionDescription: (description || 'Zenith Zoom Payment').slice(0, 50)
   };
-  console.log('STK Push payload:', JSON.stringify(payload));
+  console.log('[KCB] STK payload:', JSON.stringify(payload));
 
-  const messageId = `ZZ_${Date.now()}_${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+  const stkUrl = `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`;
+  console.log(`[KCB] STK URL: ${stkUrl}`);
 
-  const stkUrl = process.env.KCB_STK_URL || `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`;
-  console.log(`[KCB] STK Push URL: ${stkUrl}`);
+  const response = await axios.post(stkUrl, payload, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'routeCode': '207',
+      'operation': 'STKPush',
+      'messageId': messageId
+    },
+    timeout: 30000
+  });
 
-  const response = await axios.post(
-    stkUrl,
-    payload,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'routeCode': process.env.KCB_ROUTE_CODE || '207',
-        'operation': 'STKPush',
-        'messageId': messageId
-      },
-      timeout: 30000
-    }
-  );
-  console.log('KCB STK response:', JSON.stringify(response.data));
-
+  console.log('[KCB] STK response:', JSON.stringify(response.data));
   return response.data;
 }
 
@@ -478,7 +478,8 @@ router.get('/test-connection', async (req, res) => {
       baseUrl: getBaseUrl(),
       tokenEndpoint: getBaseUrl() + '/token',
       stkPushEndpoint: getBaseUrl() + '/mm/api/request/1.0.0/stkpush',
-      shortCode: process.env.KCB_SHORT_CODE || process.env.KCB_ORG_SHORT_CODE || '⚠️ NOT SET - add KCB_SHORT_CODE env var',
+      shortCode: process.env.KCB_SHORT_CODE || '174379 (default)',
+      passKey: process.env.KCB_PASS_KEY ? '✅ Custom' : '✅ Default (bfb279f9...)',
       tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
     });
   } catch (err) {
