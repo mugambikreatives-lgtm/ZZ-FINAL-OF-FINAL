@@ -173,9 +173,17 @@ router.post('/pay-resource', async (req, res) => {
     const errMsg = errData?.message || errData?.error || errData?.ResponseDescription || err.message;
     console.error('[KCB] STK Push error | Status:', errStatus, '| Data:', JSON.stringify(errData), '| Message:', errMsg);
     // Return actual KCB error to help debug
+    let userMessage = errMsg || 'Payment initiation failed. Try again.';
+    if (errStatus === 403) {
+      userMessage = 'Payment service error (403). Your server IP may need whitelisting on KCB portal. Contact KCB BUNI support.';
+      console.error('[KCB] 403 Forbidden - Server IP not whitelisted on KCB BUNI portal. Add your server IP at developer.buni.kcbgroup.com');
+    } else if (errStatus === 401) {
+      userMessage = 'Payment authentication failed (401). Check KCB credentials.';
+      _cachedToken = null; _tokenExpiry = 0; // Clear cached token
+    }
     res.status(500).json({
       success: false,
-      message: errMsg || 'Payment initiation failed. Try again.',
+      message: userMessage,
       kcbStatus: errStatus,
       kcbError: errData
     });
@@ -225,8 +233,14 @@ router.post('/pay-cv', async (req, res) => {
       message: 'STK Push sent. Enter your M-Pesa PIN on your phone.'
     });
   } catch (err) {
-    console.error('KCB STK Push (CV) error:', JSON.stringify(err.response?.data) || err.message, '| Status:', err.response?.status);
-    res.status(500).json({ success: false, message: 'Payment initiation failed. Try again.' });
+    const errDataCV = err.response?.data;
+    const errStatusCV = err.response?.status;
+    const errMsgCV = errDataCV?.message || errDataCV?.error || err.message;
+    console.error('[KCB] STK Push CV error | Status:', errStatusCV, '| Data:', JSON.stringify(errDataCV));
+    let userMsgCV = errMsgCV || 'Payment initiation failed. Try again.';
+    if (errStatusCV === 403) { userMsgCV = 'Payment service error (403). Server IP not whitelisted.'; _cachedToken=null; _tokenExpiry=0; }
+    if (errStatusCV === 401) { userMsgCV = 'Payment authentication failed.'; _cachedToken=null; _tokenExpiry=0; }
+    res.status(500).json({ success: false, message: userMsgCV, kcbStatus: errStatusCV });
   }
 });
 
