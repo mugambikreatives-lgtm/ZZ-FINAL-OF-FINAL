@@ -1,122 +1,94 @@
 const express = require('express');
-const https = require('https');
 const router = express.Router();
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const Payment = require('../models/Payment');
-const User = require('../models/User');
 const Resource = require('../models/Resource');
 
-// ─────────────────────────────────────────────
-// KCB BUNI HELPERS
-// ─────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const CONFIG = {
+  consumerKey:    process.env.KCB_CONSUMER_KEY    || 'fp0Me33xpYF500M6Nmxsi30UZB8a',
+  consumerSecret: process.env.KCB_CONSUMER_SECRET || 'tohCNrzsnC3KdU9u4OFZuTTnf8Aa',
+  orgShortCode:   process.env.KCB_ORG_SHORT_CODE  || '174379',
+  passKey:        process.env.KCB_PASS_KEY        || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
+  callbackUrl:    process.env.KCB_CALLBACK_URL    || 'https://zeithzoom.com/api/mpesa/callback',
+  baseUrl:        'https://api.buni.kcbgroup.com',
+  tokenUrl:       'https://api.buni.kcbgroup.com/token',
+  stkUrl:         'https://api.buni.kcbgroup.com/mm/api/request/1.0.0/stkpush',
+};
 
-// Token cache — tokens expire in 3600s, cache for 55 mins to be safe
-let _cachedToken = null;
+// Token cache
+let _token = null;
 let _tokenExpiry = 0;
 
-function getBaseUrl() {
-  // PRODUCTION: always use production URL
-  // Set KCB_ENV=sandbox to revert to UAT/sandbox
-  const env = (process.env.KCB_ENV || 'production').toLowerCase();
-  return env === 'sandbox' || env === 'uat'
-    ? 'https://uat.buni.kcbgroup.com'
-    : 'https://api.buni.kcbgroup.com';
-}
-
-// Generate a Bearer access token from KCB BUNI
-async function getAccessToken() {
-  const KCB_CONSUMER_KEY = process.env.KCB_CONSUMER_KEY || 'fp0Me33xpYF500M6Nmxsi30UZB8a';
-  const KCB_CONSUMER_SECRET = process.env.KCB_CONSUMER_SECRET || 'tohCNrzsnC3KdU9u4OFZuTTnf8Aa';
-
-  // Try all known KCB token endpoints until one works
-  // accounts.buni.kcbgroup.com/oauth2/token is the correct URL for both sandbox and production
-  // Production token endpoint (from KCB developer portal)
-  const isProduction = process.env.KCB_ENV !== 'sandbox';
-  const tokenUrl = isProduction
-    ? 'https://api.buni.kcbgroup.com/token'
-    : 'https://uat.buni.kcbgroup.com/token';
-  const auth = Buffer.from(`${KCB_CONSUMER_KEY}:${KCB_CONSUMER_SECRET}`).toString('base64');
-  console.log(`[KCB] Token URL: ${tokenUrl} | Env: ${process.env.KCB_ENV||'production'} | Key: ${KCB_CONSUMER_KEY?.slice(0,8)}...`);
-
-  const res = await axios.post(
-    tokenUrl,
-    'grant_type=client_credentials',
-    {
-      headers: {
-        Authorization: `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      timeout: 15000
-    }
-  );
-  console.log('KCB token obtained successfully');
-  return res.data.access_token;
-}
-
-// Format phone to 2547XXXXXXXX
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 function formatPhone(phone) {
-  let p = String(phone).replace(/\s+/g, '').replace(/[^0-9+]/g, '');
-  if (p.startsWith('+')) p = p.slice(1);
+  let p = String(phone).replace(/\s+/g, '').replace(/[^0-9]/g, '');
   if (p.startsWith('0')) p = '254' + p.slice(1);
   if (!p.startsWith('254')) p = '254' + p;
   return p;
 }
 
-// Initiate KCB BUNI STK Push
+async function getToken() {
+  if (_token && Date.now() < _tokenExpiry) return _token;
+
+  const auth = Buffer.from(`${CONFIG.consumerKey}:${CONFIG.consumerSecret}`).toString('base64');
+  console.log('[KCB] Fetching token from:', CONFIG.tokenUrl);
+
+  const res = await axios.post(
+    CONFIG.tokenUrl,
+    'grant_type=client_credentials',
+    {
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      timeout: 15000
+    }
+  );
+
+  _token = res.data.access_token;
+  _tokenExpiry = Date.now() + 55 * 60 * 1000; // 55 mins
+  console.log('[KCB] Token obtained ✅');
+  return _token;
+}
+
 async function stkPush({ phone, amount, invoiceNumber, description }) {
-  // Production values from KCB BUNI MpesaExpressAPIService 1.0.0 docs
-  const KCB_CALLBACK_URL = process.env.KCB_CALLBACK_URL || 'https://zeithzoom.com/api/mpesa/callback';
-  // IMPORTANT: orgShortCode must be 174379 per KCB BUNI API docs
-  // KCB_SHORT_CODE env var (8081055) is your merchant account, NOT the orgShortCode
-  const KCB_SHORT_CODE = process.env.KCB_ORG_SHORT_CODE || '174379';
-  const KCB_PASS_KEY     = process.env.KCB_PASS_KEY     || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+  const token = await getToken();
+  const sec = Math.floor(Date.now() / 1000);
+  const msgId = `${sec}_KCBOrg_${sec}`;
 
-  const token = await getAccessToken();
-  console.log('[KCB] Token ready, building STK Push payload');
-
-  // messageId format from docs: 232323_KCBOrg_{timestamp}
-  const ts = Date.now();
-  const messageId = `${Math.floor(ts/1000)}_KCBOrg_${ts}`;
-
-  // KCB BUNI uses 522533 as the Safaricom-registered paybill (shared)
-  // orgShortCode is your merchant/account ID on KCB's system
-  const KCB_PAYBILL = process.env.KCB_PAYBILL || '522533'; // Safaricom shortcode for KCB
   const payload = {
-    phoneNumber: formatPhone(phone),
-    amount: String(Math.round(Number(amount))),
-    invoiceNumber: (invoiceNumber || `ZZ${ts.toString().slice(-8)}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
-    sharedShortCode: true,
-    orgShortCode: KCB_SHORT_CODE,  // 174379 per KCB BUNI API docs
-    orgPassKey: KCB_PASS_KEY,
-    callbackUrl: KCB_CALLBACK_URL,
-    transactionDescription: (description || 'Zenith Zoom Payment').slice(0, 50)
+    phoneNumber:            formatPhone(phone),
+    amount:                 String(Math.round(Number(amount))),
+    invoiceNumber:          String(invoiceNumber || `ZZ${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
+    sharedShortCode:        true,
+    orgShortCode:           CONFIG.orgShortCode,
+    orgPassKey:             CONFIG.passKey,
+    callbackUrl:            CONFIG.callbackUrl,
+    transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
   };
-  console.log('[KCB] STK payload:', JSON.stringify(payload, null, 2));
-  console.log('[KCB] Headers: routeCode=207, operation=STKPush, messageId=', messageId);
 
-  const stkUrl = `${getBaseUrl()}/mm/api/request/1.0.0/stkpush`;
-  console.log(`[KCB] STK URL: ${stkUrl}`);
+  console.log('[KCB] STK payload:', JSON.stringify(payload));
 
-  const response = await axios.post(stkUrl, payload, {
+  const response = await axios.post(CONFIG.stkUrl, payload, {
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'routeCode': '207',
-      'operation': 'STKPush',
-      'messageId': messageId
+      'Authorization':   `Bearer ${token}`,
+      'Content-Type':    'application/json',
+      'Accept':          'application/json',
+      'routeCode':       '207',
+      'operation':       'STKPush',
+      'messageId':       msgId,
+      'X-IBM-Client-Id': CONFIG.consumerKey,
     },
     timeout: 30000
   });
 
-  console.log('[KCB] STK response status:', response.status);
-  console.log('[KCB] STK response data:', JSON.stringify(response.data, null, 2));
+  console.log('[KCB] STK response:', JSON.stringify(response.data));
   return response.data;
 }
 
-// ─────────────────────────────────────────────
-// ROUTES
-// ─────────────────────────────────────────────
+// ── ROUTES ────────────────────────────────────────────────────────────────────
 
 // POST /api/mpesa/pay-resource
 router.post('/pay-resource', async (req, res) => {
@@ -124,16 +96,14 @@ router.post('/pay-resource', async (req, res) => {
     const { phone, resourceId } = req.body;
     if (!phone || !resourceId)
       return res.status(400).json({ success: false, message: 'Phone and resource ID required' });
-
-    // Validate it's a real MongoDB ObjectId
-    if (!resourceId.match(/^[a-fA-F0-9]{24}$/))
+    if (!/^[a-fA-F0-9]{24}$/.test(resourceId))
       return res.status(400).json({ success: false, message: 'Invalid resource ID' });
 
     const resource = await Resource.findById(resourceId);
     if (!resource)
       return res.status(404).json({ success: false, message: 'Resource not found' });
 
-    const invoiceNumber = `ZZ-RES-${resourceId.toString().slice(-6).toUpperCase()}`;
+    const invoiceNumber = `ZZRES${resourceId.toString().slice(-6).toUpperCase()}`;
     const stkRes = await stkPush({
       phone,
       amount: resource.price,
@@ -141,17 +111,21 @@ router.post('/pay-resource', async (req, res) => {
       description: `ZenithZoom: ${resource.title.slice(0, 30)}`
     });
 
-    // KCB returns ResponseCode "0" for success
-    const resCode = stkRes?.response?.ResponseCode ?? stkRes?.header?.statusCode;
-    if (resCode !== '0') {
-      const msg = stkRes?.response?.ResponseDescription
-        || stkRes?.header?.statusDescription
-        || 'STK Push failed';
+    // KCB response format: { header: { statusCode: "1", statusDescription: "Success" }, response: {...} }
+    console.log('[KCB] Full STK response:', JSON.stringify(stkRes));
+    const statusCode = stkRes?.header?.statusCode;
+    const statusDesc = stkRes?.header?.statusDescription;
+    // statusCode "1" = success, "0" = failure
+    if (statusCode !== '1' && statusCode !== 1) {
+      const msg = statusDesc || stkRes?.response?.ResponseDescription || 'STK Push failed';
+      console.error('[KCB] STK failed:', statusCode, msg);
       return res.status(400).json({ success: false, message: msg });
     }
 
-    const checkoutRequestId = stkRes.response.CheckoutRequestID;
-    const merchantRequestId = stkRes.response.MerchantRequestID;
+    // Extract checkout IDs from response object
+    const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
+    const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZ-${Date.now()}`;
+    const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
 
     await Payment.create({
       checkoutRequestId,
@@ -162,31 +136,18 @@ router.post('/pay-resource', async (req, res) => {
       resourceId: resource._id
     });
 
-    res.json({
-      success: true,
-      checkoutRequestId,
-      message: 'STK Push sent. Enter your M-Pesa PIN on your phone.'
-    });
+    res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
   } catch (err) {
-    const errData = err.response?.data;
-    const errStatus = err.response?.status;
-    const errMsg = errData?.message || errData?.error || errData?.ResponseDescription || err.message;
-    console.error('[KCB] STK Push error | Status:', errStatus, '| Data:', JSON.stringify(errData), '| Message:', errMsg);
-    // Return actual KCB error to help debug
-    let userMessage = errMsg || 'Payment initiation failed. Try again.';
-    if (errStatus === 403) {
-      userMessage = 'Payment service error (403). Your server IP may need whitelisting on KCB portal. Contact KCB BUNI support.';
-      console.error('[KCB] 403 Forbidden - Server IP not whitelisted on KCB BUNI portal. Add your server IP at developer.buni.kcbgroup.com');
-    } else if (errStatus === 401) {
-      userMessage = 'Payment authentication failed (401). Check KCB credentials.';
-      _cachedToken = null; _tokenExpiry = 0; // Clear cached token
-    }
-    res.status(500).json({
-      success: false,
-      message: userMessage,
-      kcbStatus: errStatus,
-      kcbError: errData
-    });
+    const status = err.response?.status;
+    const data   = err.response?.data;
+    const msg    = data?.message || data?.error || err.message;
+    console.error('[KCB] pay-resource error:', status, JSON.stringify(data));
+    _token = null; _tokenExpiry = 0; // reset token on error
+
+    let userMsg = msg || 'Payment initiation failed. Try again.';
+    if (status === 403) userMsg = 'Payment gateway error (403 Forbidden). Please contact support.';
+    if (status === 401) userMsg = 'Payment authentication error. Please try again.';
+    res.status(500).json({ success: false, message: userMsg, _kcb: { status, data } });
   }
 });
 
@@ -197,149 +158,95 @@ router.post('/pay-cv', async (req, res) => {
     if (!phone || !cvData)
       return res.status(400).json({ success: false, message: 'Phone and CV data required' });
 
-    const amount = 100; // KES 100 for CV export
-    const invoiceNumber = `ZZ-CV-${Date.now()}`;
+    const amount = parseInt(process.env.CV_PRICE || '100');
+    const invoiceNumber = `ZZCV${Date.now().toString().slice(-8)}`;
 
-    const stkRes = await stkPush({
-      phone,
-      amount,
-      invoiceNumber,
-      description: 'ZenithZoom CV Builder'
-    });
+    const stkRes = await stkPush({ phone, amount, invoiceNumber, description: 'ZenithZoom CV Builder' });
 
-    const resCode = stkRes?.response?.ResponseCode ?? stkRes?.header?.statusCode;
-    if (resCode !== '0') {
-      const msg = stkRes?.response?.ResponseDescription
-        || stkRes?.header?.statusDescription
-        || 'STK Push failed';
+    const statusCode = stkRes?.header?.statusCode;
+    if (statusCode !== '1' && statusCode !== 1) {
+      const msg = stkRes?.header?.statusDescription || 'STK Push failed';
       return res.status(400).json({ success: false, message: msg });
     }
+    const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
+    const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZCV-${Date.now()}`;
+    const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
 
-    const checkoutRequestId = stkRes.response.CheckoutRequestID;
-    const merchantRequestId = stkRes.response.MerchantRequestID;
-
-    await Payment.create({
-      checkoutRequestId,
-      merchantRequestId,
-      phone: formatPhone(phone),
-      amount,
-      type: 'cv',
-      cvData
-    });
-
-    res.json({
-      success: true,
-      checkoutRequestId,
-      message: 'STK Push sent. Enter your M-Pesa PIN on your phone.'
-    });
+    await Payment.create({ checkoutRequestId, merchantRequestId, phone: formatPhone(phone), amount, type: 'cv', cvData });
+    res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
   } catch (err) {
-    const errDataCV = err.response?.data;
-    const errStatusCV = err.response?.status;
-    const errMsgCV = errDataCV?.message || errDataCV?.error || err.message;
-    console.error('[KCB] STK Push CV error | Status:', errStatusCV, '| Data:', JSON.stringify(errDataCV));
-    let userMsgCV = errMsgCV || 'Payment initiation failed. Try again.';
-    if (errStatusCV === 403) { userMsgCV = 'Payment service error (403). Server IP not whitelisted.'; _cachedToken=null; _tokenExpiry=0; }
-    if (errStatusCV === 401) { userMsgCV = 'Payment authentication failed.'; _cachedToken=null; _tokenExpiry=0; }
-    res.status(500).json({ success: false, message: userMsgCV, kcbStatus: errStatusCV });
+    const status = err.response?.status;
+    const data   = err.response?.data;
+    _token = null; _tokenExpiry = 0;
+    console.error('[KCB] pay-cv error:', status, JSON.stringify(data));
+    res.status(500).json({ success: false, message: data?.message || err.message || 'Payment failed.' });
   }
 });
 
-// POST /api/mpesa/callback  — KCB BUNI calls this after payment
+// POST /api/mpesa/callback
 router.post('/callback', async (req, res) => {
   try {
-    console.log('KCB BUNI callback received:', JSON.stringify(req.body, null, 2));
+    console.log('[KCB] Callback:', JSON.stringify(req.body, null, 2));
+    // KCB callback format - may be Safaricom-style or KCB-style
+    const body = req.body;
+    const cb = body?.Body?.stkCallback || body?.stkCallback || body;
+    const checkoutRequestId = cb?.CheckoutRequestID || cb?.checkoutRequestId || body?.CheckoutRequestID;
+    const resultCode = cb?.ResultCode ?? cb?.resultCode ?? body?.ResultCode;
+    const metadata  = cb?.CallbackMetadata || body?.CallbackMetadata;
 
-    // KCB callback body structure:
-    // { Body: { stkCallback: { CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata } } }
-    // (mirrors Safaricom format — KCB tunnels through Safaricom M-Pesa)
-    const callback = req.body?.Body?.stkCallback;
-    if (!callback) {
-      // Some KCB sandbox versions send a flat payload
-      const flat = req.body;
-      if (flat?.CheckoutRequestID) {
-        await processCallback(flat.CheckoutRequestID, flat.ResultCode, flat.CallbackMetadata);
+    if (!checkoutRequestId) return res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
+
+    const payment = await Payment.findOne({ checkoutRequestId });
+    if (!payment) { console.warn('[KCB] Payment not found:', checkoutRequestId); return res.json({ ResultCode: 0, ResultDesc: 'Accepted' }); }
+
+    if (String(resultCode) === '0') {
+      const items   = metadata?.Item || [];
+      const receipt = items.find(i => i.Name === 'MpesaReceiptNumber')?.Value;
+      payment.status              = 'completed';
+      payment.mpesaReceiptNumber  = receipt || null;
+      payment.downloadToken       = uuidv4();
+      payment.downloadExpiry      = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      if (payment.type === 'resource' && payment.resourceId) {
+        await Resource.findByIdAndUpdate(payment.resourceId, { $inc: { downloads: 1 } });
+        try {
+          const User = require('../models/User');
+          const raw = payment.phone || '';
+          const p254 = raw.startsWith('0') ? '254' + raw.slice(1) : raw;
+          const p0   = raw.startsWith('254') ? '0' + raw.slice(3) : raw;
+          const user = await User.findOne({ $or: [{ phone: raw }, { phone: p254 }, { phone: p0 }] });
+          if (user) {
+            const already = user.purchasedCourses.some(c => c.courseId?.toString() === payment.resourceId.toString());
+            if (!already) { user.purchasedCourses.push({ courseId: payment.resourceId }); await user.save(); }
+            console.log('[KCB] Course linked to:', user.email);
+          }
+        } catch(e) { console.log('[KCB] User link error:', e.message); }
       }
-      return res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
+    } else {
+      payment.status = 'failed';
     }
 
-    const { CheckoutRequestID, ResultCode, CallbackMetadata } = callback;
-    await processCallback(CheckoutRequestID, ResultCode, CallbackMetadata);
+    await payment.save();
     res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
   } catch (err) {
-    console.error('Callback processing error:', err);
-    res.json({ ResultCode: 0, ResultDesc: 'Accepted' }); // Always ACK KCB
+    console.error('[KCB] Callback error:', err);
+    res.json({ ResultCode: 0, ResultDesc: 'Accepted' });
   }
 });
 
-async function processCallback(checkoutRequestId, resultCode, callbackMetadata) {
-  const payment = await Payment.findOne({ checkoutRequestId });
-  if (!payment) {
-    console.warn('Payment not found for CheckoutRequestID:', checkoutRequestId);
-    return;
-  }
-
-  if (String(resultCode) === '0') {
-    // Payment successful
-    const items = callbackMetadata?.Item || [];
-    const receipt = items.find(i => i.Name === 'MpesaReceiptNumber')?.Value;
-
-    const downloadToken = uuidv4();
-    const downloadExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-
-    payment.status = 'completed';
-    payment.mpesaReceiptNumber = receipt || null;
-    payment.downloadToken = downloadToken;
-    payment.downloadExpiry = downloadExpiry;
-    payment.updatedAt = new Date();
-
-    if (payment.type === 'resource' && payment.resourceId) {
-      await Resource.findByIdAndUpdate(payment.resourceId, { $inc: { downloads: 1 } });
-      // Link purchase to user account by phone number
-      try {
-        const User = require('../models/User');
-        const rawPhone = payment.phone || '';
-        const phone254 = rawPhone.replace(/^0/, '254').replace(/^\+/, '');
-        const phone0 = rawPhone.replace(/^254/, '0');
-        const user = await User.findOne({
-          $or: [{ phone: rawPhone }, { phone: phone254 }, { phone: phone0 }]
-        });
-        if (user) {
-          const alreadyOwns = user.purchasedCourses.some(c => c.courseId?.toString() === payment.resourceId.toString());
-          if (!alreadyOwns) {
-            user.purchasedCourses.push({ courseId: payment.resourceId });
-            await user.save();
-            console.log('Course access granted to user:', user.email);
-          }
-        } else {
-          console.log('No user found for phone:', rawPhone);
-        }
-      } catch(e) { console.log('User link error:', e.message); }
-    }
-  } else {
-    payment.status = 'failed';
-    payment.updatedAt = new Date();
-  }
-
-  await payment.save();
-}
-
-// GET /api/mpesa/status/:checkoutRequestId — polled by the frontend
+// GET /api/mpesa/status/:id
 router.get('/status/:checkoutRequestId', async (req, res) => {
   try {
-    const payment = await Payment.findOne({ checkoutRequestId: req.params.checkoutRequestId });
+    const id = req.params.checkoutRequestId;
+    const payment = await Payment.findOne({ $or: [{ checkoutRequestId: id }, { merchantRequestId: id }] });
     if (!payment) return res.status(404).json({ success: false, message: 'Payment not found' });
-
-    res.json({
-      success: true,
-      status: payment.status,
-      downloadToken: payment.status === 'completed' ? payment.downloadToken : null
-    });
+    res.json({ success: true, status: payment.status, downloadToken: payment.status === 'completed' ? payment.downloadToken : null });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error checking payment status' });
+    res.status(500).json({ success: false, message: 'Error checking status' });
   }
 });
 
-// GET /api/mpesa/download/:token — serve file after verified payment
+// GET /api/mpesa/download/:token
 router.get('/download/:token', async (req, res) => {
   try {
     const payment = await Payment.findOne({
@@ -348,41 +255,17 @@ router.get('/download/:token', async (req, res) => {
       downloadExpiry: { $gt: new Date() }
     }).populate('resourceId');
 
-    if (!payment)
-      return res.status(403).send('Invalid or expired download link. Please complete payment again.');
+    if (!payment) return res.status(403).send('Invalid or expired download link.');
 
     if (payment.type === 'resource') {
       const resource = payment.resourceId;
       if (!resource) return res.status(404).send('Resource not found.');
-
-      // Stream PDF from Cloudinary through our server (avoids auth issues)
-      if (resource.filePath && resource.filePath.startsWith('http')) {
+      if (resource.filePath?.startsWith('http')) {
         const cloudinary = require('cloudinary').v2;
-        cloudinary.config({
-          cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-          api_key: process.env.CLOUDINARY_API_KEY,
-          api_secret: process.env.CLOUDINARY_API_SECRET
-        });
-        const publicId = resource.cloudinaryId;
-        console.log('Fetching from Cloudinary:', publicId);
-        // Use download_url which generates a properly authenticated download link
-        const downloadUrl = cloudinary.utils.download_zip_url({
-          public_ids: [publicId],
-          resource_type: 'raw'
-        });
-        // Get direct authenticated URL via private_download_url
-        const url = cloudinary.utils.private_download_url(
-          publicId, 'pdf',
-          {
-            resource_type: 'raw',
-            type: 'upload',
-            expires_at: Math.floor(Date.now() / 1000) + 3600
-          }
-        );
-        console.log('Private URL generated:', url.substring(0, 80));
+        cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET });
+        const url = cloudinary.utils.private_download_url(resource.cloudinaryId, 'pdf', { resource_type: 'raw', type: 'upload', expires_at: Math.floor(Date.now() / 1000) + 3600 });
         return res.redirect(url);
       }
-      // Fallback for local files
       return res.download(resource.filePath, resource.fileName);
     }
 
@@ -397,158 +280,50 @@ router.get('/download/:token', async (req, res) => {
     }
   } catch (err) {
     console.error('Download error:', err);
-    res.status(500).send('Download failed. Please contact support.');
+    res.status(500).send('Download failed.');
   }
 });
 
-// ─────────────────────────────────────────────
-// CV PDF GENERATOR
-// ─────────────────────────────────────────────
-function generateCVPDF(doc, cv) {
-  const teal = '#00C2D4';
-  const dark = '#070B14';
-  const pageW = doc.page.width;
-
-  // Header band
-  doc.rect(0, 0, pageW, 130).fill(dark);
-
-  doc.fillColor('white')
-    .font('Helvetica-Bold')
-    .fontSize(26)
-    .text(cv.fullName || 'Your Name', 50, 36);
-
-  doc.fillColor(teal)
-    .font('Helvetica')
-    .fontSize(13)
-    .text(cv.jobTitle || '', 50, 68);
-
-  const contactParts = [cv.email, cv.phone, cv.location, cv.linkedin].filter(Boolean);
-  doc.fillColor('#aaaaaa')
-    .fontSize(9)
-    .text(contactParts.join('  |  '), 50, 90, { width: pageW - 100 });
-
-  doc.moveDown(4.5);
-
-  const sectionHeader = (title) => {
-    doc.moveDown(0.8)
-      .fillColor(teal)
-      .font('Helvetica-Bold')
-      .fontSize(10)
-      .text(title.toUpperCase(), { characterSpacing: 1.5 });
-    doc.moveTo(50, doc.y + 2).lineTo(pageW - 50, doc.y + 2)
-      .strokeColor(teal).lineWidth(0.8).stroke();
-    doc.moveDown(0.5);
-  };
-
-  if (cv.summary) {
-    sectionHeader('Professional Summary');
-    doc.fillColor('#333333').font('Helvetica').fontSize(10)
-      .text(cv.summary, { align: 'justify', lineGap: 2 });
+// GET /api/mpesa/test-connection
+router.get('/test-connection', async (req, res) => {
+  try {
+    const token = await getToken();
+    res.json({ success: true, message: 'KCB BUNI ✅', config: { baseUrl: CONFIG.baseUrl, stkUrl: CONFIG.stkUrl, orgShortCode: CONFIG.orgShortCode, callbackUrl: CONFIG.callbackUrl, consumerKey: CONFIG.consumerKey.slice(0,8)+'...', tokenPreview: token.slice(0,20)+'...' } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.response?.data || err.message, status: err.response?.status });
   }
+});
 
-  if (cv.experience?.length) {
-    sectionHeader('Work Experience');
-    cv.experience.forEach(exp => {
-      if (!exp.role) return;
-      doc.fillColor(dark).font('Helvetica-Bold').fontSize(10.5)
-        .text(`${exp.role}`, { continued: true })
-        .font('Helvetica').fillColor('#555555')
-        .text(`   —   ${exp.company}`);
-      doc.fillColor('#888888').fontSize(8.5)
-        .text(`${exp.startDate || ''}${exp.endDate ? ' – ' + exp.endDate : ''}${exp.location ? '   ·   ' + exp.location : ''}`);
-      if (exp.description) {
-        doc.fillColor('#444444').fontSize(9.5).text(exp.description, { indent: 12, lineGap: 1.5 });
-      }
-      doc.moveDown(0.5);
-    });
-  }
-
-  if (cv.education?.length) {
-    sectionHeader('Education');
-    cv.education.forEach(edu => {
-      if (!edu.degree) return;
-      doc.fillColor(dark).font('Helvetica-Bold').fontSize(10.5)
-        .text(`${edu.degree}`, { continued: true })
-        .font('Helvetica').fillColor('#555555')
-        .text(`   —   ${edu.institution}`);
-      doc.fillColor('#888888').fontSize(8.5)
-        .text(`${edu.startYear || ''}${edu.endYear ? ' – ' + edu.endYear : ''}`);
-      doc.moveDown(0.4);
-    });
-  }
-
-  if (cv.skills) {
-    sectionHeader('Skills');
-    doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.skills);
-  }
-
-  if (cv.certifications) {
-    sectionHeader('Certifications & Achievements');
-    doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.certifications);
-  }
-
-  if (cv.languages) {
-    sectionHeader('Languages');
-    doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.languages);
-  }
-
-  // Footer
-  const footerY = doc.page.height - 36;
-  doc.rect(0, footerY - 10, pageW, 46).fill(dark);
-  doc.fillColor(teal).fontSize(8).font('Helvetica')
-    .text('Generated by Zenith Zoom  ·  zenithzoom.com', 50, footerY, { align: 'center' });
-}
-
-// POST /api/mpesa/test-stk — Test STK push directly (for debugging)
+// POST /api/mpesa/test-stk
 router.post('/test-stk', async (req, res) => {
   try {
     const { phone } = req.body;
-    if (!phone) return res.status(400).json({ success: false, message: 'Phone required' });
-    const result = await stkPush({
-      phone,
-      amount: 1,
-      invoiceNumber: `ZZTEST${Date.now().toString().slice(-6)}`,
-      description: 'ZenithZoom Test Payment'
-    });
+    if (!phone) return res.status(400).json({ success: false, message: 'phone required' });
+    const result = await stkPush({ phone, amount: 1, invoiceNumber: `ZZTEST${Date.now().toString().slice(-6)}`, description: 'ZenithZoom Test' });
     res.json({ success: true, result });
   } catch (err) {
-    const errData = err.response?.data;
-    res.status(500).json({
-      success: false,
-      error: errData || err.message,
-      status: err.response?.status,
-      headers: err.response?.headers
-    });
+    res.status(500).json({ success: false, error: err.response?.data || err.message, status: err.response?.status });
   }
 });
 
-// GET /api/mpesa/test-connection — admin can verify KCB credentials work
-router.get('/test-connection', async (req, res) => {
-  try {
-    // Only allow in non-public context
-    const token = await getAccessToken();
-    res.json({
-      success: true,
-      message: 'KCB BUNI connection successful ✅',
-      env: process.env.KCB_ENV || 'production (default)',
-      envVarSet: process.env.KCB_ENV || 'NOT SET (defaults to production)',
-      baseUrl: getBaseUrl(),
-      tokenEndpoint: getBaseUrl() + '/token',
-      stkPushEndpoint: getBaseUrl() + '/mm/api/request/1.0.0/stkpush',
-      isProduction: !['sandbox','uat'].includes((process.env.KCB_ENV||'').toLowerCase()),
-      shortCode: process.env.KCB_ORG_SHORT_CODE || '174379 (from KCB docs)',
-      passKey: process.env.KCB_PASS_KEY ? '✅ Custom' : '✅ Default (bfb279f9...)',
-      consumerKey: process.env.KCB_CONSUMER_KEY ? process.env.KCB_CONSUMER_KEY.slice(0,8)+'...' : 'fp0Me33x... (default)',
-      tokenPreview: token ? token.slice(0, 30) + '...' : 'null'
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: 'KCB connection failed: ' + (err.response?.data?.message || err.message),
-      status: err.response?.status,
-      details: err.response?.data
-    });
-  }
-});
+// ── CV PDF ────────────────────────────────────────────────────────────────────
+function generateCVPDF(doc, cv) {
+  const teal = '#00C2D4', dark = '#070B14', pageW = doc.page.width;
+  doc.rect(0, 0, pageW, 130).fill(dark);
+  doc.fillColor('white').font('Helvetica-Bold').fontSize(26).text(cv.fullName || 'Your Name', 50, 36);
+  doc.fillColor(teal).font('Helvetica').fontSize(13).text(cv.jobTitle || '', 50, 68);
+  doc.fillColor('#aaaaaa').fontSize(9).text([cv.email, cv.phone, cv.location, cv.linkedin].filter(Boolean).join('  |  '), 50, 90, { width: pageW - 100 });
+  doc.moveDown(4.5);
+  const sh = (t) => { doc.moveDown(0.8).fillColor(teal).font('Helvetica-Bold').fontSize(10).text(t.toUpperCase(), { characterSpacing: 1.5 }); doc.moveTo(50, doc.y+2).lineTo(pageW-50, doc.y+2).strokeColor(teal).lineWidth(0.8).stroke(); doc.moveDown(0.5); };
+  if (cv.summary) { sh('Professional Summary'); doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.summary, { align: 'justify', lineGap: 2 }); }
+  if (cv.experience?.length) { sh('Work Experience'); cv.experience.forEach(e => { if (!e.role) return; doc.fillColor(dark).font('Helvetica-Bold').fontSize(10.5).text(e.role, { continued: true }).font('Helvetica').fillColor('#555555').text(`   —   ${e.company}`); doc.fillColor('#888888').fontSize(8.5).text(`${e.startDate||''}${e.endDate?' – '+e.endDate:''}${e.location?'   ·   '+e.location:''}`); if (e.description) doc.fillColor('#444444').fontSize(9.5).text(e.description, { indent: 12, lineGap: 1.5 }); doc.moveDown(0.5); }); }
+  if (cv.education?.length) { sh('Education'); cv.education.forEach(e => { if (!e.degree) return; doc.fillColor(dark).font('Helvetica-Bold').fontSize(10.5).text(e.degree, { continued: true }).font('Helvetica').fillColor('#555555').text(`   —   ${e.institution}`); doc.fillColor('#888888').fontSize(8.5).text(`${e.startYear||''}${e.endYear?' – '+e.endYear:''}`); doc.moveDown(0.4); }); }
+  if (cv.skills) { sh('Skills'); doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.skills); }
+  if (cv.certifications) { sh('Certifications'); doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.certifications); }
+  if (cv.languages) { sh('Languages'); doc.fillColor('#333333').font('Helvetica').fontSize(10).text(cv.languages); }
+  const fy = doc.page.height - 36;
+  doc.rect(0, fy-10, pageW, 46).fill(dark);
+  doc.fillColor(teal).fontSize(8).font('Helvetica').text('Generated by Zenith Zoom  ·  zenithzoom.com', 50, fy, { align: 'center' });
+}
 
 module.exports = router;
