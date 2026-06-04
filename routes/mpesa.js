@@ -311,15 +311,28 @@ router.get('/test-connection', async (req, res) => {
   }
 });
 
-// POST /api/mpesa/test-stk
-router.post('/test-stk', async (req, res) => {
+// GET /api/mpesa/test-stk?phone=0716762062
+router.get('/test-stk', async (req, res) => {
   try {
-    const { phone } = req.body;
-    if (!phone) return res.status(400).json({ success: false, message: 'phone required' });
-    const result = await stkPush({ phone, amount: 1, invoiceNumber: `ZZTEST${Date.now().toString().slice(-6)}`, description: 'ZenithZoom Test' });
+    const phone = req.query.phone || '0716762062';
+    console.log('[KCB] Test STK Push to:', phone);
+    const result = await stkPush({
+      phone,
+      amount: 1,
+      invoiceNumber: `ZZTEST${Date.now().toString().slice(-6)}`,
+      description: 'ZenithZoom Test'
+    });
     res.json({ success: true, result });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.response?.data || err.message, status: err.response?.status });
+    const errData = err.response?.data;
+    const errStatus = err.response?.status;
+    res.json({
+      success: false,
+      status: errStatus,
+      error: errData || err.message,
+      url: err.config?.url,
+      sentHeaders: err.config?.headers
+    });
   }
 });
 
