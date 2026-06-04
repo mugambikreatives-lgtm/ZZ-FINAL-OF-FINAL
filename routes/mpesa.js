@@ -30,27 +30,35 @@ function formatPhone(phone) {
 }
 
 async function getToken() {
-  if (_token && Date.now() < _tokenExpiry) return _token;
+  if (_token && Date.now() < _tokenExpiry) {
+    console.log('[KCB] Using cached token');
+    return _token;
+  }
 
   const auth = Buffer.from(`${CONFIG.consumerKey}:${CONFIG.consumerSecret}`).toString('base64');
-  console.log('[KCB] Fetching token from:', CONFIG.tokenUrl);
+  console.log('[KCB] TOKEN REQUEST:', CONFIG.tokenUrl);
+  console.log('[KCB] Consumer key:', CONFIG.consumerKey.slice(0,8)+'...');
 
-  const res = await axios.post(
-    CONFIG.tokenUrl,
-    'grant_type=client_credentials',
-    {
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      timeout: 15000
-    }
-  );
-
-  _token = res.data.access_token;
-  _tokenExpiry = Date.now() + 55 * 60 * 1000; // 55 mins
-  console.log('[KCB] Token obtained ✅');
-  return _token;
+  try {
+    const res = await axios.post(
+      CONFIG.tokenUrl,
+      'grant_type=client_credentials',
+      {
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        timeout: 15000
+      }
+    );
+    _token = res.data.access_token;
+    _tokenExpiry = Date.now() + 55 * 60 * 1000;
+    console.log('[KCB] Token obtained ✅ preview:', _token.slice(0,20));
+    return _token;
+  } catch (tokenErr) {
+    console.error('[KCB] TOKEN FAILED:', tokenErr.response?.status, JSON.stringify(tokenErr.response?.data));
+    throw tokenErr;
+  }
 }
 
 async function stkPush({ phone, amount, invoiceNumber, description }) {
@@ -69,7 +77,11 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
   };
 
-  console.log('[KCB] STK payload:', JSON.stringify(payload));
+  console.log('[KCB] === STK PUSH REQUEST ===');
+  console.log('[KCB] URL:', CONFIG.stkUrl);
+  console.log('[KCB] Payload:', JSON.stringify(payload));
+  console.log('[KCB] Token preview:', token.slice(0,20));
+  console.log('[KCB] messageId:', msgId);
 
   const response = await axios.post(CONFIG.stkUrl, payload, {
     headers: {
@@ -145,9 +157,14 @@ router.post('/pay-resource', async (req, res) => {
     _token = null; _tokenExpiry = 0; // reset token on error
 
     let userMsg = msg || 'Payment initiation failed. Try again.';
-    if (status === 403) userMsg = 'Payment gateway error (403 Forbidden). Please contact support.';
-    if (status === 401) userMsg = 'Payment authentication error. Please try again.';
-    res.status(500).json({ success: false, message: userMsg, _kcb: { status, data } });
+    if (status === 403) userMsg = `KCB 403 Forbidden - URL: ${CONFIG.stkUrl}`;
+    if (status === 401) userMsg = 'KCB 401 - Token invalid';
+    console.error('[KCB] === FULL ERROR ===');
+    console.error('[KCB] Status:', status);
+    console.error('[KCB] Data:', JSON.stringify(data));
+    console.error('[KCB] Headers sent:', JSON.stringify(err.config?.headers));
+    console.error('[KCB] URL called:', err.config?.url);
+    res.status(500).json({ success: false, message: userMsg, _debug: { status, data, url: err.config?.url } });
   }
 });
 
