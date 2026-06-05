@@ -125,16 +125,19 @@ router.post('/pay-resource', async (req, res) => {
 
     // KCB response format: { header: { statusCode: "1", statusDescription: "Success" }, response: {...} }
     console.log('[KCB] Full STK response:', JSON.stringify(stkRes));
-    const statusCode = stkRes?.header?.statusCode;
-    const statusDesc = stkRes?.header?.statusDescription;
-    // statusCode "1" = success, "0" = failure
-    if (statusCode !== '1' && statusCode !== 1) {
-      const msg = statusDesc || stkRes?.response?.ResponseDescription || 'STK Push failed';
-      console.error('[KCB] STK failed:', statusCode, msg);
-      return res.status(400).json({ success: false, message: msg });
+    const statusCode = String(stkRes?.header?.statusCode || '');
+    const statusDesc = stkRes?.header?.statusDescription || '';
+    console.log('[KCB] statusCode:', statusCode, '| desc:', statusDesc);
+
+    // statusCode "1" = API accepted the request (success)
+    // statusCode "0" = API rejected the request (failure)
+    // "Duplicated MSISDN" with statusCode "1" = STK already sent, treat as success
+    if (statusCode === '0') {
+      console.error('[KCB] STK rejected:', statusDesc);
+      return res.status(400).json({ success: false, message: statusDesc || 'STK Push failed' });
     }
 
-    // Extract checkout IDs from response object
+    // Extract checkout IDs
     const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
     const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZ-${Date.now()}`;
     const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
@@ -180,10 +183,9 @@ router.post('/pay-cv', async (req, res) => {
 
     const stkRes = await stkPush({ phone, amount, invoiceNumber, description: 'ZenithZoom CV Builder' });
 
-    const statusCode = stkRes?.header?.statusCode;
-    if (statusCode !== '1' && statusCode !== 1) {
-      const msg = stkRes?.header?.statusDescription || 'STK Push failed';
-      return res.status(400).json({ success: false, message: msg });
+    const statusCode = String(stkRes?.header?.statusCode || '');
+    if (statusCode === '0') {
+      return res.status(400).json({ success: false, message: stkRes?.header?.statusDescription || 'STK Push failed' });
     }
     const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
     const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZCV-${Date.now()}`;
