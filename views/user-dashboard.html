@@ -337,6 +337,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
       <div class="step"><div class="step-num">1</div>Enter your M-Pesa number below</div>
       <div class="step"><div class="step-num">2</div>Click Pay — get a prompt on your phone</div>
       <div class="step"><div class="step-num">3</div>Enter your PIN to confirm payment</div>
+      <div class="step"><div class="step-num">4</div><span>Course unlocks in your dashboard</span></div>
     </div>
     <label class="field-lbl">M-PESA PHONE NUMBER</label>
     <input class="pay-input" id="pay-phone" placeholder="0716762062" type="tel"/>
@@ -551,7 +552,8 @@ function openCoursePay(id, price, title) {
   document.getElementById('modal-price').textContent = 'KES ' + price.toLocaleString();
   document.getElementById('modal-course-name').textContent = title;
   document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
-  document.querySelectorAll('.step')[3].lastChild.textContent = ' Course unlocks in your dashboard';
+  const step4 = document.querySelectorAll('.step')[3];
+  if (step4) step4.querySelector('span').textContent = ' Course unlocks in your dashboard';
   // Pre-fill phone from user profile
   const phone = user.phone || '';
   document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
@@ -566,7 +568,8 @@ function openCVPay() {
   document.getElementById('modal-price').textContent = 'KES 100';
   document.getElementById('modal-course-name').textContent = 'CV Download';
   document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Pay & Download CV';
-  document.querySelectorAll('.step')[3].lastChild.textContent = ' CV download link appears below';
+  const step4cv = document.querySelectorAll('.step')[3];
+  if (step4cv) step4cv.querySelector('span').textContent = ' CV download link appears below';
   const phone = user.phone || document.getElementById('cv-phone-cv').value || '';
   document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
   resetPayStatus();
