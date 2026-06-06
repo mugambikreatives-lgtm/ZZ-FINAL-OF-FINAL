@@ -135,27 +135,39 @@ router.post('/pay-resource', optionalAuth, async (req, res) => {
       description: `ZenithZoom: ${resource.title.slice(0, 30)}`
     });
 
-    // KCB response format: { header: { statusCode: "1", statusDescription: "Success" }, response: {...} }
+    // KCB response format: { header: { statusCode: "1"=success / "0"=fail, statusDescription: "..." }, response: {...} }
     console.log('[KCB] Full STK response:', JSON.stringify(stkRes));
-    const statusCode = String(stkRes?.header?.statusCode || '');
+    const rawCode = stkRes?.header?.statusCode;
     const statusDesc = stkRes?.header?.statusDescription || '';
-    console.log('[KCB] statusCode:', statusCode, '| desc:', statusDesc);
+    const statusCode = String(rawCode ?? '');
+    console.log('[KCB] statusCode raw:', rawCode, '| parsed:', statusCode, '| desc:', statusDesc);
 
-    // statusCode "1" = API accepted the request (success)
-    // statusCode "0" = API rejected the request (failure)
-    // "Duplicated MSISDN" with statusCode "1" = STK already sent, treat as success
-    if (statusCode === '0') {
+    // Treat as failure only if explicitly "0" — any other value (1, "1", "S", etc.) = accepted
+    // Also check description: if it contains "Success" it's good regardless of code
+    const isSuccess = statusCode !== '0' || statusDesc.toLowerCase().includes('success');
+    if (!isSuccess) {
       console.error('[KCB] STK rejected:', statusDesc);
       return res.status(400).json({ success: false, message: statusDesc || 'STK Push failed' });
     }
 
-    // Extract checkout IDs
+    // Extract checkout ID — KCB can return it in various places
     const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
-    const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZ-${Date.now()}`;
+    const checkoutRequestId =
+      responseBody?.CheckoutRequestID ||
+      responseBody?.checkoutRequestId ||
+      stkRes?.CheckoutRequestID ||           // top-level fallback
+      stkRes?.checkoutRequestId ||
+      stkRes?.header?.CheckoutRequestID ||
+      null;
     const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
+    console.log('[KCB] checkoutRequestId:', checkoutRequestId, '| merchantRequestId:', merchantRequestId);
+
+    // If no checkout ID, STK was accepted but we can't track it — still return success
+    // The user will need to use Sync Courses if callback doesn't fire
+    const finalCheckoutId = checkoutRequestId || `ZZ-${Date.now()}`;
 
     await Payment.create({
-      checkoutRequestId,
+      checkoutRequestId: finalCheckoutId,
       merchantRequestId,
       phone: formatPhone(phone),
       amount: resource.price,
@@ -164,7 +176,7 @@ router.post('/pay-resource', optionalAuth, async (req, res) => {
       userId: req.userId || null
     });
 
-    res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
+    res.json({ success: true, checkoutRequestId: finalCheckoutId, hasTrackingId: !!checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
   } catch (err) {
     const status = err.response?.status;
     const data   = err.response?.data;
@@ -196,16 +208,28 @@ router.post('/pay-cv', optionalAuth, async (req, res) => {
 
     const stkRes = await stkPush({ phone, amount, invoiceNumber, description: 'ZenithZoom CV Builder' });
 
-    const statusCode = String(stkRes?.header?.statusCode || '');
-    if (statusCode === '0') {
-      return res.status(400).json({ success: false, message: stkRes?.header?.statusDescription || 'STK Push failed' });
+    const rawCodeCV = stkRes?.header?.statusCode;
+    const statusDescCV = stkRes?.header?.statusDescription || '';
+    const statusCodeCV = String(rawCodeCV ?? '');
+    const isSuccessCV = statusCodeCV !== '0' || statusDescCV.toLowerCase().includes('success');
+    console.log('[KCB] pay-cv statusCode:', rawCodeCV, '| desc:', statusDescCV);
+    if (!isSuccessCV) {
+      return res.status(400).json({ success: false, message: statusDescCV || 'STK Push failed' });
     }
-    const responseBody = typeof stkRes?.response === 'object' ? stkRes.response : {};
-    const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZCV-${Date.now()}`;
-    const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
+    const responseBodyCV = typeof stkRes?.response === 'object' ? stkRes.response : {};
+    const checkoutRequestId =
+      responseBodyCV?.CheckoutRequestID ||
+      responseBodyCV?.checkoutRequestId ||
+      stkRes?.CheckoutRequestID ||
+      stkRes?.checkoutRequestId ||
+      stkRes?.header?.CheckoutRequestID ||
+      null;
+    const merchantRequestId = responseBodyCV?.MerchantRequestID || responseBodyCV?.merchantRequestId || null;
+    const finalCheckoutId = checkoutRequestId || `ZZCV-${Date.now()}`;
+    console.log('[KCB] pay-cv checkoutRequestId:', checkoutRequestId, '| full response:', JSON.stringify(stkRes));
 
-    await Payment.create({ checkoutRequestId, merchantRequestId, phone: formatPhone(phone), amount, type: 'cv', cvData, userId: req.userId || null });
-    res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
+    await Payment.create({ checkoutRequestId: finalCheckoutId, merchantRequestId, phone: formatPhone(phone), amount, type: 'cv', cvData, userId: req.userId || null });
+    res.json({ success: true, checkoutRequestId: finalCheckoutId, hasTrackingId: !!checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
   } catch (err) {
     const status = err.response?.status;
     const data   = err.response?.data;

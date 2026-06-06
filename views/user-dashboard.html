@@ -610,6 +610,14 @@ async function submitPayment() {
     const data = await res.json();
     if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; return; }
     const checkoutId = data.checkoutRequestId;
+
+    if (!data.hasTrackingId) {
+      setStatus('📱 STK sent! Enter your PIN. Auto-detection unavailable — click "Sync Courses" after paying.', 'pending');
+      btn.disabled=false; btn.innerHTML='↺ Try Again';
+      document.getElementById('sync-btn-wrap').style.display = 'block';
+      return;
+    }
+
     setStatus('📱 Check your phone and enter your M-Pesa PIN...', 'pending');
     btn.innerHTML = '⏳ Waiting for payment...';
     // Poll for status

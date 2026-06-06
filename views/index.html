@@ -1536,6 +1536,16 @@ async function submitPayment() {
     }
 
     currentCheckoutId = data.checkoutRequestId;
+
+    if (!data.hasTrackingId) {
+      // KCB accepted but returned no tracking ID — can't poll, show manual check
+      status.className = 'pay-status pending';
+      status.innerHTML = '📱 STK sent! Enter your PIN. <br><small>Auto-detection unavailable — <a href="/dashboard" style="color:#81C995">go to dashboard</a> after paying to see your course.</small>';
+      btn.disabled = false;
+      btn.innerHTML = '↺ Try Again';
+      return;
+    }
+
     status.textContent = '📱 Enter your M-Pesa PIN to confirm payment. Waiting...';
 
     let attempts = 0;
