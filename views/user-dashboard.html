@@ -266,7 +266,10 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
       </select>
     </div>
     <div class="courses-grid" id="browse-grid">
-      <div style="color:var(--muted);padding:20px">Loading courses...</div>
+      <div style="color:var(--muted);padding:30px;text-align:center">
+        <div style="font-size:1.5rem;margin-bottom:8px">⏳</div>
+        <div>Loading courses...</div>
+      </div>
     </div>
   </div>
 
@@ -480,12 +483,25 @@ function renderMyCourses() {
 
 // ── BROWSE ──
 async function loadAllCourses() {
+  const grid = document.getElementById('browse-grid');
   try {
     const res = await fetch('/api/resources');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allCourses = data.resources || [];
-    renderBrowse(allCourses);
-  } catch { document.getElementById('browse-grid').innerHTML = '<div style="color:var(--muted)">Failed to load courses.</div>'; }
+    if (allCourses.length === 0) {
+      grid.innerHTML = '<div style="color:var(--muted);padding:30px;text-align:center"><div style="font-size:2rem;margin-bottom:10px">📚</div><div>No courses available yet.</div><div style="font-size:0.8rem;margin-top:6px">Check back soon or contact the admin.</div></div>';
+    } else {
+      renderBrowse(allCourses);
+    }
+  } catch(err) {
+    console.error('[ZZ] loadAllCourses error:', err);
+    grid.innerHTML = `<div style="color:#f87171;padding:20px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center">
+      <div style="font-size:1.3rem;margin-bottom:6px">⚠️ Failed to load courses</div>
+      <div style="font-size:0.8rem;color:var(--muted)">${err.message}</div>
+      <button onclick="loadAllCourses()" style="margin-top:12px;background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-size:0.82rem">↺ Retry</button>
+    </div>`;
+  }
 }
 
 function filterCourses() {

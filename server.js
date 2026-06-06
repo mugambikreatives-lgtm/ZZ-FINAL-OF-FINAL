@@ -116,6 +116,71 @@ async function seedSampleData() {
       console.log('✅ Sample jobs seeded');
     }
   } catch (err) { console.log('Job seed skipped:', err.message); }
+
+  // Seed sample courses/resources if none exist
+  try {
+    const Resource = require('./models/Resource');
+    const rCount = await Resource.countDocuments();
+    if (rCount === 0) {
+      await Resource.insertMany([
+        {
+          title: 'Digital Marketing Mastery',
+          description: 'Complete guide to social media marketing, SEO, Google Ads, and growing brands online in the African market.',
+          category: 'Marketing',
+          price: 500,
+          fileName: 'digital-marketing-mastery.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf', // placeholder — replace via admin
+          isActive: true
+        },
+        {
+          title: 'Business Finance & Accounting',
+          description: 'Learn bookkeeping, financial statements, budgeting, and M-Pesa business accounting for Kenyan entrepreneurs.',
+          category: 'Finance',
+          price: 700,
+          fileName: 'business-finance.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf',
+          isActive: true
+        },
+        {
+          title: 'Web Development Fundamentals',
+          description: 'HTML, CSS, JavaScript and Node.js from scratch. Build real websites and start freelancing within 30 days.',
+          category: 'Technology',
+          price: 1000,
+          fileName: 'web-dev-fundamentals.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf',
+          isActive: true
+        },
+        {
+          title: 'Career Development & Job Hunting',
+          description: 'CV writing, interview skills, LinkedIn optimization, and networking strategies for Kenya\'s job market.',
+          category: 'Career Development',
+          price: 400,
+          fileName: 'career-development.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf',
+          isActive: true
+        },
+        {
+          title: 'Leadership & Team Management',
+          description: 'Develop leadership skills, manage remote teams, conflict resolution, and build high-performance organizations.',
+          category: 'Leadership',
+          price: 800,
+          fileName: 'leadership-management.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf',
+          isActive: true
+        },
+        {
+          title: 'Entrepreneurship in Kenya',
+          description: 'From idea to registered business: business plan writing, funding, KRA compliance, and scaling your startup.',
+          category: 'Business',
+          price: 600,
+          fileName: 'entrepreneurship-kenya.pdf',
+          filePath: 'https://www.w3.org/WAI/WCAG21/Techniques/pdf/PDF1.pdf',
+          isActive: true
+        }
+      ]);
+      console.log('✅ Sample courses seeded — replace filePaths via admin dashboard');
+    }
+  } catch (err) { console.log('Resource seed skipped:', err.message); }
 }
 
 module.exports = app;
