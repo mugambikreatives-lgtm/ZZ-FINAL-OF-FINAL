@@ -331,183 +331,213 @@ footer { background: #161b22; border-top: 1px solid rgba(255,255,255,0.08); padd
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 
-/* RESPONSIVE */
-.hero-stats {
-  position: absolute; right: 48px; top: 50%;
-  transform: translateY(-50%);
-  width: 380px;
-  display: flex; flex-direction: column; gap: 12px;
-  animation: fadeUp 0.8s 0.3s ease both;
+/* ── TOPBAR ── */
+.topbar {
+  background: #7c3aed; color: #fff;
+  font-size: 0.75rem; padding: 0 32px;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1100; height: 36px;
+  display: flex; align-items: center;
 }
-.hero-photo-card {
-  border-radius: 24px; overflow: hidden;
-  height: 480px; position: relative;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
-  border: 1px solid rgba(0,194,212,0.2);
-}
-.hero-photo-card img {
-  width: 100%; height: 100%; object-fit: cover;
-  object-position: center top;
-  display: block;
-}
-.hero-photo-badge {
-  position: absolute; bottom: 16px; left: 16px;
-  background: rgba(7,11,20,0.88);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #7c3aed;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 0.8rem; font-weight: 600;
-}
-.hero-photo-sm {
-  border-radius: 14px; overflow: hidden;
-  height: 160px;
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-.hero-photo-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.topbar-inner { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.topbar-left { display: flex; gap: 20px; align-items: center; }
+.topbar-left span { display: flex; align-items: center; gap: 5px; opacity: 0.9; }
+.topbar-left i { font-size: 0.7rem; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-right a { color: #fff; opacity: 0.8; font-size: 0.78rem; transition: opacity 0.15s; }
+.topbar-right a:hover { opacity: 1; }
 
-/* ─── PHOTO SECTIONS ─── */
-.photo-mosaic {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 260px 260px;
-  gap: 12px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.photo-mosaic .photo-main {
-  grid-row: 1 / 3;
-}
-.photo-tile {
-  border-radius: 14px;
-  overflow: hidden;
-  position: relative;
-  background: #1c2128;
-}
-.photo-tile img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.5s ease;
-}
-.photo-tile:hover img { transform: scale(1.04); }
-.photo-tile .photo-caption {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 20px 16px 14px;
-  background: linear-gradient(transparent, rgba(7,11,20,0.85));
-  color: white;
-  font-size: 0.78rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.photo-tile:hover .photo-caption { opacity: 1; }
+/* ── NAV (shifted down for topbar) ── */
+nav { top: 36px; }
 
-.photo-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  max-width: 1100px;
-  margin: 0 auto;
+/* ── NAV AUTH BUTTON ── */
+.nav-auth { margin-left: 8px; }
+.btn-nav-login {
+  padding: 8px 20px; background: #7c3aed; color: #fff;
+  border-radius: 999px; font-size: 0.84rem; font-weight: 600;
+  text-decoration: none; transition: var(--transition);
+  font-family: var(--font-body);
 }
-.photo-strip .photo-tile {
-  height: 200px;
-  border-radius: 14px;
-}
+.btn-nav-login:hover { background: #6d28d9; }
 
-.impact-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-  max-width: 1100px;
-  margin: 0 auto;
+/* ── HERO (two-column split) ── */
+.hero {
+  min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 40px;
+  padding: 140px 80px 80px; position: relative; overflow: hidden;
+  background: #0d1117;
 }
-.impact-photo {
-  border-radius: 20px;
-  overflow: hidden;
-  height: 420px;
-  position: relative;
-}
-.impact-photo img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-.impact-photo::after {
-  content: '';
+.hero-bg {
   position: absolute; inset: 0;
-  border-radius: 20px;
-  border: 2px solid #7c3aed;
-  opacity: 0.3;
-  pointer-events: none;
+  background: radial-gradient(ellipse at 10% 50%, rgba(124,58,237,0.2) 0%, transparent 55%),
+              radial-gradient(ellipse at 90% 20%, rgba(59,130,246,0.1) 0%, transparent 50%);
 }
-.impact-quote {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  font-weight: 800;
-  color: #e6edf3;
-  line-height: 1.3;
-  margin-bottom: 20px;
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
 }
-.impact-quote .accent { color: #7c3aed; }
-.impact-stat-row {
-  display: flex; gap: 32px; flex-wrap: wrap;
-  margin-top: 32px;
-  padding-top: 28px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+.hero-content { position: relative; z-index: 1; animation: fadeUp 0.8s ease both; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px;
+  background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.35); border-radius: 999px;
+  font-size: 0.72rem; font-weight: 600; color: #a78bfa;
+  letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px;
 }
-.impact-stat { text-align: center; }
-.impact-stat-num {
-  font-family: var(--font-display);
-  font-size: 2rem; font-weight: 800;
-  color: #7c3aed;
+.badge-dot { width: 6px; height: 6px; background: #7c3aed; border-radius: 50%; animation: pulse 2s infinite; }
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.15; color: #fff; margin-bottom: 20px; letter-spacing: -0.5px;
 }
-.impact-stat-label { font-size: 0.78rem; color: #8b949e; margin-top: 2px; }
+.hero h1 .accent { color: #7c3aed; }
+.hero-checks { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 32px; }
+.hero-checks span { font-size: 0.85rem; color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 6px; }
+.hero-checks i { color: #34d399; font-size: 0.8rem; }
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
-@media (max-width: 900px) {
-  .photo-mosaic {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 200px 200px 200px;
-  }
-  .photo-mosaic .photo-main { grid-row: 1 / 2; grid-column: 1 / 3; }
-  .photo-strip { grid-template-columns: repeat(2, 1fr); }
-  .photo-strip .photo-tile { height: 180px; }
-  .impact-section { grid-template-columns: 1fr; }
-  .impact-photo { height: 280px; }
+/* HERO RIGHT — photo with floating bubbles */
+.hero-right { position: relative; z-index: 1; animation: fadeUp 0.8s 0.2s ease both; }
+.hero-photo-wrap { position: relative; }
+.hero-photo-card {
+  border-radius: 28px; overflow: hidden;
+  height: 520px; position: relative;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  border: 1px solid rgba(124,58,237,0.25);
 }
-@media (max-width: 640px) {
-  .photo-mosaic {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 180px 150px 150px;
-    gap: 8px;
-  }
-  .photo-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .photo-strip .photo-tile { height: 150px; }
-  .impact-stat-row { gap: 20px; }
+.hero-photo-card img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.hero-stat-bubble {
+  position: absolute; background: rgba(13,17,23,0.9);
+  backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
-/* ─── END PHOTO SECTIONS ─── */
+.hero-stat-1 { bottom: 30px; left: -30px; animation: floatY 3s ease-in-out infinite; }
+.hero-stat-2 { top: 40px; right: -20px; animation: floatY 3s 1.5s ease-in-out infinite; }
+.hsb-icon { font-size: 1.6rem; }
+.hsb-num { font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: #7c3aed; line-height: 1; }
+.hsb-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
 
+/* ── FEATURE STRIP ── */
+.feature-strip {
+  background: #fff; padding: 28px 32px;
+  border-top: 3px solid #7c3aed;
+  position: relative; z-index: 2;
+}
+.feature-strip-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+}
+.feat-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 24px; border-right: 1px solid #e5e7eb;
+}
+.feat-item:first-child { padding-left: 0; }
+.feat-item:last-child { border-right: none; }
+.feat-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(124,58,237,0.1); color: #7c3aed;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+}
+.feat-title { font-size: 0.82rem; font-weight: 600; color: #1a1a2e; }
+
+/* ── ABOUT SECTION ── */
+.about-section { background: #0d1117; padding: 100px 80px; }
+.about-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.about-photos { position: relative; height: 480px; }
+.about-img-main {
+  position: absolute; left: 0; top: 0; width: 68%; height: 100%;
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+.about-img-main img { width: 100%; height: 100%; object-fit: cover; }
+.about-img-sm {
+  position: absolute; right: 0; bottom: 40px; width: 42%; height: 55%;
+  border-radius: 16px; overflow: hidden;
+  border: 4px solid #0d1117;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+}
+.about-img-sm img { width: 100%; height: 100%; object-fit: cover; }
+.about-badge-circle {
+  position: absolute; left: 50%; top: -20px; transform: translateX(-50%);
+  width: 100px; height: 100px; border-radius: 50%;
+  background: #7c3aed; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(124,58,237,0.5);
+  border: 4px solid #0d1117;
+  animation: floatY 3s ease-in-out infinite;
+}
+.abc-inner { text-align: center; }
+.abc-num { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1; }
+.abc-label { font-size: 0.6rem; color: rgba(255,255,255,0.8); line-height: 1.3; text-transform: uppercase; letter-spacing: 0.05em; }
+.about-checks { display: flex; flex-direction: column; gap: 12px; }
+.about-check { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: rgba(255,255,255,0.8); }
+.about-check i { color: #7c3aed; font-size: 1.1rem; }
+
+/* ── POPULAR COURSES SECTION ── */
+.popular-section { background: #f8f9fc; padding: 100px 80px; }
+.popular-section .section-tag { color: #7c3aed; }
+.popular-section .section-title { color: #1a1a2e; }
+
+.pop-cats {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  max-width: 900px; margin: 0 auto 40px;
+}
+.pop-cat {
+  padding: 10px 20px; border-radius: 999px; border: 1.5px solid #e5e7eb;
+  background: #fff; color: #555; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+  display: flex; align-items: center; gap: 6px;
+}
+.pop-cat:hover { border-color: #7c3aed; color: #7c3aed; }
+.pop-cat.active { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+.pop-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px; max-width: 1100px; margin: 0 auto;
+}
+.pop-card {
+  background: #fff; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: all 0.25s;
+  cursor: pointer; border: 1.5px solid #f0f0f0;
+}
+.pop-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(124,58,237,0.15); border-color: #c4b5fd; }
+.pop-thumb {
+  height: 170px; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center; font-size: 3rem;
+}
+.pop-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pop-card-body { padding: 18px; }
+.pop-card-cat { font-size: 0.68rem; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+.pop-card-title { font-size: 0.92rem; font-weight: 700; color: #1a1a2e; line-height: 1.4; margin-bottom: 10px; }
+.pop-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid #f3f4f6; }
+.pop-card-price { font-weight: 800; color: #7c3aed; font-size: 0.9rem; }
+.pop-card-enroll { font-size: 0.75rem; color: #fff; background: #7c3aed; padding: 5px 14px; border-radius: 999px; }
+
+/* ── STATS BANNER ── */
+.stats-banner { background: #7c3aed; padding: 60px 80px; }
+.stats-banner-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 0; }
+.sb-item { text-align: center; padding: 0 20px; border-right: 1px solid rgba(255,255,255,0.2); }
+.sb-item:last-child { border-right: none; }
+.sb-num { font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; color: #fff; line-height: 1; }
+.sb-label { font-size: 0.8rem; color: rgba(255,255,255,0.75); margin-top: 6px; }
+
+/* ── RESPONSIVE ── */
 .hamburger {
-  display: none;
-  flex-direction: column; justify-content: center; align-items: center;
+  display: none; flex-direction: column; justify-content: center; align-items: center;
   gap: 5px; width: 40px; height: 40px;
   background: var(--card); border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px; cursor: pointer; flex-shrink: 0;
 }
-.hamburger span {
-  display: block; width: 20px; height: 2px;
-  background: var(--text); border-radius: 2px;
-  transition: var(--transition);
-}
+.hamburger span { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: var(--transition); }
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .mobile-nav {
-  display: none;
-  position: fixed; top: 68px; left: 0; right: 0;
+  display: none; position: fixed; top: 104px; left: 0; right: 0;
   background: rgba(13,17,23,0.98); backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -516,131 +546,100 @@ footer { background: #161b22; border-top: 1px solid rgba(255,255,255,0.08); padd
   animation: fadeUp 0.2s ease;
 }
 .mobile-nav.open { display: flex; }
-.mobile-nav .nav-link {
-  width: 100%; text-align: left; padding: 14px 16px;
-  font-size: 0.97rem; font-weight: 500; color: #c9d1d9;
-  border-radius: 10px; background: none; border: none;
-  border-bottom: 1px solid #f3f4f6; cursor: pointer;
-  font-family: 'Google Sans', sans-serif;
-  transition: background 0.15s;
-}
+.mobile-nav .nav-link { width: 100%; text-align: left; padding: 14px 16px; font-size: 0.97rem; font-weight: 500; color: #c9d1d9; border-radius: 10px; background: none; border: none; border-bottom: 1px solid #21262d; cursor: pointer; font-family: var(--font-body); transition: background 0.15s; }
 .mobile-nav .nav-link:hover { background: #161b22; }
 .mobile-nav .nav-link:last-child { border-bottom: none; }
-.mobile-nav-auth {
-  display: flex; gap: 10px; margin-top: 14px; padding-top: 14px;
-  border-top: 1px solid #f3f4f6;
-}
-.mobile-nav-auth .btn-login {
-  flex: 1; padding: 11px; border: 1.5px solid #e5e7eb;
-  border-radius: 50px; background: #161b22; color: #c9d1d9;
-  font-weight: 600; font-size: 0.88rem; cursor: pointer;
-  font-family: 'Google Sans', sans-serif; text-align: center;
-  text-decoration: none; display: block; transition: all 0.15s;
-}
-.mobile-nav-auth .btn-login:hover { border-color: #8b949e; background: #1c2128; }
-.mobile-nav-auth .btn-signup {
-  flex: 1; padding: 11px; border: none;
-  border-radius: 50px; background: #111827; color: white;
-  font-weight: 700; font-size: 0.88rem; cursor: pointer;
-  font-family: 'Google Sans', sans-serif; text-align: center;
-  text-decoration: none; display: block; transition: all 0.15s;
-}
-.mobile-nav-auth .btn-signup:hover { background: #1f2937; }
-.mobile-nav-user {
-  margin-top: 14px; padding: 12px 16px;
-  background: #161b22; border-radius: 12px;
-  border: 1px solid #f3f4f6; display: flex;
-  align-items: center; justify-content: space-between;
-}
+.mobile-nav-auth { display: flex; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #21262d; }
+.mobile-nav-auth .btn-login { flex: 1; padding: 11px; border: 1.5px solid #30363d; border-radius: 50px; background: #161b22; color: #c9d1d9; font-weight: 600; font-size: 0.88rem; cursor: pointer; font-family: var(--font-body); text-align: center; text-decoration: none; display: block; transition: all 0.15s; }
+.mobile-nav-auth .btn-signup { flex: 1; padding: 11px; border: none; border-radius: 50px; background: #7c3aed; color: white; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: var(--font-body); text-align: center; text-decoration: none; display: block; transition: all 0.15s; }
+.mobile-nav-user { margin-top: 14px; padding: 12px 16px; background: #161b22; border-radius: 12px; border: 1px solid #21262d; display: flex; align-items: center; justify-content: space-between; }
 .mobile-nav-user-info { font-size: 0.85rem; color: #c9d1d9; font-weight: 500; }
 .mobile-nav-user-sub { font-size: 0.75rem; color: #8b949e; margin-top: 2px; }
 
-/* ─── TABLET (≤900px) ─── */
+@media (max-width: 1024px) {
+  .hero { padding: 130px 40px 60px; gap: 30px; }
+  .about-section { padding: 80px 40px; }
+  .popular-section { padding: 80px 40px; }
+  .stats-banner { padding: 50px 40px; }
+  .feature-strip { padding: 24px 40px; }
+  .feature-strip-inner { grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .feat-item { border-right: none; padding: 0; }
+}
 @media (max-width: 900px) {
-  .hero-stats { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 120px 32px 60px; text-align: center; }
+  .hero-checks { justify-content: center; }
+  .hero-actions { justify-content: center; }
+  .hero-right { display: none; }
+  .about-inner { grid-template-columns: 1fr; }
+  .about-photos { height: 300px; margin-bottom: 20px; }
+  .stats-banner-inner { grid-template-columns: repeat(2,1fr); gap: 30px; }
+  .sb-item { border-right: none; }
   .cv-layout { grid-template-columns: 1fr; }
   .cv-preview-box { position: static; }
-  .values-grid { grid-template-columns: repeat(2, 1fr); }
   .resource-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 }
-
-/* ─── MOBILE (≤640px) ─── */
 @media (max-width: 640px) {
-  /* NAV — show hamburger, hide desktop links */
+  .topbar { display: none; }
+  nav { top: 0; }
+  .mobile-nav { top: 68px; }
   nav { padding: 0 16px; }
   .nav-links { display: none; }
+  .nav-auth { display: none; }
   .hamburger { display: flex; }
-
-  /* HERO */
-  .hero {
-    padding: 96px 20px 56px;
-    min-height: auto;
-    text-align: center;
-  }
+  .hero { padding: 86px 20px 50px; }
   .hero h1 { font-size: 2rem; }
-  .hero p { font-size: 0.95rem; margin-left: auto; margin-right: auto; }
-  .hero-actions { justify-content: center; flex-direction: column; align-items: center; }
-  .hero-actions .btn { width: 100%; justify-content: center; }
-  .hero-badge { font-size: 0.68rem; }
-
-  /* SECTIONS */
+  .feature-strip-inner { grid-template-columns: repeat(2,1fr); gap: 14px; }
+  .feat-item { padding: 0; }
+  .about-section { padding: 60px 20px; }
+  .about-photos { height: 240px; }
+  .popular-section { padding: 60px 20px; }
+  .stats-banner { padding: 40px 20px; }
+  .stats-banner-inner { grid-template-columns: repeat(2,1fr); gap: 24px; }
   section { padding: 52px 20px; }
   .section-title { font-size: 1.6rem; }
   .section-sub { font-size: 0.88rem; }
-
-  /* VALUES / SERVICES GRID */
-  .values-grid { grid-template-columns: 1fr; gap: 14px; }
-  .value-card { padding: 22px 18px; }
-
-  /* COURSES GRID */
   .resource-grid { grid-template-columns: 1fr; gap: 16px; }
   .resource-card { padding: 20px; }
-
-  /* FILTER BAR */
   .filter-bar { flex-direction: column; align-items: stretch; }
   .search-input { min-width: unset; width: 100%; }
   .filter-select { width: 100%; }
-
-  /* JOB CARDS */
-  .job-card {
-    flex-wrap: wrap; gap: 12px; padding: 18px;
-    align-items: flex-start;
-  }
+  .job-card { flex-wrap: wrap; gap: 12px; padding: 18px; align-items: flex-start; }
   .job-right { width: 100%; display: flex; justify-content: space-between; align-items: center; }
-  .job-deadline { margin-top: 0; }
-
-  /* CV BUILDER */
   .cv-form-box { padding: 20px 16px; }
   .cv-tabs { gap: 2px; }
   .cv-tab { padding: 8px 10px; font-size: 0.78rem; }
   .cv-layout { gap: 20px; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
   .form-row .form-group { margin-bottom: 14px; }
-  .entry-card { padding: 14px; }
-
-  /* MODALS — full screen on mobile */
   .modal-overlay { padding: 0; align-items: flex-end; }
-  .modal {
-    border-radius: 20px 20px 0 0;
-    max-height: 92vh; padding: 24px 20px;
-    width: 100%; max-width: 100%;
-  }
+  .modal { border-radius: 20px 20px 0 0; max-height: 92vh; padding: 24px 20px; width: 100%; max-width: 100%; }
   .pay-modal { max-width: 100%; }
   .pay-amount { font-size: 2rem; }
-
-  /* FOOTER */
   footer { padding: 36px 20px; }
   .footer-links { gap: 12px; }
-
-  /* STAT CARDS in hero */
-  .stat-card { padding: 16px 20px; }
-
-  /* TOAST */
   .toast { left: 16px; right: 16px; max-width: unset; bottom: 16px; }
 }
 </style>
 </head>
 <body>
+
+<!-- TOP INFO BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <span><i class="fa-solid fa-phone"></i> +254 700 000 000</span>
+      <span><i class="fa-solid fa-envelope"></i> info@zenithzoom.com</span>
+      <span><i class="fa-regular fa-clock"></i> Mon–Sat: 8:00–18:00</span>
+    </div>
+    <div class="topbar-right">
+      <span>Follow Us:</span>
+      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="#"><i class="fa-brands fa-twitter"></i></a>
+      <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="#"><i class="fa-brands fa-instagram"></i></a>
+    </div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -653,6 +652,9 @@ footer { background: #161b22; border-top: 1px solid rgba(255,255,255,0.08); padd
     <button class="nav-link" id="nav-courses" onclick="showPage('courses')">Courses</button>
     <button class="nav-link" id="nav-cv" onclick="showPage('cv')">CV Builder</button>
     <button class="nav-link" id="nav-jobs" onclick="showPage('jobs')">Jobs</button>
+  </div>
+  <div class="nav-auth" id="nav-auth-section">
+    <a href="/login" class="btn-nav-login">Login / Register</a>
   </div>
   <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
@@ -675,217 +677,123 @@ footer { background: #161b22; border-top: 1px solid rgba(255,255,255,0.08); padd
 
 <!-- ═══════════════ HOME PAGE ═══════════════ -->
 <div id="page-home" class="page active">
+
+  <!-- HERO SPLIT -->
   <div class="hero">
     <div class="hero-bg"></div>
     <div class="hero-grid"></div>
     <div class="hero-content">
-      <div class="hero-badge"><div class="badge-dot"></div>Kenya's Premier Education Platform</div>
-      <h1>Unlock Your <span class="accent">Full Potential</span> with Expert-Led Learning</h1>
-      <p>Zenith Zoom equips individuals and organizations with the skills, knowledge, and confidence needed to thrive in a rapidly changing world.</p>
+      <div class="hero-badge"><div class="badge-dot"></div>Online E-Learning Platform</div>
+      <h1>Unlock Your <span class="accent">Full Potential</span><br>with Expert-Led Learning</h1>
+      <div class="hero-checks">
+        <span><i class="fa-solid fa-circle-check"></i> Get Certified</span>
+        <span><i class="fa-solid fa-circle-check"></i> Gain Job-ready Skills</span>
+        <span><i class="fa-solid fa-circle-check"></i> Great Career</span>
+      </div>
       <div class="hero-actions">
-        <button class="btn btn-primary" onclick="showPage('courses')">📚 Browse Courses</button>
-        <button class="btn btn-ghost" onclick="showPage('cv')">✨ Build My CV</button>
+        <button class="btn btn-primary" onclick="showPage('courses')">Get Started <i class="fa-solid fa-arrow-right"></i></button>
+        <button class="btn btn-ghost" onclick="showPage('courses')">Our Courses <i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </div>
-    <div class="hero-stats">
-      <div class="hero-photo-card">
-        <img
-          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=90&fit=crop&crop=faces"
-          alt="Confident African professional woman"
-          loading="eager"
-          onerror="this.src='https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=600&q=90&fit=crop'"
-        >
-        <div class="hero-photo-badge">🎓 500+ Graduates</div>
+    <div class="hero-right">
+      <div class="hero-photo-wrap">
+        <div class="hero-photo-card">
+          <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=700&q=90&fit=crop&crop=faces" alt="Student" onerror="this.src='https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=700&q=90&fit=crop'">
+        </div>
+        <div class="hero-stat-bubble hero-stat-1">
+          <div class="hsb-icon">🎓</div>
+          <div><div class="hsb-num">500+</div><div class="hsb-label">Graduates</div></div>
+        </div>
+        <div class="hero-stat-bubble hero-stat-2">
+          <div class="hsb-icon">📚</div>
+          <div><div class="hsb-num">50+</div><div class="hsb-label">Courses</div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- VALUES -->
-  <section style="background:#010409;">
-    <div class="section-header">
-      <div class="section-tag">Our Foundation</div>
-      <h2 class="section-title">Built on Values That Matter</h2>
-      <p class="section-sub">Every program and resource is created with our core values at the center.</p>
+  <!-- FEATURE STRIP -->
+  <div class="feature-strip">
+    <div class="feature-strip-inner">
+      <div class="feat-item"><div class="feat-icon"><i class="fa-solid fa-book-open"></i></div><div><div class="feat-title">20k+ Online Courses</div></div></div>
+      <div class="feat-item"><div class="feat-icon"><i class="fa-solid fa-infinity"></i></div><div><div class="feat-title">Lifetime Access</div></div></div>
+      <div class="feat-item"><div class="feat-icon"><i class="fa-solid fa-tag"></i></div><div><div class="feat-title">Value For Money</div></div></div>
+      <div class="feat-item"><div class="feat-icon"><i class="fa-solid fa-headset"></i></div><div><div class="feat-title">Lifetime Support</div></div></div>
+      <div class="feat-item"><div class="feat-icon"><i class="fa-solid fa-users"></i></div><div><div class="feat-title">Community Support</div></div></div>
     </div>
-    <div class="values-grid" style="max-width:1100px;margin:0 auto;">
-      <div class="value-card"><div class="value-icon">🎯</div><div class="value-name">Integrity</div><div class="value-desc">We uphold transparency and honesty in everything we do.</div></div>
-      <div class="value-card"><div class="value-icon">⭐</div><div class="value-name">Excellence</div><div class="value-desc">We strive to deliver outstanding educational experiences.</div></div>
-      <div class="value-card"><div class="value-icon">🌱</div><div class="value-name">Growth</div><div class="value-desc">We believe in continuous learning and improvement.</div></div>
-      <div class="value-card"><div class="value-icon">💡</div><div class="value-name">Innovation</div><div class="value-desc">We embrace creative solutions and modern learning strategies.</div></div>
-      <div class="value-card"><div class="value-icon">🤝</div><div class="value-name">Community</div><div class="value-desc">We foster collaboration, inclusivity, and mutual support.</div></div>
-    </div>
-  </section>
+  </div>
 
-  <!-- PHOTO MOSAIC — Real People, Real Growth -->
-  <section style="padding-top:60px;padding-bottom:60px;">
-    <div class="section-header">
-      <div class="section-tag">Our Community</div>
-      <h2 class="section-title">Real People. Real Growth.</h2>
-      <p class="section-sub">Professionals and learners across Africa unlocking their potential every day.</p>
-    </div>
-    <div class="photo-mosaic">
-      <!-- Large main photo -->
-      <div class="photo-tile photo-main">
-        <img
-          src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=800&q=80&fit=crop"
-          alt="African professional woman smiling confidently"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Empowered professionals building tomorrow</div>
-      </div>
-      <!-- Top right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=500&q=80&fit=crop"
-          alt="Young Africans studying together"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Collaborative learning</div>
-      </div>
-      <!-- Middle right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80&fit=crop"
-          alt="African woman working on laptop"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Digital skills for the modern workplace</div>
-      </div>
-      <!-- Bottom middle -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80&fit=crop"
-          alt="African professional man smiling"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Leadership in action</div>
-      </div>
-      <!-- Bottom right -->
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=500&q=80&fit=crop"
-          alt="African woman presenting at work"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1598550487031-0898b4852123?w=500&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Confident communicators</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section style="background:#010409;">
-    <div class="section-header">
-      <div class="section-tag">What We Do</div>
-      <h2 class="section-title">Comprehensive Talent Solutions</h2>
-    </div>
-    <div class="values-grid" style="max-width:900px;margin:0 auto;">
-      <div class="value-card"><div class="value-icon">📖</div><div class="value-name">Course Development</div><div class="value-desc">Expert-designed programs covering technical, business, and creative fields with immediate real-world application.</div></div>
-      <div class="value-card"><div class="value-icon">🏢</div><div class="value-name">Workforce Training</div><div class="value-desc">Custom training solutions for organizations — from onboarding to leadership development.</div></div>
-      <div class="value-card"><div class="value-icon">💼</div><div class="value-name">Talent Solutions</div><div class="value-desc">Connecting trained learners to opportunities through our growing employer network.</div></div>
-    </div>
-  </section>
-
-  <!-- IMPACT SPLIT SECTION -->
-  <section style="padding-top:80px;padding-bottom:80px;">
-    <div class="impact-section">
-      <div class="impact-photo">
-        <img
-          src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80&fit=crop&crop=faces"
-          alt="African students learning together in a bright space"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1529390079861-591de354faf5?w=800&q=80&fit=crop'"
-        >
-      </div>
-      <div>
-        <div class="section-tag">Our Impact</div>
-        <div class="impact-quote" style="margin-top:12px;">
-          Transforming <span class="accent">ambition</span> into achievement across Africa
+  <!-- ABOUT SPLIT -->
+  <section class="about-section">
+    <div class="about-inner">
+      <div class="about-photos">
+        <div class="about-img-main">
+          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=700&q=80&fit=crop&crop=faces" alt="Students" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80&fit=crop'">
         </div>
-        <p style="color:#8b949e;font-size:0.95rem;line-height:1.75;">
-          From fresh graduates to seasoned executives, our learners are building skills that open real doors — landing promotions, launching businesses, and leading teams across Kenya and beyond.
-        </p>
-        <div class="impact-stat-row">
-          <div class="impact-stat">
-            <div class="impact-stat-num">500+</div>
-            <div class="impact-stat-label">Learners Trained</div>
-          </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">50+</div>
-            <div class="impact-stat-label">Courses Available</div>
-          </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">92%</div>
-            <div class="impact-stat-label">Satisfaction Rate</div>
-          </div>
-          <div class="impact-stat">
-            <div class="impact-stat-num">30+</div>
-            <div class="impact-stat-label">Employer Partners</div>
-          </div>
+        <div class="about-img-sm">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80&fit=crop&crop=faces" alt="Professional" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80&fit=crop'">
+        </div>
+        <div class="about-badge-circle">
+          <div class="abc-inner"><div class="abc-num">24+</div><div class="abc-label">Years<br>Experience</div></div>
         </div>
       </div>
+      <div class="about-text">
+        <div class="section-tag">Get to Know About Us</div>
+        <h2 class="section-title" style="text-align:left;margin-top:12px;">Dive into our Online Courses<br>and Ignite Your Learning!</h2>
+        <p style="color:rgba(255,255,255,0.65);line-height:1.8;margin-bottom:24px;font-size:0.95rem;">We simplify professional growth through expert-designed courses, real-world skills, and a platform built for Kenya's learners. Pay easily via M-Pesa and start instantly.</p>
+        <div class="about-checks">
+          <div class="about-check"><i class="fa-solid fa-square-check"></i> Expert-crafted course content</div>
+          <div class="about-check"><i class="fa-solid fa-square-check"></i> Access 50+ professional courses</div>
+          <div class="about-check"><i class="fa-solid fa-square-check"></i> Learn the high-impact skills top companies want</div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:28px;" onclick="showPage('courses')">About More <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
     </div>
   </section>
 
-  <!-- PHOTO STRIP — Faces of the community -->
-  <section style="background:var(--dark2);padding-top:60px;padding-bottom:60px;">
+  <!-- POPULAR COURSES -->
+  <section class="popular-section">
     <div class="section-header">
-      <div class="section-tag">Across Africa</div>
-      <h2 class="section-title">Learning Has No Borders</h2>
-      <p class="section-sub">Our community spans cities, towns, and remote areas — united by the drive to grow.</p>
+      <div class="section-tag">Popular Courses</div>
+      <h2 class="section-title">Our Popular Online Courses</h2>
     </div>
-    <div class="photo-strip">
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&q=80&fit=crop&crop=faces"
-          alt="African man studying on laptop"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Remote learner, Nairobi</div>
-      </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&q=80&fit=crop&crop=faces"
-          alt="African woman in a business meeting"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Team leader, Mombasa</div>
-      </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80&fit=crop&crop=faces"
-          alt="African professional man in a smart jacket"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Entrepreneur, Kisumu</div>
-      </div>
-      <div class="photo-tile">
-        <img
-          src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&q=80&fit=crop&crop=faces"
-          alt="African students working on a group project"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80&fit=crop'"
-        >
-        <div class="photo-caption">Students, Nakuru</div>
-      </div>
+    <!-- Category tabs -->
+    <div class="pop-cats" id="pop-cats">
+      <button class="pop-cat active" data-cat="">All</button>
+      <button class="pop-cat" data-cat="Business"><i class="fa-solid fa-briefcase"></i> Business</button>
+      <button class="pop-cat" data-cat="Technology"><i class="fa-solid fa-laptop-code"></i> Technology</button>
+      <button class="pop-cat" data-cat="Marketing"><i class="fa-solid fa-bullhorn"></i> Marketing</button>
+      <button class="pop-cat" data-cat="Finance"><i class="fa-solid fa-chart-line"></i> Finance</button>
+      <button class="pop-cat" data-cat="Leadership"><i class="fa-solid fa-users-line"></i> Leadership</button>
+      <button class="pop-cat" data-cat="Career Development"><i class="fa-solid fa-rocket"></i> Career</button>
+    </div>
+    <!-- Course cards grid -->
+    <div class="pop-grid" id="home-course-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(255,255,255,0.4)"><div class="spinner"></div><p>Loading courses...</p></div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <button class="btn btn-primary" onclick="showPage('courses')">View All Courses <i class="fa-solid fa-arrow-right"></i></button>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section style="background:linear-gradient(135deg,rgba(0,194,212,0.07) 0%,transparent 60%);text-align:center;">
+  <!-- STATS BANNER -->
+  <div class="stats-banner">
+    <div class="stats-banner-inner">
+      <div class="sb-item"><div class="sb-num">500+</div><div class="sb-label">Active Students</div></div>
+      <div class="sb-item"><div class="sb-num">50+</div><div class="sb-label">Online Courses</div></div>
+      <div class="sb-item"><div class="sb-num">92%</div><div class="sb-label">Satisfaction Rate</div></div>
+      <div class="sb-item"><div class="sb-num">30+</div><div class="sb-label">Employer Partners</div></div>
+    </div>
+  </div>
+
+  <!-- CTA SECTION -->
+  <section style="text-align:center;background:#0d1117;">
     <div class="section-tag">Get Started Today</div>
-    <h2 class="section-title" style="margin-top:8px;">Ready to Level Up?</h2>
-    <p class="section-sub" style="margin-bottom:32px;">Download premium courses, build a professional CV, or find your next career opportunity.</p>
+    <h2 class="section-title" style="margin-top:10px;">Ready to Level Up Your Career?</h2>
+    <p class="section-sub" style="margin-bottom:32px;">Pay via M-Pesa and unlock premium courses instantly. Build your CV. Find your next job.</p>
     <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="showPage('courses')">📚 Explore Courses</button>
-      <button class="btn btn-ghost" onclick="showPage('jobs')">🔍 View Job Openings</button>
+      <button class="btn btn-primary" onclick="showPage('courses')"><i class="fa-solid fa-book-open"></i> Explore Courses</button>
+      <button class="btn btn-ghost" onclick="showPage('jobs')"><i class="fa-solid fa-briefcase"></i> View Job Openings</button>
     </div>
   </section>
 
@@ -1152,6 +1060,54 @@ function showPage(name) {
   if (name === 'courses' && !allCourses.length) loadCourses();
   if (name === 'jobs' && !allJobs.length) loadJobs();
 }
+
+// ─────────────────────────────────────────────
+// HOME COURSE GRID
+// ─────────────────────────────────────────────
+function renderHomeGrid(courses) {
+  const grid = document.getElementById('home-course-grid');
+  if (!grid) return;
+  const catIcons = { 'Marketing':'📣','Technology':'💻','Finance':'📈','Business':'💼','Leadership':'👥','Career Development':'🚀' };
+  if (!courses.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#888">No courses in this category yet.</div>';
+    return;
+  }
+  grid.innerHTML = courses.slice(0, 8).map(c => `
+    <div class="pop-card" onclick="openPayModal('${c._id}','${c.title.replace(/'/g,"\\'")}',${c.price})">
+      <div class="pop-thumb">${catIcons[c.category] || '📖'}</div>
+      <div class="pop-card-body">
+        <div class="pop-card-cat">${c.category}</div>
+        <div class="pop-card-title">${c.title}</div>
+        <div class="pop-card-footer">
+          <span class="pop-card-price">KES ${c.price?.toLocaleString()}</span>
+          <span class="pop-card-enroll">Enroll</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function loadHomeGrid() {
+  try {
+    if (allCourses.length) { renderHomeGrid(allCourses); return; }
+    const res = await fetch('/api/resources');
+    const d = await res.json();
+    allCourses = d.resources || [];
+    renderHomeGrid(allCourses);
+  } catch { document.getElementById('home-course-grid').innerHTML = '<div style="grid-column:1/-1;color:#888;padding:20px;text-align:center">Failed to load courses.</div>'; }
+}
+
+// Wire up category tab buttons
+document.addEventListener('DOMContentLoaded', () => {
+  loadHomeGrid();
+  document.querySelectorAll('.pop-cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pop-cat').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      renderHomeGrid(cat ? allCourses.filter(c => c.category === cat) : allCourses);
+    });
+  });
+});
 
 // ─────────────────────────────────────────────
 // RESOURCES
