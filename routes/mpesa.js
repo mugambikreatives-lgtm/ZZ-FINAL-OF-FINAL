@@ -82,9 +82,10 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     phoneNumber:            formatPhone(phone),
     amount:                 String(Math.round(Number(amount))),
     invoiceNumber:          String(invoiceNumber || `ZZ${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
-    sharedShortCode:        true,
+    sharedShortCode:        false,
     orgShortCode:           CONFIG.orgShortCode,
     orgPassKey:             CONFIG.passKey,
+    accountReference:       process.env.KCB_ACCOUNT_REF || 'ZenithZoom',
     callbackUrl:            CONFIG.callbackUrl,
     transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
   };
