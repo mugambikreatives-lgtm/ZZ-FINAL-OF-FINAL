@@ -486,8 +486,8 @@ async function loadAllCourses() {
   const grid = document.getElementById('browse-grid');
   try {
     const res = await fetch('/api/resources');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
     allCourses = data.resources || [];
     if (allCourses.length === 0) {
       grid.innerHTML = '<div style="color:var(--muted);padding:30px;text-align:center"><div style="font-size:2rem;margin-bottom:10px">📚</div><div>No courses available yet.</div><div style="font-size:0.8rem;margin-top:6px">Check back soon or contact the admin.</div></div>';
@@ -498,8 +498,9 @@ async function loadAllCourses() {
     console.error('[ZZ] loadAllCourses error:', err);
     grid.innerHTML = `<div style="color:#f87171;padding:20px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center">
       <div style="font-size:1.3rem;margin-bottom:6px">⚠️ Failed to load courses</div>
-      <div style="font-size:0.8rem;color:var(--muted)">${err.message}</div>
-      <button onclick="loadAllCourses()" style="margin-top:12px;background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-size:0.82rem">↺ Retry</button>
+      <div style="font-size:0.85rem;color:#888;margin-bottom:4px">${err.message}</div>
+      <div style="font-size:0.75rem;color:#aaa;margin-bottom:12px">Check <a href="/api/health" target="_blank" style="color:var(--blue)">/api/health</a> for server status</div>
+      <button onclick="loadAllCourses()" style="background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-size:0.82rem">↺ Retry</button>
     </div>`;
   }
 }

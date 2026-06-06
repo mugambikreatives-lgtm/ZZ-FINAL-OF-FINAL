@@ -69,8 +69,28 @@ app.get('/courses', (req, res) => res.redirect('/'));
 app.get('/cv-builder', (req, res) => res.redirect('/'));
 app.get('/jobs', (req, res) => res.redirect('/'));
 
+// Health check — shows DB status and env vars (safe subset)
+app.get('/api/health', (req, res) => {
+  const states = ['disconnected','connected','connecting','disconnecting'];
+  res.json({
+    status: 'ok',
+    db: states[mongoose.connection.readyState] || 'unknown',
+    env: {
+      MONGODB_URI: process.env.MONGODB_URI ? '✅ set' : '❌ MISSING',
+      SESSION_SECRET: process.env.SESSION_SECRET ? '✅ set' : '❌ missing (using default)',
+      KCB_CONSUMER_KEY: process.env.KCB_CONSUMER_KEY ? '✅ set' : '❌ missing',
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? '✅ set' : '❌ missing',
+    },
+    time: new Date().toISOString()
+  });
+});
+
 // Connect to MongoDB and start server
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom', {
+  serverSelectionTimeoutMS: 8000,   // fail fast if Atlas unreachable
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 30000,
+})
   .then(async () => {
     console.log('✅ MongoDB connected');
     await seedAdmin();
