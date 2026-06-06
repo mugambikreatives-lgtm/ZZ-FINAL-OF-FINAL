@@ -348,6 +348,12 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
         Download Now
       </a>
     </div>
+    <div id="sync-btn-wrap" style="display:none;text-align:center;margin-top:12px">
+      <button onclick="syncCourses()" style="background:rgba(0,194,212,0.15);border:1px solid var(--blue);color:var(--blue);padding:9px 20px;border-radius:50px;cursor:pointer;font-size:0.82rem;font-weight:600">
+        🔄 Sync Courses
+      </button>
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:5px">Click if you completed payment but course didn't unlock</div>
+    </div>
   </div>
 </div>
 
@@ -552,6 +558,7 @@ function openCVPay() {
 
 function closePayModal() {
   document.getElementById('pay-modal').classList.remove('open');
+  document.getElementById('sync-btn-wrap').style.display = 'none';
   if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
   resetPayStatus();
 }
@@ -589,7 +596,7 @@ async function submitPayment() {
     let tries = 0;
     pollInterval = setInterval(async () => {
       tries++;
-      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timeout. If you paid, refresh your courses.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; return; }
+      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timed out waiting. If you completed payment, click "Sync Courses" below.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; document.getElementById('sync-btn-wrap')?.style && (document.getElementById('sync-btn-wrap').style.display='block'); return; }
       try {
         const pr = await fetch('/api/mpesa/status/' + checkoutId);
         const pd = await pr.json();
@@ -624,6 +631,33 @@ async function submitPayment() {
       } catch {}
     }, 5000);
   } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; }
+}
+
+async function syncCourses() {
+  const syncBtn = document.querySelector('#sync-btn-wrap button');
+  if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⏳ Syncing...'; }
+  try {
+    const r = await fetch('/api/mpesa/sync-courses', { method: 'POST' });
+    const d = await r.json();
+    if (d.success) {
+      if (d.linked > 0) {
+        setStatus(`✅ ${d.linked} course(s) synced! Loading your courses...`, 'success');
+        setTimeout(async () => {
+          const ur = await fetch('/api/auth/me');
+          const ud = await ur.json();
+          if (ud.success) { user = ud.user; updateStats(); await loadAssignments(); renderMyCourses(); renderBrowse(allCourses); }
+          closePayModal();
+          showPage('my-courses');
+          showToast('🎉 Courses unlocked!', 'success');
+        }, 1200);
+      } else {
+        setStatus('ℹ️ ' + d.message + ' If your course is missing, contact support.', 'pending');
+      }
+    } else {
+      setStatus('❌ Sync failed: ' + d.message, 'error');
+    }
+  } catch { setStatus('❌ Network error during sync.', 'error'); }
+  finally { if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '🔄 Sync Courses'; } }
 }
 
 // ── PDF VIEWER ──

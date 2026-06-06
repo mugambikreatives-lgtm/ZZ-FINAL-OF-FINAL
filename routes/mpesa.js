@@ -2,8 +2,20 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
 const Payment = require('../models/Payment');
 const Resource = require('../models/Resource');
+
+const JWT_SECRET = process.env.SESSION_SECRET || 'zenithzoom-secret';
+
+// Optional auth — extracts userId from cookie if present, doesn't block if absent
+function optionalAuth(req, res, next) {
+  try {
+    const token = req.cookies?.zz_token || req.headers.authorization?.replace('Bearer ', '');
+    if (token) req.userId = jwt.verify(token, JWT_SECRET)?.id || null;
+  } catch {}
+  next();
+}
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const CONFIG = {
@@ -103,7 +115,7 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
 // ── ROUTES ────────────────────────────────────────────────────────────────────
 
 // POST /api/mpesa/pay-resource
-router.post('/pay-resource', async (req, res) => {
+router.post('/pay-resource', optionalAuth, async (req, res) => {
   try {
     const { phone, resourceId } = req.body;
     if (!phone || !resourceId)
@@ -148,7 +160,8 @@ router.post('/pay-resource', async (req, res) => {
       phone: formatPhone(phone),
       amount: resource.price,
       type: 'resource',
-      resourceId: resource._id
+      resourceId: resource._id,
+      userId: req.userId || null
     });
 
     res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
@@ -172,7 +185,7 @@ router.post('/pay-resource', async (req, res) => {
 });
 
 // POST /api/mpesa/pay-cv
-router.post('/pay-cv', async (req, res) => {
+router.post('/pay-cv', optionalAuth, async (req, res) => {
   try {
     const { phone, cvData } = req.body;
     if (!phone || !cvData)
@@ -191,7 +204,7 @@ router.post('/pay-cv', async (req, res) => {
     const checkoutRequestId = responseBody?.CheckoutRequestID || responseBody?.checkoutRequestId || `ZZCV-${Date.now()}`;
     const merchantRequestId = responseBody?.MerchantRequestID || responseBody?.merchantRequestId || null;
 
-    await Payment.create({ checkoutRequestId, merchantRequestId, phone: formatPhone(phone), amount, type: 'cv', cvData });
+    await Payment.create({ checkoutRequestId, merchantRequestId, phone: formatPhone(phone), amount, type: 'cv', cvData, userId: req.userId || null });
     res.json({ success: true, checkoutRequestId, message: 'STK Push sent. Enter your M-Pesa PIN.' });
   } catch (err) {
     const status = err.response?.status;
@@ -230,14 +243,34 @@ router.post('/callback', async (req, res) => {
         await Resource.findByIdAndUpdate(payment.resourceId, { $inc: { downloads: 1 } });
         try {
           const User = require('../models/User');
-          const raw = payment.phone || '';
-          const p254 = raw.startsWith('0') ? '254' + raw.slice(1) : raw;
-          const p0   = raw.startsWith('254') ? '0' + raw.slice(3) : raw;
-          const user = await User.findOne({ $or: [{ phone: raw }, { phone: p254 }, { phone: p0 }] });
+          let user = null;
+
+          // Try direct userId link first (most reliable)
+          if (payment.userId) {
+            user = await User.findById(payment.userId);
+            console.log('[KCB] Found user by userId:', user?.email);
+          }
+
+          // Fallback: find by phone number (various formats)
+          if (!user) {
+            const raw = payment.phone || '';
+            const p254 = raw.startsWith('0') ? '254' + raw.slice(1) : raw;
+            const p0   = raw.startsWith('254') ? '0' + raw.slice(3) : raw;
+            user = await User.findOne({ $or: [{ phone: raw }, { phone: p254 }, { phone: p0 }] });
+            console.log('[KCB] Found user by phone:', user?.email);
+          }
+
           if (user) {
             const already = user.purchasedCourses.some(c => c.courseId?.toString() === payment.resourceId.toString());
-            if (!already) { user.purchasedCourses.push({ courseId: payment.resourceId }); await user.save(); }
-            console.log('[KCB] Course linked to:', user.email);
+            if (!already) {
+              user.purchasedCourses.push({ courseId: payment.resourceId });
+              await user.save();
+              console.log('[KCB] ✅ Course linked to:', user.email);
+            } else {
+              console.log('[KCB] Course already owned by:', user.email);
+            }
+          } else {
+            console.log('[KCB] ⚠️ No user found for phone:', payment.phone, '— will sync on next login');
           }
         } catch(e) { console.log('[KCB] User link error:', e.message); }
       }
@@ -335,6 +368,43 @@ router.get('/test-stk', async (req, res) => {
       url: err.config?.url,
       sentHeaders: err.config?.headers
     });
+  }
+});
+
+// POST /api/mpesa/sync-courses — manual recovery: re-links any completed payments to logged-in user
+router.post('/sync-courses', optionalAuth, async (req, res) => {
+  try {
+    if (!req.userId) return res.status(401).json({ success: false, message: 'Not logged in' });
+    const User = require('../models/User');
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const phone = user.phone || '';
+    if (!phone) return res.json({ success: true, linked: 0, message: 'No phone number on account. Update your profile to enable sync.' });
+
+    const phone254 = phone.replace(/^0/, '254').replace(/^\+/, '');
+    const phoneLocal = phone254.replace(/^254/, '0');
+    const payments = await Payment.find({
+      phone: { $in: [phone, phone254, phoneLocal] },
+      status: 'completed',
+      type: 'resource'
+    });
+
+    let linked = 0;
+    for (const p of payments) {
+      if (p.resourceId) {
+        const already = user.purchasedCourses.some(c => c.courseId?.toString() === p.resourceId.toString());
+        if (!already) {
+          user.purchasedCourses.push({ courseId: p.resourceId });
+          linked++;
+        }
+      }
+    }
+    if (linked > 0) await user.save();
+    console.log(`[KCB] sync-courses for ${user.email}: linked ${linked} course(s)`);
+    res.json({ success: true, linked, message: linked > 0 ? `${linked} course(s) synced!` : 'All courses already linked.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 

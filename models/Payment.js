@@ -6,6 +6,7 @@ const paymentSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   amount: { type: Number, required: true },
   type: { type: String, enum: ['resource', 'cv'], required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   resourceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Resource', default: null },
   cvData: { type: Object, default: null },
   status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
