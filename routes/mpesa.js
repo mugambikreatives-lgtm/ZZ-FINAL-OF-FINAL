@@ -137,19 +137,20 @@ router.post('/pay-resource', optionalAuth, async (req, res) => {
       description: `ZenithZoom: ${resource.title.slice(0, 30)}`
     });
 
-    // KCB response format: { header: { statusCode: "1"=success / "0"=fail, statusDescription: "..." }, response: {...} }
+    // KCB uses statusCode "1" for BOTH success and errors — description is the real indicator
     console.log('[KCB] Full STK response:', JSON.stringify(stkRes));
     const rawCode = stkRes?.header?.statusCode;
-    const statusDesc = stkRes?.header?.statusDescription || '';
-    const statusCode = String(rawCode ?? '');
-    console.log('[KCB] statusCode raw:', rawCode, '| parsed:', statusCode, '| desc:', statusDesc);
+    const statusDesc = (stkRes?.header?.statusDescription || '').toLowerCase();
+    console.log('[KCB] statusCode:', rawCode, '| desc:', statusDesc);
 
-    // Treat as failure only if explicitly "0" — any other value (1, "1", "S", etc.) = accepted
-    // Also check description: if it contains "Success" it's good regardless of code
-    const isSuccess = statusCode !== '0' || statusDesc.toLowerCase().includes('success');
-    if (!isSuccess) {
+    // Fail if description contains error keywords
+    const isFailure = statusDesc.includes('wrong') || statusDesc.includes('invalid') ||
+                      statusDesc.includes('fail') || statusDesc.includes('error') ||
+                      statusDesc.includes('unauthorized') || statusDesc.includes('credential') ||
+                      statusDesc.includes('denied') || statusDesc.includes('reject');
+    if (isFailure) {
       console.error('[KCB] STK rejected:', statusDesc);
-      return res.status(400).json({ success: false, message: statusDesc || 'STK Push failed' });
+      return res.status(400).json({ success: false, message: stkRes?.header?.statusDescription || 'STK Push failed' });
     }
 
     // Extract checkout ID — KCB can return it in various places
@@ -210,13 +211,14 @@ router.post('/pay-cv', optionalAuth, async (req, res) => {
 
     const stkRes = await stkPush({ phone, amount, invoiceNumber, description: 'ZenithZoom CV Builder' });
 
-    const rawCodeCV = stkRes?.header?.statusCode;
-    const statusDescCV = stkRes?.header?.statusDescription || '';
-    const statusCodeCV = String(rawCodeCV ?? '');
-    const isSuccessCV = statusCodeCV !== '0' || statusDescCV.toLowerCase().includes('success');
-    console.log('[KCB] pay-cv statusCode:', rawCodeCV, '| desc:', statusDescCV);
-    if (!isSuccessCV) {
-      return res.status(400).json({ success: false, message: statusDescCV || 'STK Push failed' });
+    const statusDescCV = (stkRes?.header?.statusDescription || '').toLowerCase();
+    console.log('[KCB] pay-cv statusCode:', stkRes?.header?.statusCode, '| desc:', statusDescCV);
+    const isFailureCV = statusDescCV.includes('wrong') || statusDescCV.includes('invalid') ||
+                        statusDescCV.includes('fail') || statusDescCV.includes('error') ||
+                        statusDescCV.includes('unauthorized') || statusDescCV.includes('credential') ||
+                        statusDescCV.includes('denied') || statusDescCV.includes('reject');
+    if (isFailureCV) {
+      return res.status(400).json({ success: false, message: stkRes?.header?.statusDescription || 'STK Push failed' });
     }
     const responseBodyCV = typeof stkRes?.response === 'object' ? stkRes.response : {};
     const checkoutRequestId =
