@@ -21,7 +21,7 @@ function optionalAuth(req, res, next) {
 const CONFIG = {
   consumerKey:    process.env.KCB_CONSUMER_KEY    || 'fp0Me33xpYF500M6Nmxsi30UZB8a',
   consumerSecret: process.env.KCB_CONSUMER_SECRET || 'tohCNrzsnC3KdU9u4OFZuTTnf8Aa',
-  orgShortCode:   process.env.KCB_ORG_SHORT_CODE  || '522533',
+  orgShortCode:   process.env.KCB_ORG_SHORT_CODE  || '174379',
   passKey:        process.env.KCB_PASS_KEY        || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
   accountRef:     process.env.KCB_ACCOUNT_REF     || '8081055',
   callbackUrl:    process.env.KCB_CALLBACK_URL    || 'https://zeithzoom.com/api/mpesa/callback',
@@ -79,18 +79,13 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const sec = Math.floor(Date.now() / 1000);
   const msgId = `${sec}_KCBOrg_${sec}`;
 
-  // KCB BUNI orgPassKey = base64(shortcode + passkey + timestamp)
-  const ts = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14); // YYYYMMDDHHmmss
-  const orgPassKey = Buffer.from(`${CONFIG.orgShortCode}${CONFIG.passKey}${ts}`).toString('base64');
-
   const payload = {
     phoneNumber:            formatPhone(phone),
     amount:                 String(Math.round(Number(amount))),
     invoiceNumber:          String(invoiceNumber || `ZZ${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
-    sharedShortCode:        false,
+    sharedShortCode:        true,
     orgShortCode:           CONFIG.orgShortCode,
-    orgPassKey,
-    accountReference:       CONFIG.accountRef,
+    orgPassKey:             CONFIG.passKey,
     callbackUrl:            CONFIG.callbackUrl,
     transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
   };
