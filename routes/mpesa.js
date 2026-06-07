@@ -79,13 +79,17 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const sec = Math.floor(Date.now() / 1000);
   const msgId = `${sec}_KCBOrg_${sec}`;
 
+  // KCB BUNI orgPassKey = base64(shortcode + passkey + timestamp)
+  const ts = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14); // YYYYMMDDHHmmss
+  const orgPassKey = Buffer.from(`${CONFIG.orgShortCode}${CONFIG.passKey}${ts}`).toString('base64');
+
   const payload = {
     phoneNumber:            formatPhone(phone),
     amount:                 String(Math.round(Number(amount))),
     invoiceNumber:          String(invoiceNumber || `ZZ${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
     sharedShortCode:        false,
     orgShortCode:           CONFIG.orgShortCode,
-    orgPassKey:             CONFIG.passKey,
+    orgPassKey,
     accountReference:       CONFIG.accountRef,
     callbackUrl:            CONFIG.callbackUrl,
     transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
