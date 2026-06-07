@@ -21,8 +21,9 @@ function optionalAuth(req, res, next) {
 const CONFIG = {
   consumerKey:    process.env.KCB_CONSUMER_KEY    || 'fp0Me33xpYF500M6Nmxsi30UZB8a',
   consumerSecret: process.env.KCB_CONSUMER_SECRET || 'tohCNrzsnC3KdU9u4OFZuTTnf8Aa',
-  orgShortCode:   process.env.KCB_ORG_SHORT_CODE  || '174379',
+  orgShortCode:   process.env.KCB_ORG_SHORT_CODE  || '522533',
   passKey:        process.env.KCB_PASS_KEY        || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
+  accountRef:     process.env.KCB_ACCOUNT_REF     || '8081055',
   callbackUrl:    process.env.KCB_CALLBACK_URL    || 'https://zeithzoom.com/api/mpesa/callback',
   baseUrl:        'https://api.buni.kcbgroup.com',
   tokenUrl:       'https://api.buni.kcbgroup.com/token',
@@ -85,7 +86,7 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
     sharedShortCode:        false,
     orgShortCode:           CONFIG.orgShortCode,
     orgPassKey:             CONFIG.passKey,
-    accountReference:       process.env.KCB_ACCOUNT_REF || 'ZenithZoom',
+    accountReference:       CONFIG.accountRef,
     callbackUrl:            CONFIG.callbackUrl,
     transactionDescription: String(description || 'Zenith Zoom Payment').slice(0, 50),
   };
