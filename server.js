@@ -95,6 +95,15 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom', {
     console.log('✅ MongoDB connected');
     await seedAdmin();
     await seedSampleData();
+    // Fix cvPrice if it was set to 1 during testing
+    try {
+      const Setting = require('./models/Setting');
+      const currentPrice = await Setting.get('cvPrice', 100);
+      if (!currentPrice || currentPrice < 10) {
+        await Setting.set('cvPrice', 100);
+        console.log('✅ cvPrice reset to 100');
+      }
+    } catch(e) { console.log('cvPrice check skipped:', e.message); }
     // Only call listen if not already handled by host
     if (!module.parent) {
       app.listen(PORT, () => console.log(`🚀 Zenith Zoom running on port ${PORT}`));
