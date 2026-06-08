@@ -267,7 +267,7 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
     </div>
     <div class="courses-grid" id="browse-grid">
       <div style="color:var(--muted);padding:30px;text-align:center">
-        <div style="font-size:1.5rem;margin-bottom:8px">⏳</div>
+        <div style="font-size:1.5rem;margin-bottom:8px">🔄</div>
         <div>Loading courses...</div>
       </div>
     </div>
@@ -1225,6 +1225,16 @@ document.getElementById('assignment-modal').addEventListener('click', e => {
 });
 
 init();
+
+// Guaranteed fallback — if init() crashes before calling loadAllCourses,
+// this ensures courses still load after 1 second
+setTimeout(() => {
+  const grid = document.getElementById('browse-grid');
+  if (grid && grid.querySelector('.fa-spin, [style*="Loading"]') || (grid && grid.innerText.includes('Loading'))) {
+    console.log('[ZZ] Fallback: calling loadAllCourses()');
+    loadAllCourses();
+  }
+}, 1000);
 </script>
 
 
