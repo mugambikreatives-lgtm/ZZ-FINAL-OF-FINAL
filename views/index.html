@@ -160,7 +160,7 @@ section { padding: 80px 32px; position: relative; background: #0d1117; }
 .search-input::placeholder { color: #484f58; }
 .filter-select {
   padding: 11px 20px; background: #F1F3F4; border: 1px solid transparent;
-  border-radius: var(--radius-pill); color: #e6edf3; font-family: var(--font-body);
+  border-radius: var(--radius-pill); color: #1a1a2e; font-family: var(--font-body);
   font-size: 0.88rem; outline: none; cursor: pointer;
 }
 
@@ -1121,10 +1121,21 @@ async function loadCourses() {
   try {
     const r = await fetch('/api/resources');
     const d = await r.json();
+    if (!r.ok) throw new Error(d.message || `Server error ${r.status}`);
     allCourses = d.resources || [];
-    renderCourses(allCourses);
+    if (allCourses.length === 0) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📚</div><p>No courses available yet. Check back soon!</p></div>';
+    } else {
+      renderCourses(allCourses);
+    }
   } catch(err) {
-    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">⚠️</div><p>Could not load courses. Please refresh.</p></div>';
+    console.error('[ZZ] loadCourses failed:', err.message);
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="empty-icon">⚠️</div>
+      <p style="color:#f87171">${err.message || 'Could not load courses.'}</p>
+      <p style="font-size:0.8rem;color:#888">Check <a href="/api/health" target="_blank" style="color:#7c3aed">/api/health</a> for server status</p>
+      <button onclick="loadCourses()" style="margin-top:12px;background:#7c3aed;color:white;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;">↺ Retry</button>
+    </div>`;
   }
 }
 
