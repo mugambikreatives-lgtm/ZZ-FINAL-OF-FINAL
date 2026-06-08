@@ -390,9 +390,12 @@ let pollInterval = null;
 
 // ── INIT ──
 async function init() {
-  // Safe event listener — DOM guaranteed here
   const certOverlay = document.getElementById('cert-modal-overlay');
   if (certOverlay) certOverlay.addEventListener('click', e => { if (e.target === e.currentTarget) closeCertModal(); });
+
+  // Load courses immediately — don't wait for auth to complete
+  loadAllCourses();
+
   try {
     const res = await fetch('/api/auth/me');
     const data = await res.json();
@@ -402,13 +405,19 @@ async function init() {
     document.getElementById('nav-avatar').textContent = (user.name||user.email||'U')[0].toUpperCase();
     updateStats();
     await loadAssignments();
-    renderMyCourses(); // assignments already loaded above
-    loadAllCourses();
+    renderMyCourses();
+    // Re-render browse with owned course status now that user is loaded
+    if (allCourses.length) renderBrowse(allCourses);
     // Pre-fill CV with user name/email
     const cvName = document.getElementById('cv-name'); if(cvName) cvName.value = user.name||'';
     const cvEmail = document.getElementById('cv-email'); if(cvEmail) cvEmail.value = user.email||'';
     if(document.getElementById('cv-name')) updatePreview();
-  } catch(err) { console.error('Init error:', err); if(err.message && err.message.includes('fetch')) { document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>Connection error</h2><p>Please refresh the page</p></div>'; } else { window.location = '/login'; } }
+  } catch(err) {
+    console.error('Init error:', err);
+    if(err.message && err.message.includes('fetch')) {
+      document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>Connection error</h2><p>Please refresh the page</p></div>';
+    } else { window.location = '/login'; }
+  }
 }
 
 function updateStats() {
