@@ -129,7 +129,7 @@ router.post('/pay-resource', optionalAuth, async (req, res) => {
     if (!resource)
       return res.status(404).json({ success: false, message: 'Resource not found' });
 
-    const invoiceNumber = `RES${resourceId.toString().slice(-6).toUpperCase()}`;
+    const invoiceNumber = `PAQMANRUSH${Date.now().toString().slice(-6)}`;
     const stkRes = await stkPush({
       phone,
       amount: resource.price,
@@ -208,7 +208,7 @@ router.post('/pay-cv', optionalAuth, async (req, res) => {
 
     const Setting = require('../models/Setting');
     const amount = parseInt(await Setting.get('cvPrice', 100)) || 100;
-    const invoiceNumber = `CV${Date.now().toString().slice(-8)}`;
+    const invoiceNumber = `PAQMANRUSH${Date.now().toString().slice(-6)}`;
 
     const stkRes = await stkPush({ phone, amount, invoiceNumber, description: 'ZenithZoom CV Builder' });
 
