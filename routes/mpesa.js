@@ -79,13 +79,14 @@ async function stkPush({ phone, amount, invoiceNumber, description }) {
   const sec = Math.floor(Date.now() / 1000);
   const msgId = `${sec}_KCBOrg_${sec}`;
 
+  const ref = String(invoiceNumber || `INV${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 10);
   const payload = {
     phoneNumber:            formatPhone(phone),
     amount:                 String(Math.round(Number(amount))),
-    invoiceNumber:          String(invoiceNumber || `ZZ${sec}`).replace(/[^a-zA-Z0-9]/g, '').slice(0, 18),
+    invoiceNumber:          `8081055-${ref}`,
     sharedShortCode:        true,
-    orgShortCode:           CONFIG.orgShortCode,
-    orgPassKey:             CONFIG.passKey,
+    orgShortCode:           '',
+    orgPassKey:             '',
     callbackUrl:            CONFIG.callbackUrl,
     transactionDescription: String(description || 'ZenithZoom Payment').slice(0, 50),
   };
