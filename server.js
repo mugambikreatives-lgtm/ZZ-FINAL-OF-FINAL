@@ -1,3 +1,6 @@
+// ZenithZoom Server
+process.on("uncaughtException",(e)=>console.error("CRASH:",e.stack));
+process.on("unhandledRejection",(e)=>console.error("REJECTION:",e?.stack||e));
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
