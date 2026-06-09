@@ -415,29 +415,29 @@ const catEmoji = { Business:'💼', Technology:'💻', Marketing:'📣', Finance
 const courseImages = {
   // By title keywords (lowercase)
   'photography':      'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=400&q=80&fit=crop',
-  'make-up':          'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
-  'makeup':           'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
-  'beauty':           'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
-  'haircare':         'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80&fit=crop',
-  'hair':             'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80&fit=crop',
-  'freelancing':      'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80&fit=crop',
-  'freelance':        'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80&fit=crop',
-  'digital marketing':'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80&fit=crop',
-  'marketing':        'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80&fit=crop',
+  'make-up':          'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&q=80&fit=crop',
+  'makeup':           'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&q=80&fit=crop',
+  'beauty':           'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&q=80&fit=crop',
+  'haircare':         'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&q=80&fit=crop',
+  'hair':             'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&q=80&fit=crop',
+  'freelancing':      'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80&fit=crop',
+  'freelance':        'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80&fit=crop',
+  'digital marketing':'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&q=80&fit=crop',
+  'marketing':        'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400&q=80&fit=crop',
   'data analysis':    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&fit=crop',
   'data':             'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&fit=crop',
-  'candle':           'https://images.unsplash.com/photo-1602874801006-67aca94dc83c?w=400&q=80&fit=crop',
-  'airbnb':           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80&fit=crop',
-  'affiliate':        'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80&fit=crop',
+  'candle':           'https://images.unsplash.com/photo-1603905630438-a9802c603f42?w=400&q=80&fit=crop',
+  'airbnb':           'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=80&fit=crop',
+  'affiliate':        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80&fit=crop',
   'finance':          'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop',
   'accounting':       'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop',
-  'leadership':       'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80&fit=crop',
+  'leadership':       'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&q=80&fit=crop',
   'business':         'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80&fit=crop',
   'web':              'https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&q=80&fit=crop',
   'technology':       'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&fit=crop',
   'career':           'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80&fit=crop',
   'cv':               'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80&fit=crop',
-  'entrepreneurship': 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80&fit=crop',
+  'entrepreneurship': 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80&fit=crop',
 };
 
 // Category fallbacks
@@ -469,8 +469,8 @@ function renderBrowseGrid(courses) {
     const isOwned = owned.includes(String(c._id));
     const pct = isOwned ? ((user.purchasedCourses.find(p => String(p.courseId?._id || p.courseId) === String(c._id))?.progress) || 0) : 0;
     return `<div class="course-card">
-      <div class="course-thumb" style="padding:0">
-        <img src="${getCourseImage(c.title, c.category)}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentNode.innerHTML+='${catEmoji[c.category]||'📖'}'">
+      <div class="course-thumb" style="padding:0;overflow:hidden">
+        <img src="${getCourseImage(c.title, c.category)}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">
         ${isOwned ? '<span class="course-owned-badge">✓ Owned</span>' : ''}
       </div>
       <div class="course-body">
@@ -516,7 +516,7 @@ function renderMyCourses() {
     const cid = String(pc.courseId?._id || pc.courseId);
     return `<div class="my-course-card">
         <div class="my-course-icon" style="overflow:hidden;padding:0">
-          <img src="${getCourseImage(title, cat)}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='<span style=font-size:1.5rem>${catEmoji[cat]||'📖'}</span>'">
+          <img src="${getCourseImage(title, cat)}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
         </div>
       <div class="my-course-info">
         <div class="my-course-title">${title}</div>
