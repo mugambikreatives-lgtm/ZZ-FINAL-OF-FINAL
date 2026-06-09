@@ -1,207 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenithZoom Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>My Dashboard — Zenith Zoom</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Google Sans','Product Sans','Helvetica Neue',sans-serif}
-:root{--blue:#1A73E8;--blue-light:#E8F0FE;--dark:#202124;--card:#ffffff;--card2:#F8F9FA;--border:#DADCE0;--muted:#5F6368;--success:#34A853;--error:#EA4335;--text:#202124;--teal:#1A73E8;--teal-dark:#1557B0;--teal-glow:rgba(26,115,232,0.08);--radius:24px;--pill:100px}
-body{background:#F8F9FA;color:#202124;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#1A73E8;--purple:#7c3aed;--green:#34d399;--red:#f87171;--bg:#f0f2f5;--card:#fff;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--radius:14px;--shadow:0 2px 12px rgba(0,0,0,0.08)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;background:#202124;border-bottom:none;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
-.nav-logo{font-weight:900;font-size:1.15rem;color:#fff;cursor:pointer;text-decoration:none}
-.nav-logo span{color:var(--teal)}
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-logo{font-weight:800;font-size:1.1rem;color:var(--text)}.nav-logo span{color:var(--purple)}
 .nav-tabs{display:flex;gap:4px}
-.nav-tab{background:none;border:none;color:var(--muted);padding:8px 18px;border-radius:var(--pill);cursor:pointer;font-size:0.85rem;font-weight:500;transition:all 0.2s;font-family:'Google Sans',sans-serif}
-.nav-tab:hover{color:#fff;background:rgba(255,255,255,0.06)}
-.nav-tab.active{color:#8AB4F8;background:rgba(138,180,248,0.12)}
+.nav-tab{padding:8px 14px;border:none;background:none;border-radius:8px;font-size:0.82rem;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.nav-tab:hover{background:#f3f4f6;color:var(--text)}
+.nav-tab.active{background:#ede9fe;color:var(--purple);font-weight:600}
 .nav-right{display:flex;align-items:center;gap:12px}
-.nav-avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#000}
-.nav-name{font-size:0.85rem;font-weight:600}
-.btn-signout{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:var(--pill);cursor:pointer;font-size:0.78rem;transition:all 0.2s;font-family:'Google Sans',sans-serif}
-.btn-signout:hover{border-color:var(--error);color:var(--error)}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;cursor:pointer}
+.nav-name{font-size:0.85rem;font-weight:500;color:var(--text)}
+.btn-signout{padding:7px 14px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--muted);font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.btn-signout:hover{background:#f9fafb;color:var(--red)}
 
 /* LAYOUT */
-main{padding-top:64px;display:flex;min-height:100vh}
-.sidebar{width:220px;flex-shrink:0;padding:24px 16px;border-right:1px solid #DADCE0;background:#fff;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:100px;cursor:pointer;font-size:0.85rem;color:#5F6368;margin-bottom:4px;transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
-.sidebar-item:hover{background:#F1F3F4;color:#202124}
-.sidebar-item.active{background:#E8F0FE;color:#1A73E8;font-weight:600}
-.sidebar-section{font-size:0.7rem;font-weight:600;color:#9AA0A6;letter-spacing:1px;padding:16px 14px 6px;text-transform:uppercase}
-.content{flex:1;padding:32px;overflow-y:auto;max-width:1100px;background:#F8F9FA;}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px)}
+.sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 12px}
+.sidebar-section{margin-bottom:24px}
+.sidebar-label{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:0 10px;margin-bottom:8px}
+.sidebar-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border:none;background:none;border-radius:10px;font-size:0.85rem;font-weight:500;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-align:left}
+.sidebar-btn:hover{background:#f3f4f6;color:var(--text)}
+.sidebar-btn.active{background:#ede9fe;color:var(--purple);font-weight:600}
+.sidebar-btn i{width:18px;text-align:center;font-size:0.9rem}
+.main{padding:28px;overflow-y:auto}
 
 /* STATS */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
-.stat{background:#ffffff;border:1px solid #DADCE0;border-radius:var(--radius);padding:20px 24px}
-.stat .num{font-size:1.8rem;font-weight:700;color:#1A73E8}
-.stat .lbl{font-size:0.78rem;color:#5F6368;margin-top:4px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-num{font-size:2rem;font-weight:800;color:var(--purple)}
+.stat-label{font-size:0.8rem;color:var(--muted);margin-top:4px}
 
-/* PAGES */
+/* PAGE SECTIONS */
 .page{display:none}.page.active{display:block}
-.page-title{font-size:1.3rem;font-weight:700;color:#202124;margin-bottom:6px}
-.page-sub{font-size:0.85rem;color:#5F6368;margin-bottom:24px}
+.page-title{font-size:1.3rem;font-weight:700;margin-bottom:6px}
+.page-sub{font-size:0.85rem;color:var(--muted);margin-bottom:24px}
 
 /* COURSE CARDS */
 .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
-.course-card{background:#ffffff;border:1px solid #DADCE0;border-radius:var(--radius);overflow:hidden;transition:all 0.2s}
-.course-card:hover{border-color:#1A73E8;transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.1)}
-.course-thumb{height:120px;background:linear-gradient(135deg,#E8F0FE,#C5DBFF);display:flex;align-items:center;justify-content:center;font-size:2rem;position:relative;color:#1A73E8}
-.course-thumb .badge{position:absolute;top:8px;right:8px;font-size:0.68rem;font-weight:700;padding:3px 8px;border-radius:6px}
-.badge-owned{background:#E6F4EA;color:#34A853;border:1px solid rgba(52,168,83,0.3)}
-.badge-new{background:#E8F0FE;color:#1A73E8;border:1px solid rgba(26,115,232,0.3)}
+.course-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);transition:all 0.2s;cursor:pointer}
+.course-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.12);border-color:#c4b5fd}
+.course-thumb{height:140px;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative}
+.course-owned-badge{position:absolute;top:10px;right:10px;background:var(--green);color:#fff;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:999px}
 .course-body{padding:16px}
-.course-title{font-size:0.9rem;font-weight:600;color:#202124;margin-bottom:4px;line-height:1.3}
-.course-cat{font-size:0.72rem;color:#5F6368;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}
-.course-price{font-size:1rem;font-weight:700;color:#1A73E8}
-.progress-bar-wrap{background:#E8EAED;border-radius:100px;height:5px;margin:10px 0 6px}
-.progress-bar{background:#1A73E8;border-radius:100px;height:5px;transition:width 0.5s}
-.progress-lbl{font-size:0.7rem;color:#5F6368;display:flex;justify-content:space-between}
-.btn-buy{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:600;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:all 0.2s;font-family:'Google Sans',sans-serif}
-.btn-buy:hover{background:#00dff0}
-.btn-read{width:100%;background:transparent;color:#1A73E8;border:1.5px solid #1A73E8;border-radius:var(--pill);padding:9px;font-weight:600;font-size:0.82rem;cursor:pointer;margin-top:12px;transition:all 0.2s;font-family:'Google Sans',sans-serif}
-.btn-read:hover{background:rgba(0,194,212,0.2)}
+.course-cat{font-size:0.68rem;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
+.course-title{font-size:0.92rem;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:10px}
+.course-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)}
+.course-price{font-weight:800;color:var(--purple);font-size:0.9rem}
+.btn-enroll{background:var(--purple);color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s}
+.btn-enroll:hover{background:#6d28d9}
+.btn-read{background:#ede9fe;color:var(--purple);border:none;padding:6px 14px;border-radius:8px;font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.progress-bar{height:4px;background:#e5e7eb;border-radius:999px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:999px;transition:width 0.5s}
 
-/* SEARCH/FILTER */
-.filter-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.search-input{flex:1;min-width:200px;background:#F1F3F4;border:1px solid transparent;border-radius:100px;padding:10px 20px;color:#202124;font-size:0.88rem;outline:none;transition:all 0.2s}
-.search-input:focus{border-color:var(--teal)}
-.search-input::placeholder{color:var(--muted)}
-.filter-select{background:#F1F3F4;border:1px solid transparent;border-radius:100px;padding:10px 20px;color:#202124;font-size:0.85rem;outline:none;cursor:pointer}
+/* MY COURSES */
+.my-course-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:18px;box-shadow:var(--shadow);display:flex;gap:16px;align-items:flex-start;margin-bottom:14px}
+.my-course-icon{width:52px;height:52px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.my-course-info{flex:1;min-width:0}
+.my-course-title{font-weight:700;font-size:0.95rem;margin-bottom:4px}
+.my-course-cat{font-size:0.72rem;color:var(--muted);margin-bottom:8px}
+.my-course-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:0.76rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:all 0.15s}
+.btn-primary{background:var(--purple);color:#fff}.btn-primary:hover{background:#6d28d9}
+.btn-secondary{background:#f3f4f6;color:var(--text)}.btn-secondary:hover{background:#e5e7eb}
+.btn-success{background:#d1fae5;color:#065f46}.btn-success:hover{background:#a7f3d0}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.completed-badge{display:inline-flex;align-items:center;gap:5px;background:#d1fae5;color:#065f46;padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:700}
 
-/* PAY MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:500;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal{background:#ffffff;border:none;border-radius:28px;padding:36px;width:100%;max-width:420px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.4)}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:#5F6368;font-size:1.2rem;cursor:pointer}
-.modal-close:hover{color:#fff}
-.modal-price{font-size:2.2rem;font-weight:700;color:#1A73E8;text-align:center;margin-bottom:4px}
-.modal-course-name{text-align:center;font-size:0.82rem;color:#5F6368;margin-bottom:24px;text-transform:uppercase;letter-spacing:1px}
-.steps{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.step{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:#5F6368}
-.step-num{width:22px;height:22px;border-radius:50%;background:#E8F0FE;color:#1A73E8;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0}
-label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;margin-bottom:6px;letter-spacing:0.5px}
-.pay-input{width:100%;background:#F1F3F4;border:1px solid transparent;border-radius:100px;padding:12px 18px;color:#202124;font-size:0.92rem;outline:none;transition:all 0.2s;font-family:'Google Sans',sans-serif}
-.pay-input:focus{border-color:#1A73E8;background:#fff}
-.btn-pay{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:var(--pill);padding:13px;font-weight:600;font-size:0.92rem;cursor:pointer;margin-top:12px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Google Sans',sans-serif}
-.btn-pay:hover{background:#00dff0}
+/* EMPTY STATE */
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:3rem;margin-bottom:12px}
+.empty p{font-size:0.9rem;margin-bottom:16px}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.spinner{width:32px;height:32px;border:3px solid #e5e7eb;border-top-color:var(--purple);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;padding:10px 16px;border:1px solid var(--border);border-radius:10px;font-size:0.88rem;font-family:'Inter',sans-serif;outline:none;color:var(--text);background:#fff}
+.search-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.filter-sel{padding:10px 16px;border:1px solid var(--border);border-radius:10px;font-size:0.85rem;font-family:'Inter',sans-serif;color:var(--text);background:#fff;outline:none;cursor:pointer}
+.filter-sel:focus{border-color:var(--purple)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:#1a1a2e;border-radius:20px;padding:28px;width:100%;max-width:420px;animation:modalIn 0.25s ease;color:#fff}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:20px}
+.modal-amount{font-size:2.4rem;font-weight:800;color:var(--purple);text-align:center;margin-bottom:4px}
+.modal-course{text-align:center;font-size:0.82rem;color:rgba(255,255,255,0.6);margin-bottom:20px}
+.modal-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.modal-step{display:flex;align-items:center;gap:10px;font-size:0.82rem;color:rgba(255,255,255,0.75)}
+.step-num{width:22px;height:22px;border-radius:50%;background:#7c3aed;color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0}
+.field-label{font-size:0.73rem;font-weight:600;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.pay-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-size:0.95rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:14px}
+.pay-input:focus{border-color:var(--purple)}
+.pay-input::placeholder{color:rgba(255,255,255,0.35)}
+.btn-pay{width:100%;padding:14px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;margin-bottom:10px}
+.btn-pay:hover:not(:disabled){background:#6d28d9}
 .btn-pay:disabled{opacity:0.6;cursor:not-allowed}
-.pay-status{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.82rem;text-align:center;display:none}
-.pay-status.show{display:block}
-.pay-status.pending{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:#fbbf24}
-.pay-status.success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ade80}
-.pay-status.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171}
+.btn-modal-close{width:100%;padding:10px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:none;border-radius:10px;font-size:0.85rem;cursor:pointer;font-family:'Inter',sans-serif}
+.pay-status{padding:10px 14px;border-radius:10px;font-size:0.82rem;font-weight:500;text-align:center;margin-top:8px;display:none}
+.pay-status.pending{display:block;background:rgba(251,191,36,0.15);color:#fbbf24}
+.pay-status.success{display:block;background:rgba(52,211,153,0.15);color:#34d399}
+.pay-status.error{display:block;background:rgba(248,113,113,0.15);color:#f87171}
+.sync-wrap{text-align:center;margin-top:10px;display:none}
+.btn-sync{background:rgba(0,194,212,0.15);border:1px solid var(--blue);color:var(--blue);padding:8px 18px;border-radius:999px;cursor:pointer;font-size:0.8rem;font-weight:600;font-family:'Inter',sans-serif}
 
-
-
-/* ── ASSIGNMENT ── */
-.assignment-section{margin-top:10px;border-top:1px solid #f1f3f4;padding-top:10px}
-.assignment-status{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:8px}
-.assignment-status.pending{background:#FEF3C7;color:#B45309}
-.assignment-status.approved{background:#D1FAE5;color:#065F46}
-.assignment-status.rejected{background:#FEE2E2;color:#991B1B}
-.assignment-status.none{background:#F3F4F6;color:#6B7280}
-.btn-submit-assignment{width:100%;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:6px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s}
-.btn-submit-assignment:hover{opacity:0.9;transform:translateY(-1px)}
-.btn-resubmit{background:linear-gradient(135deg,#f59e0b,#d97706)!important}
-.assignment-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:600;align-items:center;justify-content:center;padding:20px}
-.assignment-modal-overlay.open{display:flex}
-.assignment-modal{background:#fff;border-radius:16px;width:100%;max-width:500px;box-shadow:0 24px 60px rgba(0,0,0,0.3);overflow:hidden}
-.assignment-modal-header{padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between}
-.assignment-modal-title{font-size:1rem;font-weight:700;color:#111827}
-.assignment-modal-close{background:#f3f4f6;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:#6b7280;flex-shrink:0}
-.assignment-modal-body{padding:20px 24px 24px}
-.file-drop-zone{border:2px dashed #e5e7eb;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:#f9fafb}
-.file-drop-zone:hover,.file-drop-zone.drag{border-color:#7c3aed;background:#f5f3ff}
-.file-drop-zone svg{width:36px;height:36px;color:#d1d5db;display:block;margin:0 auto 10px}
-.file-drop-zone.has-file{border-color:#10b981;background:#f0fdf4}
-.file-drop-zone.has-file svg{color:#10b981}
-.assignment-note{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;width:100%;padding:10px 12px;font-size:0.85rem;font-family:'Google Sans',sans-serif;color:#374151;resize:vertical;min-height:70px;outline:none;margin-top:14px;box-sizing:border-box}
-.assignment-note:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
-.btn-submit-final{width:100%;margin-top:14px;background:#7c3aed;color:#fff;border:none;border-radius:50px;padding:12px;font-weight:700;font-size:0.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Google Sans',sans-serif;transition:all 0.2s}
-.btn-submit-final:hover:not(:disabled){background:#6d28d9}
-.btn-submit-final:disabled{opacity:0.5;cursor:not-allowed}
-.tutor-note-box{background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:0.82rem;color:#92400E;line-height:1.5}
-.tutor-note-box.rejected{background:#FEE2E2;border-color:#FECACA;color:#991B1B}
-/* CERTIFICATE BUTTON */
-.btn-cert{width:100%;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:700;font-size:0.82rem;cursor:pointer;margin-top:8px;transition:all 0.2s;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-cert:hover{background:linear-gradient(135deg,#d97706,#b45309);box-shadow:0 4px 14px rgba(217,119,6,0.4)}
-.btn-mark-done{width:100%;background:linear-gradient(135deg,#34A853,#1e7e34);color:#fff;border:none;border-radius:var(--pill);padding:9px;font-weight:600;font-size:0.82rem;cursor:pointer;margin-top:8px;transition:all 0.2s;font-family:'Google Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn-mark-done:hover{background:linear-gradient(135deg,#1e7e34,#155724)}
-
-/* CERTIFICATE MODAL */
-.cert-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:600;align-items:center;justify-content:center;padding:20px}
-.cert-modal-overlay.open{display:flex;flex-direction:column;gap:16px}
-.cert-modal{background:#fff;border-radius:16px;padding:20px;max-width:860px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
-.cert-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.cert-modal-title{font-size:1rem;font-weight:700;color:#202124}
-.cert-modal-close{background:#f1f3f4;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:#5f6368}
-.cert-modal-close:hover{background:#e2e6ea}
-.cert-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn-dl-cert{background:#1A73E8;color:#fff;border:none;border-radius:100px;padding:11px 28px;font-weight:600;font-size:0.88rem;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:'Google Sans',sans-serif;transition:all 0.2s}
-.btn-dl-cert:hover{background:#1557B0;box-shadow:0 4px 14px rgba(26,115,232,0.4)}
-.btn-dl-cert.gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
-.btn-dl-cert.gold:hover{background:linear-gradient(135deg,#d97706,#b45309)}
-#cert-canvas{border-radius:8px;max-width:100%;height:auto;display:block}
-
-/* PDF VIEWER */
-.viewer-overlay{display:none;position:fixed;inset:0;z-index:300;background:#000;flex-direction:column}
-.viewer-overlay.open{display:flex}
-.viewer-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:#202124;border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0}
-.viewer-title-txt{font-weight:700;font-size:0.92rem}
-.btn-close-viewer{background:none;border:1px solid var(--border);color:#fff;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:0.8rem}
-.btn-close-viewer:hover{border-color:#ef4444;color:#ef4444}
-.viewer-iframe{width:100%;flex:1;border:none}
-.viewer-progress-bar-wrap{height:3px;background:rgba(255,255,255,0.1);width:100%;flex-shrink:0}
-.viewer-progress-bar-fill{height:3px;background:#1A73E8;transition:width 1s linear}
-.viewer-timer{display:none;align-items:center;gap:8px;font-size:0.75rem;color:#9AA0A6;flex-shrink:0}
-.viewer-timer svg{width:14px;height:14px;color:#1A73E8}
-.viewer-pct{font-size:0.75rem;color:#1A73E8;font-weight:700;min-width:36px;text-align:right}
-.viewer-ftr{padding:10px 24px;background:#202124;border-top:1px solid rgba(255,255,255,0.1);font-size:0.75rem;color:rgba(255,255,255,0.5);text-align:center;flex-shrink:0}
-
-/* CV BUILDER */
-.cv-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.cv-panel{background:#ffffff;border:1px solid #DADCE0;border-radius:var(--radius);padding:24px}
-.cv-panel h3{font-size:0.95rem;font-weight:600;margin-bottom:16px;color:#1A73E8}
-.cv-field{margin-bottom:14px}
-.cv-field label{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;margin-bottom:5px;letter-spacing:0.5px}
-.cv-field input,.cv-field textarea{width:100%;background:#F1F3F4;border:1px solid transparent;border-radius:8px;padding:9px 12px;color:#202124;font-size:0.85rem;outline:none;transition:all 0.2s;resize:none;font-family:'Google Sans',sans-serif}
-.cv-field input:focus,.cv-field textarea:focus{border-color:#1A73E8;background:#fff}
-.cv-field input::placeholder,.cv-field textarea::placeholder{color:#9AA0A6}
-.cv-preview-box{background:#fff;border-radius:var(--radius);overflow:hidden;color:#000;font-size:0.82rem;line-height:1.5;min-height:400px}
-.cvp-header{background:#0a0f1a;color:#fff;padding:20px}
-.cvp-name{font-size:1.2rem;font-weight:900}
-.cvp-role{color:var(--teal);font-size:0.8rem;margin-top:2px}
-.cvp-contact{font-size:0.68rem;color:#aaa;margin-top:6px}
-.cvp-body{padding:18px}
-.cvp-section{margin-bottom:14px}
-.cvp-section-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#374151;border-bottom:2px solid var(--teal);padding-bottom:4px;margin-bottom:8px}
-.cvp-text{font-size:0.78rem;color:#374151;white-space:pre-wrap}
-.btn-pay-cv{background:#1A73E8;color:#fff;border:none;border-radius:var(--pill);padding:12px 28px;font-weight:600;font-size:0.9rem;cursor:pointer;margin-top:16px;width:100%;font-family:'Google Sans',sans-serif}
+/* ASSIGNMENT */
+.assignment-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.asgn-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.asgn-course{font-weight:700;font-size:0.9rem}
+.asgn-status{padding:4px 10px;border-radius:999px;font-size:0.72rem;font-weight:700}
+.status-pending{background:#fef3c7;color:#92400e}
+.status-approved{background:#d1fae5;color:#065f46}
+.status-rejected{background:#fee2e2;color:#991b1b}
+.upload-zone{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fafafa}
+.upload-zone:hover{border-color:var(--purple);background:#f5f3ff}
+.upload-zone input{display:none}
+.upload-zone i{font-size:1.5rem;color:var(--muted);margin-bottom:6px}
+.upload-zone p{font-size:0.82rem;color:var(--muted)}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:#202124;border:none;border-radius:12px;padding:14px 20px;font-size:0.84rem;z-index:9999;animation:toastIn 0.3s ease;max-width:320px;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-.toast.success{color:#81C995}
-.toast.error{color:#F28B82}
-@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:12px;color:#fff;font-size:0.85rem;font-weight:500;z-index:9999;animation:fadeUp 0.3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.toast.success{background:#059669}
+.toast.error{background:#dc2626}
+.toast.info{background:#7c3aed}
 
-/* EMPTY */
-.empty{text-align:center;padding:60px 20px;color:#5F6368}
-.empty-icon{font-size:3rem;margin-bottom:16px}
-.empty h3{font-size:1.05rem;color:#202124;margin-bottom:8px}
-.empty p{font-size:0.85rem;margin-bottom:20px}
-.btn-browse{background:#1A73E8;color:#fff;border:none;border-radius:100px;padding:11px 28px;font-weight:600;cursor:pointer;font-size:0.88rem;font-family:'Google Sans',sans-serif}
+/* PDF VIEWER */
+.viewer-overlay{position:fixed;inset:0;background:#000;z-index:300;display:none;flex-direction:column}
+.viewer-overlay.open{display:flex}
+.viewer-bar{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.viewer-title{color:#fff;font-weight:600;font-size:0.9rem}
+.viewer-progress{display:flex;align-items:center;gap:12px}
+.viewer-pct{color:#a78bfa;font-size:0.82rem;font-weight:700}
+.btn-close-viewer{background:rgba(255,255,255,0.1);border:none;color:#fff;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.82rem}
+#viewer-iframe{flex:1;border:none;background:#fff}
 
 @media(max-width:768px){
+  .layout{grid-template-columns:1fr}
   .sidebar{display:none}
-  .stats{grid-template-columns:1fr 1fr}
-  .cv-wrap{grid-template-columns:1fr}
-  .content{padding:20px 16px}
+  .nav-tabs{display:flex;gap:2px}
+  .nav-tab{padding:6px 10px;font-size:0.75rem}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .courses-grid{grid-template-columns:1fr}
+  .my-course-card{flex-direction:column}
 }
 </style>
 </head>
@@ -209,1076 +168,654 @@ label.field-lbl{display:block;font-size:0.75rem;font-weight:600;color:#5F6368;ma
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="/">Zenith <span>Zoom</span></a>
-  <a href="/" style="display:flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:0.8rem;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--border);margin-left:8px;transition:all 0.2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">🏠 Home</a>
+  <div class="nav-logo">Zenith<span>Zoom</span></div>
   <div class="nav-tabs">
-    <button class="nav-tab active" id="nav-my-courses" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open" style="margin-right:6px"></i>My Courses</button>
-    <button class="nav-tab" id="nav-browse" onclick="showPage('browse')"><i class="fa-solid fa-store" style="margin-right:6px"></i>Browse</button>
-    <button class="nav-tab" onclick="showPage('cv')"><i class="fa-solid fa-file-lines" style="margin-right:6px"></i>CV Builder</button>
+    <button class="nav-tab active" onclick="showPage('browse')" id="tab-browse"><i class="fa-solid fa-store"></i> Browse</button>
+    <button class="nav-tab" onclick="showPage('my-courses')" id="tab-my-courses"><i class="fa-solid fa-book-open"></i> My Courses</button>
+    <button class="nav-tab" onclick="showPage('assignments')" id="tab-assignments"><i class="fa-solid fa-file-pen"></i> Assignments</button>
+    <button class="nav-tab" onclick="showPage('cv')" id="tab-cv"><i class="fa-solid fa-id-card"></i> CV Builder</button>
   </div>
   <div class="nav-right">
-    <div class="nav-avatar" id="nav-avatar">?</div>
     <span class="nav-name" id="nav-name">...</span>
+    <div class="nav-avatar" id="nav-avatar">?</div>
     <button class="btn-signout" onclick="signOut()">Sign Out</button>
   </div>
 </nav>
 
-<main>
+<div class="layout">
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-section">Learn</div>
-  <button class="sidebar-item active" id="sidebar-my-courses" onclick="showPage('my-courses')"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</button>
-  <button class="sidebar-item" id="sidebar-browse" onclick="showPage('browse')"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</button>
-  <div class="sidebar-section">Tools</div>
-  <button class="sidebar-item" onclick="showPage('cv')"><i class="fa-solid fa-file-lines fa-fw"></i> CV Builder</button>
-  <div class="sidebar-section">Account</div>
-  <button class="sidebar-item" onclick="signOut()"><i class="fa-solid fa-right-from-bracket fa-fw"></i> Sign Out</button>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Learn</div>
+    <button class="sidebar-btn active" onclick="showPage('browse')" id="sb-browse"><i class="fa-solid fa-store"></i> Browse Courses</button>
+    <button class="sidebar-btn" onclick="showPage('my-courses')" id="sb-my-courses"><i class="fa-solid fa-book-open"></i> My Courses</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Progress</div>
+    <button class="sidebar-btn" onclick="showPage('assignments')" id="sb-assignments"><i class="fa-solid fa-file-pen"></i> Assignments</button>
+    <button class="sidebar-btn" onclick="showPage('certificates')" id="sb-certificates"><i class="fa-solid fa-certificate"></i> Certificates</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Tools</div>
+    <button class="sidebar-btn" onclick="showPage('cv')" id="sb-cv"><i class="fa-solid fa-id-card"></i> CV Builder</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Account</div>
+    <button class="sidebar-btn" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="content">
-
+<!-- MAIN -->
+<div class="main">
   <!-- STATS -->
-  <div class="stats">
-    <div class="stat"><div class="num" id="stat-owned">0</div><div class="lbl">Courses Owned</div></div>
-    <div class="stat"><div class="num" id="stat-progress">0%</div><div class="lbl">Avg Progress</div></div>
-    <div class="stat"><div class="num" id="stat-completed">0</div><div class="lbl">Completed</div></div>
-  </div>
-
-  <!-- MY COURSES PAGE -->
-  <div id="page-my-courses" class="page active">
-    <div class="page-title"><i class="fa-solid fa-book-open fa-fw"></i> My Courses</div>
-    <div class="page-sub">Courses you've purchased — click to read</div>
-    <div class="courses-grid" id="my-courses-grid">
-    </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-owned">0</div><div class="stat-label">Courses Owned</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-progress">0%</div><div class="stat-label">Avg Progress</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-completed">0</div><div class="stat-label">Completed</div></div>
   </div>
 
   <!-- BROWSE PAGE -->
-  <div id="page-browse" class="page">
-    <div class="page-title"><i class="fa-solid fa-store fa-fw"></i> Browse Courses</div>
+  <div class="page active" id="page-browse">
+    <div class="page-title">📚 Browse Courses</div>
     <div class="page-sub">Pay via M-Pesa to unlock any course instantly</div>
-    <div class="filter-bar">
-      <input class="search-input" id="browse-search" placeholder="🔍 Search courses..." oninput="filterCourses()"/>
-      <select class="filter-select" id="browse-cat" onchange="filterCourses()">
+    <div class="search-bar">
+      <input class="search-input" id="browse-search" placeholder="🔍 Search courses..." oninput="filterBrowse()">
+      <select class="filter-sel" id="browse-cat" onchange="filterBrowse()">
         <option value="">All Categories</option>
-        <option>Business</option><option>Marketing</option><option>Technology</option>
-        <option>Finance</option><option>Career Development</option><option>Leadership</option>
+        <option>Business</option><option>Technology</option><option>Marketing</option>
+        <option>Finance</option><option>Leadership</option><option>Career Development</option>
       </select>
     </div>
     <div class="courses-grid" id="browse-grid">
-      <div style="color:var(--muted);padding:30px;text-align:center">
-        <div style="font-size:1.5rem;margin-bottom:8px">🔄</div>
-        <div>Loading courses...</div>
-      </div>
+      <div class="loading"><div class="spinner"></div><p>Loading courses...</p></div>
     </div>
   </div>
 
-  <!-- CV BUILDER PAGE -->
-  <div id="page-cv" class="page">
-    <div class="page-title"><i class="fa-solid fa-file-lines fa-fw"></i> CV Builder</div>
-    <div class="page-sub">Build a professional CV. Pay KES 100 via M-Pesa to download as PDF.</div>
-    <div class="cv-wrap">
-      <div class="cv-panel">
-        <h3>Your Details</h3>
-        <div class="cv-field"><label>FULL NAME</label><input id="cv-name" placeholder="John Doe" oninput="updatePreview()"/></div>
-        <div class="cv-field"><label>JOB TITLE</label><input id="cv-role" placeholder="Marketing Manager" oninput="updatePreview()"/></div>
-        <div class="cv-field"><label>EMAIL</label><input id="cv-email" placeholder="john@email.com" oninput="updatePreview()"/></div>
-        <div class="cv-field"><label>PHONE</label><input id="cv-phone-cv" placeholder="0712 345 678" oninput="updatePreview()"/></div>
-        <div class="cv-field"><label>SUMMARY</label><textarea id="cv-summary" rows="3" placeholder="Brief professional summary..." oninput="updatePreview()"></textarea></div>
-        <div class="cv-field"><label>EXPERIENCE</label><textarea id="cv-exp" rows="4" placeholder="Job title — Company (Year-Year)&#10;Key responsibilities..." oninput="updatePreview()"></textarea></div>
-        <div class="cv-field"><label>EDUCATION</label><textarea id="cv-edu" rows="2" placeholder="Degree — University (Year)" oninput="updatePreview()"></textarea></div>
-        <div class="cv-field"><label>SKILLS</label><input id="cv-skills" placeholder="Excel, Communication, Leadership" oninput="updatePreview()"/></div>
-        <button class="btn-pay-cv" onclick="openCVPay()"><i class="fa-solid fa-download"></i> Download CV — KES 100 via M-Pesa</button>
-      </div>
-      <div>
-        <div class="cv-preview-box" id="cv-preview">
-          <div class="cvp-header">
-            <div class="cvp-name" id="cvp-name">Your Name</div>
-            <div class="cvp-role" id="cvp-role">Job Title</div>
-            <div class="cvp-contact" id="cvp-contact">email@example.com • 0712 345 678</div>
-          </div>
-          <div class="cvp-body">
-            <div class="cvp-section"><div class="cvp-section-title">Professional Summary</div><div class="cvp-text" id="cvp-summary">Your summary will appear here...</div></div>
-            <div class="cvp-section"><div class="cvp-section-title">Experience</div><div class="cvp-text" id="cvp-exp">Your experience...</div></div>
-            <div class="cvp-section"><div class="cvp-section-title">Education</div><div class="cvp-text" id="cvp-edu">Your education...</div></div>
-            <div class="cvp-section"><div class="cvp-section-title">Skills</div><div class="cvp-text" id="cvp-skills-preview">Your skills...</div></div>
-          </div>
-        </div>
-      </div>
+  <!-- MY COURSES PAGE -->
+  <div class="page" id="page-my-courses">
+    <div class="page-title">📖 My Courses</div>
+    <div class="page-sub">Continue where you left off</div>
+    <div id="my-courses-list">
+      <div class="loading"><div class="spinner"></div><p>Loading...</p></div>
     </div>
   </div>
 
-</div><!-- end content -->
-</main>
+  <!-- ASSIGNMENTS PAGE -->
+  <div class="page" id="page-assignments">
+    <div class="page-title">📝 Assignments</div>
+    <div class="page-sub">Submit your work to get certified</div>
+    <div id="assignments-list">
+      <div class="loading"><div class="spinner"></div><p>Loading...</p></div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATES PAGE -->
+  <div class="page" id="page-certificates">
+    <div class="page-title">🏆 Certificates</div>
+    <div class="page-sub">Your earned certificates</div>
+    <div id="certificates-list">
+      <div class="empty"><div class="empty-icon">🏆</div><p>Complete a course to earn a certificate</p></div>
+    </div>
+  </div>
+
+  <!-- CV BUILDER -->
+  <div class="page" id="page-cv">
+    <div class="page-title">📄 CV Builder</div>
+    <div class="page-sub">Build and download your professional CV for KES 100</div>
+    <div style="background:var(--card);border-radius:var(--radius);padding:24px;max-width:600px;box-shadow:var(--shadow);border:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Full Name *</label><input class="search-input" id="cv-name" placeholder="Jane Wanjiku" style="width:100%"></div>
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Title</label><input class="search-input" id="cv-title" placeholder="Software Developer" style="width:100%"></div>
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Email</label><input class="search-input" id="cv-email" placeholder="jane@email.com" style="width:100%"></div>
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Phone</label><input class="search-input" id="cv-phone" placeholder="0712345678" style="width:100%"></div>
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Location</label><input class="search-input" id="cv-location" placeholder="Nairobi, Kenya" style="width:100%"></div>
+        <div><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">LinkedIn</label><input class="search-input" id="cv-linkedin" placeholder="linkedin.com/in/jane" style="width:100%"></div>
+      </div>
+      <div style="margin-top:14px"><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Summary</label><textarea class="search-input" id="cv-summary" rows="3" placeholder="Results-driven professional..." style="width:100%;resize:vertical"></textarea></div>
+      <div style="margin-top:14px"><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Experience</label><textarea class="search-input" id="cv-experience" rows="4" placeholder="Job Title — Company (Year-Year)&#10;Key responsibilities..." style="width:100%;resize:vertical"></textarea></div>
+      <div style="margin-top:14px"><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Education</label><textarea class="search-input" id="cv-education" rows="2" placeholder="Degree — University (Year)" style="width:100%;resize:vertical"></textarea></div>
+      <div style="margin-top:14px"><label style="font-size:0.8rem;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Skills</label><input class="search-input" id="cv-skills" placeholder="Excel, Communication, Leadership" style="width:100%"></div>
+      <button onclick="openCVPay()" style="margin-top:20px;width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif"><i class="fa-solid fa-download"></i> Download CV — KES 100 via M-Pesa</button>
+    </div>
+  </div>
+</div><!-- /main -->
+</div><!-- /layout -->
 
 <!-- PAY MODAL -->
-<!-- CERTIFICATE MODAL -->
-<div class="cert-modal-overlay" id="cert-modal-overlay">
-  <div class="cert-modal">
-    <div class="cert-modal-header">
-      <div class="cert-modal-title"><i class="fa-solid fa-medal" style="color:#f59e0b;margin-right:6px"></i>Certificate of Completion</div>
-      <button class="cert-modal-close" onclick="closeCertModal()">✕</button>
-    </div>
-    <canvas id="cert-canvas" width="800" height="566"></canvas>
-  </div>
-  <div class="cert-actions">
-    <button class="btn-dl-cert gold" onclick="downloadCertPDF()"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
-    <button class="btn-dl-cert" onclick="downloadCertImage()"><i class="fa-solid fa-image"></i> Save as Image</button>
-    <button class="btn-dl-cert" style="background:#5F6368" onclick="closeCertModal()"><i class="fa-solid fa-xmark"></i> Close</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="pay-modal">
+<div class="overlay" id="pay-overlay">
   <div class="modal">
-    <button class="modal-close" onclick="closePayModal()">✕</button>
-    <div class="modal-price" id="modal-price">KES 0</div>
-    <div class="modal-course-name" id="modal-course-name">Course</div>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div>Enter your M-Pesa number below</div>
-      <div class="step"><div class="step-num">2</div>Click Pay — get a prompt on your phone</div>
-      <div class="step"><div class="step-num">3</div>Enter your PIN to confirm payment</div>
-      <div class="step"><div class="step-num">4</div><span>Course unlocks in your dashboard</span></div>
+    <div class="modal-amount" id="modal-amount">KES 500</div>
+    <div class="modal-course" id="modal-course">Course Name</div>
+    <div class="modal-steps">
+      <div class="modal-step"><div class="step-num">1</div>Enter your M-Pesa number below</div>
+      <div class="modal-step"><div class="step-num">2</div>Click Pay — get a prompt on your phone</div>
+      <div class="modal-step"><div class="step-num">3</div>Enter your PIN to confirm</div>
+      <div class="modal-step"><div class="step-num">4</div><span id="step4-text">Course unlocks in your dashboard</span></div>
     </div>
-    <label class="field-lbl">M-PESA PHONE NUMBER</label>
-    <input class="pay-input" id="pay-phone" placeholder="0716762062" type="tel"/>
-    <button class="btn-pay" id="pay-btn" onclick="submitPayment()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
-      Pay via M-Pesa
-    </button>
+    <div class="field-label">M-PESA PHONE NUMBER</div>
+    <input class="pay-input" id="pay-phone" placeholder="0716762062" type="tel">
+    <button class="btn-pay" id="btn-pay" onclick="submitPayment()"><i class="fa-solid fa-mobile-screen-button"></i> Pay via M-Pesa</button>
+    <div class="sync-wrap" id="sync-wrap">
+      <button class="btn-sync" onclick="syncCourses()">🔄 Sync Courses</button>
+      <div style="font-size:0.73rem;color:rgba(255,255,255,0.5);margin-top:5px">Paid but course didn't unlock? Click to sync.</div>
+    </div>
     <div class="pay-status" id="pay-status"></div>
-    <div id="dl-wrap" style="display:none;text-align:center;margin-top:14px">
-      <a id="dl-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:white;padding:11px 24px;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.88rem">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-        Download Now
-      </a>
-    </div>
-    <div id="sync-btn-wrap" style="display:none;text-align:center;margin-top:12px">
-      <button onclick="syncCourses()" style="background:rgba(0,194,212,0.15);border:1px solid var(--blue);color:var(--blue);padding:9px 20px;border-radius:50px;cursor:pointer;font-size:0.82rem;font-weight:600">
-        🔄 Sync Courses
-      </button>
-      <div style="font-size:0.75rem;color:var(--muted);margin-top:5px">Click if you completed payment but course didn't unlock</div>
-    </div>
+    <button class="btn-modal-close" onclick="closePayModal()">✕ Close</button>
   </div>
 </div>
 
 <!-- PDF VIEWER -->
 <div class="viewer-overlay" id="viewer-overlay">
-  <div class="viewer-hdr">
-    <div class="viewer-title-txt" id="viewer-title">Course</div>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <div class="viewer-timer" id="viewer-timer">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
-        <span id="viewer-timer-text">0:00 read</span>
+  <div class="viewer-bar">
+    <div class="viewer-title" id="viewer-title">Course</div>
+    <div class="viewer-progress">
+      <span class="viewer-pct" id="viewer-pct">0%</span>
+      <div style="width:120px;height:6px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden">
+        <div id="viewer-bar-fill" style="height:100%;background:#a78bfa;border-radius:999px;width:0%;transition:width 0.5s"></div>
       </div>
-      <span class="viewer-pct" id="viewer-progress-pct">0%</span>
-      <button class="btn-close-viewer" onclick="closeViewer()">✕ Close</button>
     </div>
+    <button class="btn-close-viewer" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i> Close</button>
   </div>
-  <div class="viewer-progress-bar-wrap">
-    <div class="viewer-progress-bar-fill" id="viewer-progress-bar" style="width:0%"></div>
-  </div>
-  <iframe class="viewer-iframe" id="viewer-iframe" src=""></iframe>
-  <div class="viewer-ftr">🔒 Protected content — for personal use only</div>
+  <iframe id="viewer-iframe" src=""></iframe>
 </div>
 
 <script>
+// ── STATE ──
 let user = null;
 let allCourses = [];
-let payType = null; // 'course' or 'cv'
+let assignments = [];
+let payType = null;
 let payResourceId = null;
+let payResourceTitle = '';
 let pollInterval = null;
+let viewerCourseId = null;
+let viewerTimer = null;
 
 // ── INIT ──
-async function init() {
-  const certOverlay = document.getElementById('cert-modal-overlay');
-  if (certOverlay) certOverlay.addEventListener('click', e => { if (e.target === e.currentTarget) closeCertModal(); });
+document.addEventListener('DOMContentLoaded', () => {
+  loadCourses(); // load courses immediately without waiting for auth
+  initUser();
+});
 
-  // Load courses immediately — don't wait for auth to complete
-  loadAllCourses();
-
+async function initUser() {
   try {
-    const res = await fetch('/api/auth/me');
-    const data = await res.json();
-    if (!data.success) { window.location = '/login'; return; }
-    user = data.user;
-    document.getElementById('nav-name').textContent = (user.name||user.email||'User').split(' ')[0];
-    document.getElementById('nav-avatar').textContent = (user.name||user.email||'U')[0].toUpperCase();
+    const r = await fetch('/api/auth/me');
+    const d = await r.json();
+    if (!d.success) { window.location = '/login'; return; }
+    user = d.user;
+    document.getElementById('nav-name').textContent = (user.name || user.email || 'User').split(' ')[0];
+    document.getElementById('nav-avatar').textContent = (user.name || user.email || 'U')[0].toUpperCase();
+    // Pre-fill CV
+    if (user.name) document.getElementById('cv-name').value = user.name;
+    if (user.email) document.getElementById('cv-email').value = user.email;
+    if (user.phone) document.getElementById('cv-phone').value = user.phone.replace(/^254/, '0');
     updateStats();
-    await loadAssignments();
     renderMyCourses();
-    // Re-render browse with owned course status now that user is loaded
-    if (allCourses.length) renderBrowse(allCourses);
-    // Pre-fill CV with user name/email
-    const cvName = document.getElementById('cv-name'); if(cvName) cvName.value = user.name||'';
-    const cvEmail = document.getElementById('cv-email'); if(cvEmail) cvEmail.value = user.email||'';
-    if(document.getElementById('cv-name')) updatePreview();
-  } catch(err) {
-    console.error('Init error:', err);
-    if(err.message && err.message.includes('fetch')) {
-      document.body.innerHTML='<div style="padding:40px;text-align:center"><h2>Connection error</h2><p>Please refresh the page</p></div>';
-    } else { window.location = '/login'; }
+    loadAssignments();
+    // Re-render browse with owned status
+    if (allCourses.length) renderBrowseGrid(allCourses);
+  } catch(e) {
+    console.error('Auth error:', e);
+    setTimeout(() => window.location = '/login', 2000);
   }
 }
 
-function updateStats() {
-  const owned = (user.purchasedCourses||[]).length;
-  const completed = (user.purchasedCourses||[]).filter(c=>c.completed).length;
-  const avgProg = owned ? Math.round((user.purchasedCourses||[]).reduce((s,c)=>s+(c.progress||0),0)/owned) : 0;
-  document.getElementById('stat-owned').textContent = owned;
-  document.getElementById('stat-progress').textContent = avgProg + '%';
-  document.getElementById('stat-completed').textContent = completed;
+// ── NAVIGATION ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab, .sidebar-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name)?.classList.add('active');
+  document.getElementById('tab-' + name)?.classList.add('active');
+  document.getElementById('sb-' + name)?.classList.add('active');
+  if (name === 'certificates') renderCertificates();
 }
 
-// ── PAGES ──
-function showPage(name) {
-  if (name === 'certificates') { setTimeout(renderCertificatesPage, 50); }
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab, .sidebar-item').forEach(b => b.classList.remove('active'));
-  const page = document.getElementById('page-' + name);
-  if (page) page.classList.add('active');
-  const navBtn = document.getElementById('nav-' + name);
-  if (navBtn) navBtn.classList.add('active');
-  const sideBtn = document.getElementById('sidebar-' + name);
-  if (sideBtn) sideBtn.classList.add('active');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab,.sidebar-item').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+name)?.classList.add('active');
-  document.querySelectorAll('[onclick*="showPage(\''+name+'\'"]').forEach(t=>t.classList.add('active'));
+// ── STATS ──
+function updateStats() {
+  if (!user) return;
+  const owned = user.purchasedCourses || [];
+  document.getElementById('stat-owned').textContent = owned.length;
+  const completed = owned.filter(c => c.completed).length;
+  document.getElementById('stat-completed').textContent = completed;
+  const avgProgress = owned.length ? Math.round(owned.reduce((s, c) => s + (c.progress || 0), 0) / owned.length) : 0;
+  document.getElementById('stat-progress').textContent = avgProgress + '%';
+}
+
+// ── LOAD COURSES ──
+async function loadCourses() {
+  const grid = document.getElementById('browse-grid');
+  try {
+    const r = await fetch('/api/resources');
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.message || 'Server error ' + r.status);
+    allCourses = data.resources || [];
+    if (allCourses.length === 0) {
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📚</div><p>No courses available yet. Check back soon!</p></div>`;
+    } else {
+      renderBrowseGrid(allCourses);
+    }
+  } catch(err) {
+    console.error('Load courses error:', err);
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="empty-icon">⚠️</div>
+      <p style="color:var(--red)">${err.message}</p>
+      <button onclick="loadCourses()" style="margin-top:12px;padding:8px 20px;background:var(--purple);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif">↺ Retry</button>
+    </div>`;
+  }
+}
+
+const catEmoji = { Business:'💼', Technology:'💻', Marketing:'📣', Finance:'📈', Leadership:'👥', 'Career Development':'🚀' };
+
+function renderBrowseGrid(courses) {
+  const grid = document.getElementById('browse-grid');
+  if (!courses.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔍</div><p>No courses match your search</p></div>`;
+    return;
+  }
+  const owned = (user?.purchasedCourses || []).map(c => String(c.courseId?._id || c.courseId));
+  grid.innerHTML = courses.map(c => {
+    const isOwned = owned.includes(String(c._id));
+    const pct = isOwned ? ((user.purchasedCourses.find(p => String(p.courseId?._id || p.courseId) === String(c._id))?.progress) || 0) : 0;
+    return `<div class="course-card">
+      <div class="course-thumb">
+        ${catEmoji[c.category] || '📖'}
+        ${isOwned ? '<span class="course-owned-badge">✓ Owned</span>' : ''}
+      </div>
+      <div class="course-body">
+        <div class="course-cat">${c.category || 'General'}</div>
+        <div class="course-title">${c.title}</div>
+        ${isOwned ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div style="font-size:0.72rem;color:var(--muted);margin-top:4px">${pct}% complete</div>` : ''}
+        <div class="course-footer">
+          <span class="course-price">KES ${(c.price || 0).toLocaleString()}</span>
+          ${isOwned
+            ? `<button class="btn-read" onclick="openViewer('${c._id}','${c.title.replace(/'/g,"\\'")}')">📖 Read</button>`
+            : `<button class="btn-enroll" onclick="openPayModal('${c._id}','${c.title.replace(/'/g,"\\'")}',${c.price})">Enroll</button>`
+          }
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterBrowse() {
+  const q = document.getElementById('browse-search').value.toLowerCase();
+  const cat = document.getElementById('browse-cat').value;
+  renderBrowseGrid(allCourses.filter(c =>
+    (!q || c.title.toLowerCase().includes(q) || (c.description||'').toLowerCase().includes(q)) &&
+    (!cat || c.category === cat)
+  ));
 }
 
 // ── MY COURSES ──
 function renderMyCourses() {
-  const grid = document.getElementById('my-courses-grid');
+  const el = document.getElementById('my-courses-list');
+  if (!user) return;
   const owned = user.purchasedCourses || [];
   if (!owned.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div style="font-size:3rem;color:var(--teal);margin-bottom:16px"><i class="fa-solid fa-book-open"></i></div><h3>No courses yet</h3>
-      <p>Browse and purchase courses to start learning</p>
-      <button class="btn-browse" onclick="showPage('browse')">Browse Courses</button>
-    </div>`;
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>You haven't purchased any courses yet.</p><button onclick="showPage('browse')" style="padding:10px 20px;background:var(--purple);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif">Browse Courses</button></div>`;
     return;
   }
-  const icons = {
-      Business:'<i class="fa-solid fa-briefcase"></i>',
-      Marketing:'<i class="fa-solid fa-bullhorn"></i>',
-      Technology:'<i class="fa-solid fa-laptop-code"></i>',
-      Finance:'<i class="fa-solid fa-chart-line"></i>',
-      'Career Development':'<i class="fa-solid fa-rocket"></i>',
-      Leadership:'<i class="fa-solid fa-users-line"></i>'
-    };
-  grid.innerHTML = owned.map(c => {
-    const course = c.courseId;
-    if (!course) return '';
-    const icon = icons[course.category] || '📄';
-    const prog = c.progress || 0;
-    return `<div class="course-card">
-      <div class="course-thumb">${icon}<span class="badge badge-owned">✅ Owned</span></div>
-      <div class="course-body">
-        <div class="course-title">${course.title}</div>
-        <div class="course-cat">${course.category}</div>
-        <div class="progress-bar-wrap"><div class="progress-bar" style="width:${prog}%"></div></div>
-        <div class="progress-lbl"><span>Progress</span><span>${prog}%</span></div>
-        <button class="btn-read" onclick="openViewer('${course._id}','${course.title.replace(/'/g,"\\'")}')">
-          ${prog>0 ? '<i class="fa-solid fa-play"></i> Continue Reading' : '<i class="fa-solid fa-play"></i> Start Reading'}
-        </button>
-        ${c.completed
-          ? `<button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-medal"></i> View Certificate</button>`
-          : `<button class="btn-mark-done" onclick="markComplete('${course._id}','${course.title.replace(/'/g,"\\'")}')" style="${prog<80?'opacity:0.5;cursor:not-allowed;':''}" ${prog<80?'title="Read at least 80% to unlock completion"':''}><i class="fa-solid fa-circle-check"></i> Mark as Complete</button>`
-        }
-        <div class="assignment-section">${renderAssignmentStatus(course._id)}</div>
+  el.innerHTML = owned.map(pc => {
+    const course = allCourses.find(c => String(c._id) === String(pc.courseId?._id || pc.courseId));
+    const title = course?.title || pc.courseId?.title || 'Course';
+    const cat = course?.category || '';
+    const pct = pc.progress || 0;
+    const done = pc.completed;
+    const cid = String(pc.courseId?._id || pc.courseId);
+    return `<div class="my-course-card">
+      <div class="my-course-icon">${catEmoji[cat] || '📖'}</div>
+      <div class="my-course-info">
+        <div class="my-course-title">${title}</div>
+        <div class="my-course-cat">${cat}</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;margin-bottom:8px">${pct}% complete</div>
+        ${done ? '<span class="completed-badge">✅ Completed</span>' : ''}
+        <div class="my-course-actions">
+          <button class="btn-sm btn-primary" onclick="openViewer('${cid}','${title.replace(/'/g,"\\'")}')">📖 Read Course</button>
+          ${!done ? `<button class="btn-sm btn-secondary" onclick="openSubmitAssignment('${cid}','${title.replace(/'/g,"\\'")}')">📝 Submit Assignment</button>` : ''}
+          ${done ? `<button class="btn-sm btn-success" onclick="downloadCertificate('${cid}','${title.replace(/'/g,"\\'")}')">🏆 Certificate</button>` : ''}
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ── BROWSE ──
-async function loadAllCourses() {
-  const grid = document.getElementById('browse-grid');
+// ── ASSIGNMENTS ──
+async function loadAssignments() {
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000); // 8s timeout
-    const res = await fetch('/api/resources', { signal: controller.signal });
-    clearTimeout(timer);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
-    allCourses = data.resources || [];
-    if (allCourses.length === 0) {
-      grid.innerHTML = '<div style="color:var(--muted);padding:30px;text-align:center"><div style="font-size:2rem;margin-bottom:10px">📚</div><div>No courses available yet.</div><div style="font-size:0.8rem;margin-top:6px">Check back soon or contact the admin.</div></div>';
-    } else {
-      renderBrowse(allCourses);
-    }
-  } catch(err) {
-    console.error('[ZZ] loadAllCourses error:', err);
-    const msg = err.name === 'AbortError' ? 'Request timed out — server is slow. Please retry.' : (err.message || 'Network error');
-    grid.innerHTML = `<div style="color:#f87171;padding:20px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center">
-      <div style="font-size:1.3rem;margin-bottom:6px">⚠️ ${msg}</div>
-      <div style="font-size:0.75rem;color:#aaa;margin-bottom:12px">Check <a href="/api/health" target="_blank" style="color:var(--blue)">/api/health</a> for server status</div>
-      <button onclick="loadAllCourses()" style="background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-size:0.82rem">↺ Retry</button>
-    </div>`;
+    const r = await fetch('/api/assignments/my');
+    const d = await r.json();
+    if (d.success) assignments = d.assignments || [];
+    renderAssignments();
+  } catch(e) { console.error('Load assignments error:', e); }
+}
+
+function renderAssignments() {
+  const el = document.getElementById('assignments-list');
+  const owned = user?.purchasedCourses || [];
+  if (!owned.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📝</div><p>Purchase a course to submit assignments</p></div>`;
+    return;
   }
+  let html = '';
+  // Show submission form for each owned course
+  owned.forEach(pc => {
+    const cid = String(pc.courseId?._id || pc.courseId);
+    const course = allCourses.find(c => String(c._id) === cid);
+    const title = course?.title || 'Course';
+    const existing = assignments.filter(a => String(a.courseId?._id || a.courseId) === cid);
+    const lastAsgn = existing[existing.length - 1];
+    const statusMap = { pending:'⏳ Under Review', approved:'✅ Approved', rejected:'❌ Needs Revision' };
+    const statusClass = { pending:'status-pending', approved:'status-approved', rejected:'status-rejected' };
+    html += `<div class="assignment-card">
+      <div class="asgn-header">
+        <div class="asgn-course">${catEmoji[course?.category]||'📖'} ${title}</div>
+        ${lastAsgn ? `<span class="asgn-status ${statusClass[lastAsgn.status]}">${statusMap[lastAsgn.status]}</span>` : '<span class="asgn-status status-pending" style="background:#f3f4f6;color:var(--muted)">Not submitted</span>'}
+      </div>
+      ${lastAsgn?.tutorNote ? `<div style="font-size:0.82rem;color:var(--muted);margin-bottom:12px;padding:10px;background:#f9fafb;border-radius:8px"><strong>Tutor note:</strong> ${lastAsgn.tutorNote}</div>` : ''}
+      ${!lastAsgn || lastAsgn.status === 'rejected' ? `
+        <label class="upload-zone" for="file-${cid}">
+          <input type="file" id="file-${cid}" accept=".pdf,.docx" onchange="submitAssignment('${cid}', this)">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <p>Click to upload PDF or DOCX</p>
+          <p style="font-size:0.72rem;margin-top:3px">Max 10MB</p>
+        </label>
+      ` : ''}
+      ${lastAsgn ? `<div style="font-size:0.75rem;color:var(--muted);margin-top:8px">Submitted: ${new Date(lastAsgn.submittedAt).toLocaleDateString()}</div>` : ''}
+    </div>`;
+  });
+  el.innerHTML = html || `<div class="empty"><div class="empty-icon">📝</div><p>No courses yet</p></div>`;
 }
 
-function filterCourses() {
-  const q = document.getElementById('browse-search').value.toLowerCase();
-  const cat = document.getElementById('browse-cat').value;
-  const filtered = allCourses.filter(c =>
-    (!q || c.title.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q)) &&
-    (!cat || c.category === cat)
-  );
-  renderBrowse(filtered);
+async function submitAssignment(courseId, input) {
+  if (!input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 10 * 1024 * 1024) { toast('File too large (max 10MB)', 'error'); return; }
+  const label = input.closest('.upload-zone');
+  const orig = label.innerHTML;
+  label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><p>Uploading...</p>';
+  const fd = new FormData();
+  fd.append('assignment', file);
+  fd.append('courseId', courseId);
+  try {
+    const r = await fetch('/api/assignments/submit', { method:'POST', body:fd });
+    const d = await r.json();
+    if (d.success) { toast('Assignment submitted! Tutor will review shortly.', 'success'); await loadAssignments(); renderAssignments(); }
+    else { toast(d.message || 'Upload failed', 'error'); label.innerHTML = orig; }
+  } catch(e) { toast('Upload failed', 'error'); label.innerHTML = orig; }
 }
 
-function renderBrowse(courses) {
-  const grid = document.getElementById('browse-grid');
-  const icons = {
-      Business:'<i class="fa-solid fa-briefcase"></i>',
-      Marketing:'<i class="fa-solid fa-bullhorn"></i>',
-      Technology:'<i class="fa-solid fa-laptop-code"></i>',
-      Finance:'<i class="fa-solid fa-chart-line"></i>',
-      'Career Development':'<i class="fa-solid fa-rocket"></i>',
-      Leadership:'<i class="fa-solid fa-users-line"></i>'
-    };
-  const ownedIds = (user.purchasedCourses||[]).map(c=>c.courseId?._id||c.courseId).filter(Boolean).map(String);
-  if (!courses.length) { grid.innerHTML = '<div style="color:var(--muted);padding:20px">No courses found.</div>'; return; }
-  grid.innerHTML = courses.map(c => {
-    const icon = icons[c.category] || '📄';
-    const owned = ownedIds.includes(String(c._id));
-    return `<div class="course-card">
-      <div class="course-thumb">${icon}${owned?'<span class="badge badge-owned">✅ Owned</span>':'<span class="badge badge-new">NEW</span>'}</div>
-      <div class="course-body">
-        <div class="course-title">${c.title}</div>
-        <div class="course-cat">${c.category}</div>
-        <div class="course-price">KES ${c.price?.toLocaleString()}</div>
-        ${owned
-          ? `<button class="btn-read" onclick="openViewer('${c._id}','${c.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-play"></i> Read Now</button>`
-          : `<button class="btn-buy" onclick="openCoursePay('${c._id}',${c.price},'${c.title.replace(/'/g,"\\'")}')"><i class="fa-solid fa-cart-shopping"></i> Buy — KES ${c.price}</button>`
-        }
+function openSubmitAssignment(courseId, title) {
+  showPage('assignments');
+  setTimeout(() => {
+    const el = document.getElementById('file-' + courseId);
+    if (el) el.click();
+  }, 300);
+}
+
+// ── CERTIFICATES ──
+function renderCertificates() {
+  const el = document.getElementById('certificates-list');
+  if (!user) return;
+  const completed = (user.purchasedCourses || []).filter(c => c.completed);
+  if (!completed.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🏆</div><p>Complete a course to earn your certificate</p><p style="font-size:0.8rem">Read the full course → submit assignment → get approved</p></div>`;
+    return;
+  }
+  el.innerHTML = completed.map(pc => {
+    const cid = String(pc.courseId?._id || pc.courseId);
+    const course = allCourses.find(c => String(c._id) === cid);
+    const title = course?.title || 'Course';
+    return `<div class="my-course-card">
+      <div class="my-course-icon">🏆</div>
+      <div class="my-course-info">
+        <div class="my-course-title">${title}</div>
+        <div class="my-course-cat">Completed ${pc.completedAt ? new Date(pc.completedAt).toLocaleDateString() : ''}</div>
+        <div class="my-course-actions" style="margin-top:10px">
+          <button class="btn-sm btn-success" onclick="downloadCertificate('${cid}','${title.replace(/'/g,"\\'")}')">🏆 Download Certificate</button>
+        </div>
       </div>
     </div>`;
   }).join('');
+}
+
+function downloadCertificate(courseId, title) {
+  const name = user?.name || 'Student';
+  const date = new Date().toLocaleDateString('en-KE', { year:'numeric', month:'long', day:'numeric' });
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Certificate</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Georgia',serif;background:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px}
+    .cert{width:800px;border:8px solid #7c3aed;border-radius:16px;padding:60px;text-align:center;background:linear-gradient(135deg,#faf5ff 0%,#fff 50%,#faf5ff 100%);position:relative}
+    .cert::before{content:'';position:absolute;inset:12px;border:2px solid #c4b5fd;border-radius:10px;pointer-events:none}
+    .logo{font-size:1.2rem;font-weight:800;color:#7c3aed;margin-bottom:30px;letter-spacing:0.1em}
+    h1{font-size:2.5rem;color:#4c1d95;margin-bottom:8px}
+    .sub{color:#6b7280;font-size:1rem;margin-bottom:30px}
+    .name{font-size:2rem;color:#1a1a2e;font-style:italic;border-bottom:2px solid #7c3aed;display:inline-block;padding-bottom:8px;margin-bottom:20px}
+    .course{font-size:1.1rem;color:#4c1d95;font-weight:bold;margin-bottom:30px}
+    .date{color:#6b7280;font-size:0.9rem;margin-bottom:40px}
+    .sig{border-top:1px solid #e5e7eb;padding-top:16px;font-size:0.85rem;color:#6b7280}
+    @media print{body{padding:0}.cert{border-radius:0;width:100%}}
+  </style></head>
+  <body><div class="cert">
+    <div class="logo">ZENITH ZOOM</div>
+    <h1>Certificate of Completion</h1>
+    <div class="sub">This is to certify that</div>
+    <div class="name">${name}</div>
+    <div class="sub">has successfully completed the course</div>
+    <div class="course">${title}</div>
+    <div class="date">Issued on ${date}</div>
+    <div class="sig">ZenithZoom — Empowering Growth, Transforming Lives<br><small>Verified Certificate</small></div>
+  </div>
+  <script>setTimeout(()=>window.print(),600)<\/script>
+  </body></html>`);
+  w.document.close();
+}
+
+// ── PDF VIEWER ──
+function openViewer(courseId, title) {
+  viewerCourseId = courseId;
+  document.getElementById('viewer-title').textContent = title;
+  const owned = (user?.purchasedCourses || []).find(c => String(c.courseId?._id || c.courseId) === courseId);
+  const pct = owned?.progress || 0;
+  document.getElementById('viewer-pct').textContent = pct + '%';
+  document.getElementById('viewer-bar-fill').style.width = pct + '%';
+  document.getElementById('viewer-iframe').src = `/api/auth/view/${courseId}`;
+  document.getElementById('viewer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Track time — 10 min = 100%
+  let seconds = 0;
+  const target = 600;
+  viewerTimer = setInterval(async () => {
+    seconds++;
+    const newPct = Math.min(100, Math.round((seconds / target) * 100));
+    document.getElementById('viewer-pct').textContent = newPct + '%';
+    document.getElementById('viewer-bar-fill').style.width = newPct + '%';
+    if (seconds % 30 === 0) {
+      try {
+        await fetch('/api/auth/progress', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ courseId, progress: newPct }) });
+        if (user) {
+          const pc = (user.purchasedCourses || []).find(c => String(c.courseId?._id || c.courseId) === courseId);
+          if (pc) pc.progress = newPct;
+          updateStats();
+          renderMyCourses();
+          if (newPct >= 100 && !pc?.completed) {
+            await fetch('/api/auth/progress', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ courseId, progress: 100, completed: true }) });
+            if (pc) { pc.progress = 100; pc.completed = true; }
+            updateStats(); renderMyCourses();
+            toast('🎉 Course completed! Submit assignment to get certified.', 'success');
+          }
+        }
+      } catch(e) {}
+    }
+  }, 1000);
+}
+
+function closeViewer() {
+  clearInterval(viewerTimer);
+  document.getElementById('viewer-overlay').classList.remove('open');
+  document.getElementById('viewer-iframe').src = '';
+  document.body.style.overflow = '';
+  viewerCourseId = null;
+  // Refresh user data
+  fetch('/api/auth/me').then(r=>r.json()).then(d=>{ if(d.success){user=d.user;updateStats();renderMyCourses();renderBrowseGrid(allCourses);} });
 }
 
 // ── PAYMENT ──
-function openCoursePay(id, price, title) {
-  payType = 'course'; payResourceId = id;
-  document.getElementById('modal-price').textContent = 'KES ' + price.toLocaleString();
-  document.getElementById('modal-course-name').textContent = title;
-  document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Pay via M-Pesa';
-  const step4 = document.querySelectorAll('.step')[3];
-  if (step4) step4.querySelector('span').textContent = ' Course unlocks in your dashboard';
-  // Pre-fill phone from user profile
-  const phone = user.phone || '';
-  document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
+function openPayModal(resourceId, title, price) {
+  payType = 'course'; payResourceId = resourceId; payResourceTitle = title;
+  document.getElementById('modal-amount').textContent = 'KES ' + Number(price).toLocaleString();
+  document.getElementById('modal-course').textContent = title;
+  document.getElementById('step4-text').textContent = 'Course unlocks in your dashboard';
+  document.getElementById('pay-phone').value = (user?.phone || '').replace(/^254/, '0');
   resetPayStatus();
-  document.getElementById('pay-modal').classList.add('open');
+  document.getElementById('pay-overlay').classList.add('open');
 }
 
 function openCVPay() {
   const name = document.getElementById('cv-name').value.trim();
-  if (!name) { showToast('Please fill in your name first', 'error'); return; }
+  if (!name) { toast('Please enter your name first', 'error'); return; }
   payType = 'cv'; payResourceId = null;
-  document.getElementById('modal-price').textContent = 'KES 100';
-  document.getElementById('modal-course-name').textContent = 'CV Download';
-  document.getElementById('pay-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Pay & Download CV';
-  const step4cv = document.querySelectorAll('.step')[3];
-  if (step4cv) step4cv.querySelector('span').textContent = ' CV download link appears below';
-  const phone = user.phone || document.getElementById('cv-phone-cv').value || '';
-  document.getElementById('pay-phone').value = phone.replace(/^254/,'0');
+  document.getElementById('modal-amount').textContent = 'KES 100';
+  document.getElementById('modal-course').textContent = 'Professional CV — ' + name;
+  document.getElementById('step4-text').textContent = 'CV download link appears below';
+  document.getElementById('pay-phone').value = (user?.phone || document.getElementById('cv-phone').value || '').replace(/^254/, '0');
   resetPayStatus();
-  document.getElementById('pay-modal').classList.add('open');
+  document.getElementById('pay-overlay').classList.add('open');
 }
 
 function closePayModal() {
-  document.getElementById('pay-modal').classList.remove('open');
-  document.getElementById('sync-btn-wrap').style.display = 'none';
   if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  document.getElementById('pay-overlay').classList.remove('open');
+  document.getElementById('sync-wrap').style.display = 'none';
   resetPayStatus();
 }
 
 function resetPayStatus() {
   const s = document.getElementById('pay-status');
   s.className = 'pay-status'; s.textContent = '';
-  const btn = document.getElementById('pay-btn');
+  const btn = document.getElementById('btn-pay');
   btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-mobile-screen-button"></i> Pay via M-Pesa';
 }
 
 function setStatus(msg, type) {
   const s = document.getElementById('pay-status');
-  s.textContent = msg; s.className = 'pay-status show ' + type;
+  s.className = 'pay-status ' + type;
+  s.textContent = msg;
 }
 
 async function submitPayment() {
   const phone = document.getElementById('pay-phone').value.trim();
-  if (!phone) { setStatus('Enter your M-Pesa number', 'error'); return; }
-  const btn = document.getElementById('pay-btn');
-  btn.disabled = true; btn.innerHTML = '⏳ Sending prompt...';
-  setStatus('Sending M-Pesa prompt to your phone...', 'pending');
+  if (!phone) { toast('Enter your M-Pesa number', 'error'); return; }
+  const btn = document.getElementById('btn-pay');
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending prompt...';
+  setStatus('⏳ Sending STK push to your phone...', 'pending');
   try {
+    const endpoint = payType === 'course' ? '/api/mpesa/pay-resource' : '/api/mpesa/pay-cv';
     const body = payType === 'course'
       ? { phone, resourceId: payResourceId }
-      : { phone, type: 'cv', cvData: getCVData() };
-    const endpoint = payType === 'course' ? '/api/mpesa/pay-resource' : '/api/mpesa/pay-cv';
-    const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
-    const data = await res.json();
-    if (!data.success) { setStatus('❌ ' + data.message, 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; return; }
-    const checkoutId = data.checkoutRequestId;
-
-    if (!data.hasTrackingId) {
-      setStatus('📱 STK sent! Enter your PIN. Auto-detection unavailable — click "Sync Courses" after paying.', 'pending');
-      btn.disabled=false; btn.innerHTML='↺ Try Again';
-      document.getElementById('sync-btn-wrap').style.display = 'block';
-      return;
+      : { phone, cvData: collectCVData() };
+    const r = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+    const d = await r.json();
+    if (!d.success) { setStatus('❌ ' + d.message, 'error'); btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-mobile-screen-button"></i> Pay via M-Pesa'; return; }
+    const checkoutId = d.checkoutRequestId;
+    if (!d.hasTrackingId) {
+      setStatus('📱 STK sent! Enter PIN. Use Sync if course doesn\'t appear.', 'pending');
+      document.getElementById('sync-wrap').style.display = 'block';
+      btn.disabled=false; btn.innerHTML='↺ Try Again'; return;
     }
-
     setStatus('📱 Check your phone and enter your M-Pesa PIN...', 'pending');
-    btn.innerHTML = '⏳ Waiting for payment...';
-    // Poll for status
+    btn.innerHTML = '⏳ Waiting...';
     let tries = 0;
     pollInterval = setInterval(async () => {
       tries++;
-      if (tries > 24) { clearInterval(pollInterval); setStatus('⏱ Timed out waiting. If you completed payment, click "Sync Courses" below.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; document.getElementById('sync-btn-wrap')?.style && (document.getElementById('sync-btn-wrap').style.display='block'); return; }
+      if (tries > 24) {
+        clearInterval(pollInterval);
+        setStatus('⏱ Timed out. If you paid, click Sync Courses below.', 'error');
+        document.getElementById('sync-wrap').style.display = 'block';
+        btn.disabled=false; btn.innerHTML='↺ Try Again';
+        return;
+      }
       try {
-        const pr = await fetch('/api/mpesa/status/' + checkoutId);
-        const pd = await pr.json();
-        if (pd.status === 'completed') {
+        const sr = await fetch('/api/mpesa/status/' + checkoutId);
+        const sd = await sr.json();
+        if (sd.status === 'completed') {
           clearInterval(pollInterval);
-          if (payType === 'course') {
-            setStatus('✅ Payment confirmed! Taking you to your courses...', 'success');
-            btn.style.display = 'none';
-            setTimeout(async () => {
-              const ur = await fetch('/api/auth/me');
-              const ud = await ur.json();
-              if (ud.success) { user = ud.user; updateStats(); await loadAssignments(); renderMyCourses(); renderBrowse(allCourses); }
-              closePayModal();
-              showPage('my-courses');
-              showToast('🎉 Course unlocked! Start reading now.', 'success');
-            }, 1500);
+          setStatus('✅ Payment successful!', 'success');
+          if (payType === 'cv' && sd.downloadUrl) {
+            window.open(sd.downloadUrl, '_blank');
           } else {
-            // CV payment — show download link
-            setStatus('✅ Payment confirmed! Your CV is ready.', 'success');
-            btn.style.display = 'none';
-            const dlWrap = document.getElementById('dl-wrap');
-            const dlLink = document.getElementById('dl-link');
-            if (dlWrap) dlWrap.style.display = 'block';
-            if (dlLink && pd.downloadToken) dlLink.href = '/api/mpesa/download/' + pd.downloadToken;
-            showToast('✅ CV ready to download!', 'success');
+            const ur = await fetch('/api/auth/me');
+            const ud = await ur.json();
+            if (ud.success) { user = ud.user; updateStats(); renderMyCourses(); renderBrowseGrid(allCourses); }
+            toast('🎉 Course unlocked!', 'success');
+            setTimeout(() => { closePayModal(); showPage('my-courses'); }, 1500);
           }
-        } else if (pd.status === 'failed') {
+        } else if (sd.status === 'failed') {
           clearInterval(pollInterval);
-          setStatus('❌ Payment failed. Please try again.', 'error');
+          setStatus('❌ Payment failed or cancelled.', 'error');
           btn.disabled=false; btn.innerHTML='↺ Try Again';
         }
-      } catch {}
+      } catch(e) {}
     }, 5000);
-  } catch { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.innerHTML='↺ Try Again'; }
+  } catch(e) { setStatus('❌ Network error. Please try again.', 'error'); btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-mobile-screen-button"></i> Pay via M-Pesa'; }
 }
 
 async function syncCourses() {
-  const syncBtn = document.querySelector('#sync-btn-wrap button');
-  if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⏳ Syncing...'; }
+  const btn = document.querySelector('#sync-wrap .btn-sync');
+  if (btn) { btn.disabled=true; btn.textContent='⏳ Syncing...'; }
   try {
-    const r = await fetch('/api/mpesa/sync-courses', { method: 'POST' });
+    const r = await fetch('/api/mpesa/sync-courses', { method:'POST' });
     const d = await r.json();
-    if (d.success) {
-      if (d.linked > 0) {
-        setStatus(`✅ ${d.linked} course(s) synced! Loading your courses...`, 'success');
-        setTimeout(async () => {
-          const ur = await fetch('/api/auth/me');
-          const ud = await ur.json();
-          if (ud.success) { user = ud.user; updateStats(); await loadAssignments(); renderMyCourses(); renderBrowse(allCourses); }
-          closePayModal();
-          showPage('my-courses');
-          showToast('🎉 Courses unlocked!', 'success');
-        }, 1200);
-      } else {
-        setStatus('ℹ️ ' + d.message + ' If your course is missing, contact support.', 'pending');
-      }
+    if (d.success && d.linked > 0) {
+      setStatus('✅ ' + d.linked + ' course(s) synced!', 'success');
+      const ur = await fetch('/api/auth/me');
+      const ud = await ur.json();
+      if (ud.success) { user = ud.user; updateStats(); renderMyCourses(); renderBrowseGrid(allCourses); }
+      setTimeout(() => { closePayModal(); showPage('my-courses'); }, 1500);
     } else {
-      setStatus('❌ Sync failed: ' + d.message, 'error');
+      setStatus('ℹ️ ' + (d.message || 'No new courses found.'), 'pending');
     }
-  } catch { setStatus('❌ Network error during sync.', 'error'); }
-  finally { if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '🔄 Sync Courses'; } }
+  } catch(e) { setStatus('❌ Sync failed', 'error'); }
+  finally { if (btn) { btn.disabled=false; btn.textContent='🔄 Sync Courses'; } }
 }
 
-// ── PDF VIEWER ──
-let readingTimer = null;
-let readingSeconds = 0;
-let activeReadingCourseId = null;
-const READING_INTERVAL = 15;
-const SECONDS_FOR_100 = 600; // 10 min = 100%
-
-async function openViewer(courseId, title) {
-  document.getElementById('viewer-title').textContent = title;
-  document.getElementById('viewer-iframe').src = '';
-  document.getElementById('viewer-overlay').classList.add('open');
-  activeReadingCourseId = courseId;
-  const timerEl = document.getElementById('viewer-timer');
-  if (timerEl) timerEl.style.display = 'flex';
-  try {
-    const res = await fetch('/api/auth/view/' + courseId);
-    const data = await res.json();
-    if (!data.success) { showToast('Could not load course. Try again.', 'error'); closeViewer(); return; }
-    document.getElementById('viewer-iframe').src = data.url;
-    const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
-    readingSeconds = Math.round(((c?.progress||0)/100)*SECONDS_FOR_100);
-    startReadingTimer(courseId);
-  } catch { showToast('Failed to load course', 'error'); closeViewer(); }
-}
-
-function startReadingTimer(courseId) {
-  clearInterval(readingTimer);
-  readingTimer = setInterval(async () => {
-    readingSeconds++;
-    const newProgress = Math.min(100, Math.round((readingSeconds/SECONDS_FOR_100)*100));
-    const mins = Math.floor(readingSeconds/60);
-    const secs = readingSeconds%60;
-    const timerText = document.getElementById('viewer-timer-text');
-    if (timerText) timerText.textContent = `${mins}:${secs.toString().padStart(2,'0')} read`;
-    const viewerBar = document.getElementById('viewer-progress-bar');
-    if (viewerBar) viewerBar.style.width = newProgress+'%';
-    const viewerPct = document.getElementById('viewer-progress-pct');
-    if (viewerPct) viewerPct.textContent = newProgress+'%';
-    if (readingSeconds % READING_INTERVAL === 0) await updateProgress(courseId, newProgress);
-  }, 1000);
-}
-
-function closeViewer() {
-  if (activeReadingCourseId && readingSeconds > 0) {
-    const finalProgress = Math.min(100, Math.round((readingSeconds/SECONDS_FOR_100)*100));
-    updateProgress(activeReadingCourseId, finalProgress);
-  }
-  clearInterval(readingTimer);
-  readingTimer = null;
-  activeReadingCourseId = null;
-  document.getElementById('viewer-overlay').classList.remove('open');
-  document.getElementById('viewer-iframe').src = '';
-}
-
-async function updateProgress(courseId, progress) {
-  try {
-    await fetch('/api/auth/progress', { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({courseId, progress}) });
-    const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
-    if (c) { c.progress = Math.max(c.progress||0, progress); updateStats(); renderMyCourses(); }
-  } catch {}
-}
-
-// ── CV BUILDER ──
-function updatePreview() {
-  document.getElementById('cvp-name').textContent = document.getElementById('cv-name').value || 'Your Name';
-  document.getElementById('cvp-role').textContent = document.getElementById('cv-role').value || 'Job Title';
-  document.getElementById('cvp-contact').textContent =
-    (document.getElementById('cv-email').value || 'email@example.com') + ' • ' +
-    (document.getElementById('cv-phone-cv').value || '0712 345 678');
-  document.getElementById('cvp-summary').textContent = document.getElementById('cv-summary').value || 'Your summary will appear here...';
-  document.getElementById('cvp-exp').textContent = document.getElementById('cv-exp').value || 'Your experience...';
-  document.getElementById('cvp-edu').textContent = document.getElementById('cv-edu').value || 'Your education...';
-  document.getElementById('cvp-skills-preview').textContent = document.getElementById('cv-skills').value || 'Your skills...';
-}
-
-function getCVData() {
+function collectCVData() {
   return {
     name: document.getElementById('cv-name').value,
-    role: document.getElementById('cv-role').value,
+    title: document.getElementById('cv-title').value,
     email: document.getElementById('cv-email').value,
-    phone: document.getElementById('cv-phone-cv').value,
+    phone: document.getElementById('cv-phone').value,
+    location: document.getElementById('cv-location').value,
+    linkedin: document.getElementById('cv-linkedin').value,
     summary: document.getElementById('cv-summary').value,
-    experience: document.getElementById('cv-exp').value,
-    education: document.getElementById('cv-edu').value,
+    experience: document.getElementById('cv-experience').value,
+    education: document.getElementById('cv-education').value,
     skills: document.getElementById('cv-skills').value
   };
 }
 
-// ── UTILS ──
+// ── SIGN OUT ──
 async function signOut() {
   await fetch('/api/auth/logout', { method:'POST' });
-  window.location = '/';
+  window.location = '/login';
 }
 
-function showToast(msg, type='success') {
+// ── TOAST ──
+function toast(msg, type = 'info') {
   const t = document.createElement('div');
-  t.className = 'toast ' + type; t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3500);
 }
 
-// Close modals on backdrop click
-document.getElementById('pay-modal').addEventListener('click', e => { if(e.target===e.currentTarget) closePayModal(); });
-
-
-// ── CERTIFICATES ──
-function renderCertificatesPage() {
-  const grid = document.getElementById('cert-grid');
-  const completed = (user.purchasedCourses||[]).filter(c => c.completed);
-  if (!completed.length) {
-    grid.innerHTML = '<div style="color:var(--muted);padding:20px;font-size:0.9rem"><i class="fa-solid fa-medal" style="font-size:2rem;color:#DADCE0;display:block;margin-bottom:10px"></i>Complete a course to earn your first certificate.</div>';
-    return;
-  }
-  const icons = {Business:'💼',Marketing:'📢',Technology:'💻',Finance:'📈','Career Development':'🚀',Leadership:'👥'};
-  grid.innerHTML = completed.map(c => {
-    const course = c.courseId;
-    if (!course) return '';
-    const icon = icons[course.category] || '📄';
-    const date = c.completedAt ? new Date(c.completedAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : 'Completed';
-    return `<div class="course-card">
-      <div class="course-thumb" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);color:#D97706;font-size:2.4rem">${icon}
-        <span class="badge badge-owned" style="background:#FEF3C7;color:#D97706;border-color:rgba(217,119,6,0.3)">🏆 Certified</span>
-      </div>
-      <div class="course-body">
-        <div class="course-title">${course.title}</div>
-        <div class="course-cat">${course.category}</div>
-        <div style="font-size:0.75rem;color:var(--muted);margin:6px 0 10px"><i class="fa-regular fa-calendar"></i> ${date}</div>
-        <button class="btn-cert" onclick="showCertificate('${course._id}','${course.title.replace(/'/g,"\'")}')">
-          <i class="fa-solid fa-medal"></i> View & Download Certificate
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function markComplete(courseId, title) {
-  const c = (user.purchasedCourses||[]).find(x=>(x.courseId?._id||x.courseId)===courseId||String(x.courseId?._id||x.courseId)===String(courseId));
-  if (!c) return;
-  if ((c.progress||0) < 80) { showToast(`Read at least 80% of the course to complete it. You're at ${c.progress||0}% — keep reading!`, 'error'); return; }
-  if (!confirm(`Mark "${title}" as completed and earn your certificate?`)) return;
-  try {
-    await fetch('/api/auth/progress', {
-      method:'PATCH', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ courseId, progress: 100, completed: true })
-    });
-    c.progress = 100; c.completed = true; c.completedAt = new Date().toISOString();
-    updateStats(); renderMyCourses();
-    showToast('🎉 Course completed! Your certificate is ready.', 'success');
-    setTimeout(() => showCertificate(courseId, title), 800);
-  } catch { showToast('Could not save completion. Try again.', 'error'); }
-}
-
-let currentCertData = null;
-
-function showCertificate(courseId, title) {
-  const c = (user.purchasedCourses||[]).find(x=>String(x.courseId?._id||x.courseId)===String(courseId));
-  const date = (c && c.completedAt) ? new Date(c.completedAt) : new Date();
-  const dateStr = date.toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'});
-  const name = user.name || user.email?.split('@')[0] || 'Graduate';
-  currentCertData = { courseId, title, name, dateStr };
-  drawCertificate(title, name, dateStr);
-  document.getElementById('cert-modal-overlay').classList.add('open');
-}
-
-function closeCertModal() {
-  document.getElementById('cert-modal-overlay').classList.remove('open');
-}
-
-function drawCertificate(courseTitle, recipientName, dateStr) {
-  const canvas = document.getElementById('cert-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = 800, H = 566;
-  canvas.width = W; canvas.height = H;
-
-  // Background — cream white
-  ctx.fillStyle = '#FFFDF5';
-  ctx.fillRect(0, 0, W, H);
-
-  // Outer border
-  ctx.strokeStyle = '#D97706';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(14, 14, W-28, H-28);
-
-  // Inner border
-  ctx.strokeStyle = '#FDE68A';
-  ctx.lineWidth = 3;
-  ctx.strokeRect(26, 26, W-52, H-52);
-
-  // Corner ornaments
-  const corners = [[36,36],[W-36,36],[36,H-36],[W-36,H-36]];
-  corners.forEach(([x,y]) => {
-    ctx.fillStyle = '#D97706';
-    ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fill();
-  });
-
-  // Top decorative band
-  const grad = ctx.createLinearGradient(0, 36, W, 36);
-  grad.addColorStop(0, 'rgba(217,119,6,0)');
-  grad.addColorStop(0.5, 'rgba(217,119,6,0.12)');
-  grad.addColorStop(1, 'rgba(217,119,6,0)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(28, 28, W-56, 80);
-
-  // Logo area — ZenithZoom wordmark
-  ctx.textAlign = 'center';
-  ctx.fillStyle = '#202124';
-  ctx.font = 'bold 18px Google Sans, sans-serif';
-  ctx.fillText('ZENITH', W/2 - 34, 80);
-  ctx.fillStyle = '#1A73E8';
-  ctx.fillText('ZOOM', W/2 + 30, 80);
-
-  // Thin separator line
-  ctx.strokeStyle = '#FDE68A';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(80, 96); ctx.lineTo(W-80, 96); ctx.stroke();
-
-  // "CERTIFICATE OF COMPLETION" heading
-  ctx.fillStyle = '#D97706';
-  ctx.font = 'bold 13px Google Sans, sans-serif';
-  ctx.letterSpacing = '4px';
-  ctx.fillText('CERTIFICATE OF COMPLETION', W/2, 126);
-
-  // "This is to certify that"
-  ctx.fillStyle = '#5F6368';
-  ctx.font = '14px Georgia, serif';
-  ctx.fillText('This is to certify that', W/2, 165);
-
-  // Recipient name
-  ctx.fillStyle = '#202124';
-  ctx.font = 'italic bold 40px Georgia, serif';
-  ctx.fillText(recipientName, W/2, 222);
-
-  // Underline name
-  const nameW = ctx.measureText(recipientName).width;
-  ctx.strokeStyle = '#D97706';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(W/2 - nameW/2, 230);
-  ctx.lineTo(W/2 + nameW/2, 230);
-  ctx.stroke();
-
-  // "has successfully completed"
-  ctx.fillStyle = '#5F6368';
-  ctx.font = '14px Georgia, serif';
-  ctx.fillText('has successfully completed the course', W/2, 265);
-
-  // Course title
-  ctx.fillStyle = '#1A73E8';
-  ctx.font = 'bold 22px Google Sans, sans-serif';
-  // Wrap long titles
-  const maxW = W - 160;
-  const words = courseTitle.split(' ');
-  let line = ''; const lines = [];
-  words.forEach(w => {
-    const test = line ? line + ' ' + w : w;
-    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
-    else line = test;
-  });
-  if (line) lines.push(line);
-  lines.forEach((l, i) => ctx.fillText(l, W/2, 305 + i*32));
-
-  const afterTitle = 305 + (lines.length-1)*32;
-
-  // Date & signature area
-  const sigY = afterTitle + 80;
-  ctx.strokeStyle = '#DADCE0'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(120, sigY); ctx.lineTo(320, sigY); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(480, sigY); ctx.lineTo(680, sigY); ctx.stroke();
-
-  ctx.fillStyle = '#5F6368'; ctx.font = '12px Google Sans, sans-serif';
-  ctx.fillText(dateStr, 220, sigY + 18);
-  ctx.fillText('Zenith Zoom Academy', 580, sigY + 18);
-  ctx.fillStyle = '#9AA0A6'; ctx.font = '10px Google Sans, sans-serif';
-  ctx.fillText('Date of Completion', 220, sigY + 32);
-  ctx.fillText('Authorised Signatory', 580, sigY + 32);
-
-  // Medal emoji area
-  ctx.font = '28px serif';
-  ctx.fillText('🏆', W/2, afterTitle + 48);
-
-  // Bottom seal
-  ctx.fillStyle = '#1A73E8';
-  ctx.beginPath(); ctx.arc(W/2, H-52, 22, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#fff'; ctx.font = 'bold 10px Google Sans, sans-serif';
-  ctx.fillText('VERIFIED', W/2, H-55);
-  ctx.font = '8px Google Sans, sans-serif';
-  ctx.fillText('ZENITH ZOOM', W/2, H-44);
-}
-
-function downloadCertPDF() {
-  if (!currentCertData) return;
-  const canvas = document.getElementById('cert-canvas');
-  const dataUrl = canvas.toDataURL('image/png', 1.0);
-  // Open in new tab for print-to-PDF
-  const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head>
-    <title>Certificate — ${currentCertData.title}</title>
-    <style>
-      * { margin:0; padding:0; box-sizing:border-box; }
-      body { background:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; }
-      img { max-width:100%; height:auto; display:block; }
-      @media print {
-        body { margin:0; }
-        img { width:100%; height:auto; page-break-inside:avoid; }
-        .no-print { display:none; }
-      }
-    </style>
-  </head><body>
-    <img src="${dataUrl}" alt="Certificate"/>
-    <div class="no-print" style="position:fixed;bottom:20px;right:20px">
-      <button onclick="window.print()" style="background:#1A73E8;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;cursor:pointer">🖨️ Print / Save as PDF</button>
-    </div>
-    <script>setTimeout(()=>window.print(),600)<\/script>
-  
-<!-- ASSIGNMENT SUBMISSION MODAL -->
-<div class="assignment-modal-overlay" id="assignment-modal">
-  <div class="assignment-modal">
-    <div class="assignment-modal-header">
-      <div>
-        <div class="assignment-modal-title">📝 Submit Assignment</div>
-        <div style="font-size:0.78rem;color:#6b7280;margin-top:2px" id="asgn-course-name"></div>
-      </div>
-      <button class="assignment-modal-close" onclick="closeAssignmentModal()">✕</button>
-    </div>
-    <div class="assignment-modal-body">
-      <p style="font-size:0.85rem;color:#6b7280;margin-bottom:14px;line-height:1.5">
-        Upload your completed assignment. Your tutor will review it and award your certificate once approved.
-      </p>
-
-      <div class="file-drop-zone" id="asgn-drop-zone"
-        onclick="document.getElementById('asgn-file-input').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="handleAsgnDrop(event)">
-        <svg viewBox="0 0 24 24" fill="currentColor" id="asgn-drop-icon"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
-        <div style="font-size:0.88rem;color:#6b7280;font-weight:500" id="asgn-drop-text">Click to browse or drag & drop</div>
-        <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px">PDF or DOCX · Max 20MB</div>
-        <div style="font-size:0.8rem;color:#10b981;font-weight:600;margin-top:6px;display:none" id="asgn-file-name"></div>
-      </div>
-      <input type="file" id="asgn-file-input" accept=".pdf,.doc,.docx" style="display:none" onchange="onAsgnFileSelect(this)">
-
-      <textarea class="assignment-note" id="asgn-note" placeholder="Optional: Add a note to your tutor (e.g. questions, context about your submission)"></textarea>
-
-      <div id="asgn-submit-error" style="display:none;background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:0.83rem;margin-top:10px"></div>
-
-      <button class="btn-submit-final" id="asgn-submit-btn" onclick="submitAssignment()">
-        <span id="asgn-btn-text">Submit Assignment</span>
-        <div class="spinner" id="asgn-spinner" style="display:none;border-color:rgba(255,255,255,0.3);border-top-color:white"></div>
-      </button>
-    </div>
-  </div>
-</div>
-
-</body></html>`);
-  win.document.close();
-}
-
-function downloadCertImage() {
-  if (!currentCertData) return;
-  const canvas = document.getElementById('cert-canvas');
-  const link = document.createElement('a');
-  link.download = 'ZenithZoom_Certificate_' + currentCertData.title.replace(/[^a-z0-9]/gi,'_') + '.png';
-  link.href = canvas.toDataURL('image/png', 1.0);
-  link.click();
-}
-
-
-// ── ASSIGNMENTS ──────────────────────────────────────────────────────────────
-let userAssignments = [];
-let currentAsgnCourseId = null;
-let currentAsgnFile = null;
-
-async function loadAssignments() {
-  try {
-    const res = await fetch('/api/assignments/my');
-    const data = await res.json();
-    if (data.success) {
-      userAssignments = data.assignments || [];
-    }
-  } catch {}
-}
-
-function renderAssignmentStatus(courseId) {
-  const asgn = userAssignments.find(a => {
-    const cid = a.courseId?._id || a.courseId;
-    return String(cid) === String(courseId);
-  });
-  const course = (user.purchasedCourses||[]).find(c => String(c.courseId?._id||c.courseId) === String(courseId));
-
-  // Already certified — no need to show assignment
-  if (course?.completed) return '';
-
-  if (!asgn) {
-    return `<button class="btn-submit-assignment" onclick="openAssignmentModal('${courseId}')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
-      Submit Assignment for Certificate
-    </button>`;
-  }
-
-  const statusMap = { pending:'⏳ Under Review', approved:'✅ Approved', rejected:'❌ Needs Revision' };
-  const statusClass = { pending:'pending', approved:'approved', rejected:'rejected' };
-  let html = `<div class="assignment-status ${statusClass[asgn.status]}">${statusMap[asgn.status]}</div>`;
-
-  if (asgn.status === 'rejected') {
-    if (asgn.tutorNote) {
-      html += `<div class="tutor-note-box rejected"><strong>Tutor feedback:</strong> ${asgn.tutorNote}</div>`;
-    }
-    html += `<button class="btn-submit-assignment btn-resubmit" onclick="openAssignmentModal('${courseId}')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-      Re-submit Assignment
-    </button>`;
-  } else if (asgn.status === 'pending') {
-    if (asgn.tutorNote) {
-      html += `<div class="tutor-note-box"><strong>Tutor note:</strong> ${asgn.tutorNote}</div>`;
-    }
-    html += `<div style="font-size:0.75rem;color:#6b7280;margin-top:6px">Submitted: ${new Date(asgn.submittedAt).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'})}</div>`;
-  }
-
-  return html;
-}
-
-function openAssignmentModal(courseId) {
-  currentAsgnCourseId = courseId;
-  currentAsgnFile = null;
-  // Reset modal
-  document.getElementById('asgn-drop-zone').className = 'file-drop-zone';
-  document.getElementById('asgn-drop-text').textContent = 'Click to browse or drag & drop';
-  document.getElementById('asgn-file-name').style.display = 'none';
-  document.getElementById('asgn-file-input').value = '';
-  document.getElementById('asgn-note').value = '';
-  document.getElementById('asgn-submit-error').style.display = 'none';
-  document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
-  document.getElementById('asgn-spinner').style.display = 'none';
-  document.getElementById('asgn-submit-btn').disabled = false;
-  // Set course name
-  const course = (user.purchasedCourses||[]).find(c => String(c.courseId?._id||c.courseId) === String(courseId));
-  document.getElementById('asgn-course-name').textContent = course?.courseId?.title || '';
-  document.getElementById('assignment-modal').classList.add('open');
-}
-
-function closeAssignmentModal() {
-  document.getElementById('assignment-modal').classList.remove('open');
-  currentAsgnCourseId = null;
-  currentAsgnFile = null;
-}
-
-function onAsgnFileSelect(input) {
-  if (input.files[0]) setAsgnFile(input.files[0]);
-}
-
-function handleAsgnDrop(e) {
-  e.preventDefault();
-  document.getElementById('asgn-drop-zone').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file) setAsgnFile(file);
-}
-
-function setAsgnFile(file) {
-  const allowed = ['application/pdf',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/msword'];
-  if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|docx|doc)$/i)) {
-    document.getElementById('asgn-submit-error').textContent = 'Only PDF or DOCX files are allowed.';
-    document.getElementById('asgn-submit-error').style.display = 'block';
-    return;
-  }
-  if (file.size > 20 * 1024 * 1024) {
-    document.getElementById('asgn-submit-error').textContent = 'File must be under 20MB.';
-    document.getElementById('asgn-submit-error').style.display = 'block';
-    return;
-  }
-  currentAsgnFile = file;
-  document.getElementById('asgn-submit-error').style.display = 'none';
-  const zone = document.getElementById('asgn-drop-zone');
-  zone.className = 'file-drop-zone has-file';
-  document.getElementById('asgn-drop-text').textContent = '✓ File selected';
-  const nameEl = document.getElementById('asgn-file-name');
-  nameEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
-  nameEl.style.display = 'block';
-}
-
-async function submitAssignment() {
-  if (!currentAsgnFile) {
-    document.getElementById('asgn-submit-error').textContent = 'Please select a file to submit.';
-    document.getElementById('asgn-submit-error').style.display = 'block';
-    return;
-  }
-  const btn = document.getElementById('asgn-submit-btn');
-  btn.disabled = true;
-  document.getElementById('asgn-btn-text').textContent = 'Submitting...';
-  document.getElementById('asgn-spinner').style.display = 'block';
-  document.getElementById('asgn-submit-error').style.display = 'none';
-
-  try {
-    const fd = new FormData();
-    fd.append('assignment', currentAsgnFile);
-    fd.append('courseId', currentAsgnCourseId);
-    fd.append('note', document.getElementById('asgn-note').value);
-
-    const res = await fetch('/api/assignments/submit', { method: 'POST', body: fd });
-    const data = await res.json();
-
-    if (data.success) {
-      closeAssignmentModal();
-      showToast('📝 Assignment submitted! Your tutor will review it soon.', 'success');
-      await loadAssignments();
-    } else {
-      document.getElementById('asgn-submit-error').textContent = data.message || 'Submission failed.';
-      document.getElementById('asgn-submit-error').style.display = 'block';
-      btn.disabled = false;
-      document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
-      document.getElementById('asgn-spinner').style.display = 'none';
-    }
-  } catch {
-    document.getElementById('asgn-submit-error').textContent = 'Network error. Please try again.';
-    document.getElementById('asgn-submit-error').style.display = 'block';
-    btn.disabled = false;
-    document.getElementById('asgn-btn-text').textContent = 'Submit Assignment';
-    document.getElementById('asgn-spinner').style.display = 'none';
-  }
-}
-
-// Close modal on overlay click
-document.getElementById('assignment-modal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeAssignmentModal();
+// Close modal on outside click
+document.getElementById('pay-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closePayModal();
 });
-
-init();
-
-// Guaranteed fallback — if init() crashes before calling loadAllCourses,
-// this ensures courses still load after 1 second
-setTimeout(() => {
-  const grid = document.getElementById('browse-grid');
-  if (grid && grid.querySelector('.fa-spin, [style*="Loading"]') || (grid && grid.innerText.includes('Loading'))) {
-    console.log('[ZZ] Fallback: calling loadAllCourses()');
-    loadAllCourses();
-  }
-}, 1000);
 </script>
-
-
-<!-- ASSIGNMENT SUBMISSION MODAL -->
-<div class="assignment-modal-overlay" id="assignment-modal">
-  <div class="assignment-modal">
-    <div class="assignment-modal-header">
-      <div>
-        <div class="assignment-modal-title">📝 Submit Assignment</div>
-        <div style="font-size:0.78rem;color:#6b7280;margin-top:2px" id="asgn-course-name"></div>
-      </div>
-      <button class="assignment-modal-close" onclick="closeAssignmentModal()">✕</button>
-    </div>
-    <div class="assignment-modal-body">
-      <p style="font-size:0.85rem;color:#6b7280;margin-bottom:14px;line-height:1.5">
-        Upload your completed assignment. Your tutor will review it and award your certificate once approved.
-      </p>
-
-      <div class="file-drop-zone" id="asgn-drop-zone"
-        onclick="document.getElementById('asgn-file-input').click()"
-        ondragover="event.preventDefault();this.classList.add('drag')"
-        ondragleave="this.classList.remove('drag')"
-        ondrop="handleAsgnDrop(event)">
-        <svg viewBox="0 0 24 24" fill="currentColor" id="asgn-drop-icon"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h3v3h2v-3h3l-4-4-4 4z"/></svg>
-        <div style="font-size:0.88rem;color:#6b7280;font-weight:500" id="asgn-drop-text">Click to browse or drag & drop</div>
-        <div style="font-size:0.75rem;color:#9ca3af;margin-top:4px">PDF or DOCX · Max 20MB</div>
-        <div style="font-size:0.8rem;color:#10b981;font-weight:600;margin-top:6px;display:none" id="asgn-file-name"></div>
-      </div>
-      <input type="file" id="asgn-file-input" accept=".pdf,.doc,.docx" style="display:none" onchange="onAsgnFileSelect(this)">
-
-      <textarea class="assignment-note" id="asgn-note" placeholder="Optional: Add a note to your tutor (e.g. questions, context about your submission)"></textarea>
-
-      <div id="asgn-submit-error" style="display:none;background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:10px;font-size:0.83rem;margin-top:10px"></div>
-
-      <button class="btn-submit-final" id="asgn-submit-btn" onclick="submitAssignment()">
-        <span id="asgn-btn-text">Submit Assignment</span>
-        <div class="spinner" id="asgn-spinner" style="display:none;border-color:rgba(255,255,255,0.3);border-top-color:white"></div>
-      </button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
