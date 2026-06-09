@@ -40,9 +40,14 @@ function getUpload() {
 
 // GET all resources (public)
 router.get('/', async (req, res) => {
-  // Fail fast if DB not connected — avoids hanging requests
+  // Set a hard response timeout of 9 seconds
+  const timeout = setTimeout(() => {
+    if (!res.headersSent) res.status(503).json({ success: false, message: 'Request timed out — database is slow. Please retry.' });
+  }, 9000);
+
   const mongoose = require('mongoose');
   if (mongoose.connection.readyState !== 1) {
+    clearTimeout(timeout);
     return res.status(503).json({ success: false, message: 'Database not connected. Check MONGODB_URI env var on Hostinger.' });
   }
   try {
@@ -53,10 +58,12 @@ router.get('/', async (req, res) => {
       { title: new RegExp(search, 'i') },
       { description: new RegExp(search, 'i') }
     ];
-    const resources = await Resource.find(query).select('-filePath').sort('-createdAt').maxTimeMS(10000);
-    res.json({ success: true, resources });
+    const resources = await Resource.find(query).select('-filePath').sort('-createdAt').maxTimeMS(8000);
+    clearTimeout(timeout);
+    if (!res.headersSent) res.json({ success: true, resources });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error fetching resources: ' + err.message });
+    clearTimeout(timeout);
+    if (!res.headersSent) res.status(500).json({ success: false, message: 'Error fetching resources: ' + err.message });
   }
 });
 

@@ -495,7 +495,10 @@ function renderMyCourses() {
 async function loadAllCourses() {
   const grid = document.getElementById('browse-grid');
   try {
-    const res = await fetch('/api/resources');
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000); // 8s timeout
+    const res = await fetch('/api/resources', { signal: controller.signal });
+    clearTimeout(timer);
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
     allCourses = data.resources || [];
@@ -506,9 +509,9 @@ async function loadAllCourses() {
     }
   } catch(err) {
     console.error('[ZZ] loadAllCourses error:', err);
+    const msg = err.name === 'AbortError' ? 'Request timed out — server is slow. Please retry.' : (err.message || 'Network error');
     grid.innerHTML = `<div style="color:#f87171;padding:20px;background:rgba(239,68,68,0.08);border-radius:10px;text-align:center">
-      <div style="font-size:1.3rem;margin-bottom:6px">⚠️ Failed to load courses</div>
-      <div style="font-size:0.85rem;color:#888;margin-bottom:4px">${err.message}</div>
+      <div style="font-size:1.3rem;margin-bottom:6px">⚠️ ${msg}</div>
       <div style="font-size:0.75rem;color:#aaa;margin-bottom:12px">Check <a href="/api/health" target="_blank" style="color:var(--blue)">/api/health</a> for server status</div>
       <button onclick="loadAllCourses()" style="background:var(--blue);color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-size:0.82rem">↺ Retry</button>
     </div>`;
