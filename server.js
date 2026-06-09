@@ -49,11 +49,17 @@ app.use('/api/assignments', require('./routes/assignments'));
 
 
 // User pages
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'views/login.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'views/user-dashboard.html')));
+const noCache = (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+};
+app.get('/login', noCache, (req, res) => res.sendFile(path.join(__dirname, 'views/login.html')));
+app.get('/dashboard', noCache, (req, res) => res.sendFile(path.join(__dirname, 'views/user-dashboard.html')));
 
 // Fix courses grid - serves patched index.html
-app.get('/', (req, res) => {
+app.get('/', noCache, (req, res) => {
   const fs = require('fs');
   const path = require('path');
   let html = fs.readFileSync(path.join(__dirname, 'views/index.html'), 'utf8');
