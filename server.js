@@ -46,14 +46,22 @@ app.use((req, res, next) => {
 });
 
 // Passport
-const passport = require('passport');
-app.use(passport.initialize());
-app.use(passport.session());
+const passportInstance = require('passport');
+app.use(passportInstance.initialize());
+// Only run passport.session() for routes that need it (not public API)
+app.use((req, res, next) => {
+  const pub = ['/api/resources', '/api/jobs', '/api/health', '/api/ping'];
+  if (pub.some(p => req.path.startsWith(p))) return next();
+  passportInstance.session()(req, res, next);
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth').router);
 app.use('/api/mpesa', require('./routes/mpesa'));
-app.use('/api/resources', require('./routes/resources'));
+app.use('/api/resources', (req, res, next) => {
+  console.log('[resources] hit:', req.method, req.path, 'session:', !!req.session);
+  next();
+}, require('./routes/resources'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/admin', require('./routes/admin'));
 app.use('/api/user', require('./routes/user'));
