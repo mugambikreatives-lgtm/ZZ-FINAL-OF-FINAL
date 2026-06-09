@@ -20,18 +20,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
 app.set('trust proxy', 1);
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'zenithzoom-secret-2024',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom' }),
-  cookie: { 
-    secure: false,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax'
+// Skip session for public API routes (avoids session store blocking)
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/resources') || req.path.startsWith('/api/jobs') || req.path === '/api/health') {
+    return next();
   }
-}));
+  session({
+    secret: process.env.SESSION_SECRET || 'zenithzoom-secret-2024',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom',
+      mongoOptions: { serverSelectionTimeoutMS: 5000 },
+      touchAfter: 24 * 3600,
+      autoRemove: 'native',
+      ttl: 24 * 60 * 60
+    }),
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax'
+    }
+  })(req, res, next);
+});
 
 // Passport
 const passport = require('passport');
