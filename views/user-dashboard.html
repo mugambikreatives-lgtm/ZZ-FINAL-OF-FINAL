@@ -412,6 +412,52 @@ async function loadCourses() {
 
 const catEmoji = { Business:'💼', Technology:'💻', Marketing:'📣', Finance:'📈', Leadership:'👥', 'Career Development':'🚀' };
 
+const courseImages = {
+  // By title keywords (lowercase)
+  'photography':      'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=400&q=80&fit=crop',
+  'make-up':          'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
+  'makeup':           'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
+  'beauty':           'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&q=80&fit=crop',
+  'haircare':         'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80&fit=crop',
+  'hair':             'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&q=80&fit=crop',
+  'freelancing':      'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80&fit=crop',
+  'freelance':        'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=80&fit=crop',
+  'digital marketing':'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80&fit=crop',
+  'marketing':        'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80&fit=crop',
+  'data analysis':    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&fit=crop',
+  'data':             'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80&fit=crop',
+  'candle':           'https://images.unsplash.com/photo-1602874801006-67aca94dc83c?w=400&q=80&fit=crop',
+  'airbnb':           'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=80&fit=crop',
+  'affiliate':        'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80&fit=crop',
+  'finance':          'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop',
+  'accounting':       'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop',
+  'leadership':       'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80&fit=crop',
+  'business':         'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80&fit=crop',
+  'web':              'https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&q=80&fit=crop',
+  'technology':       'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&fit=crop',
+  'career':           'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80&fit=crop',
+  'cv':               'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&q=80&fit=crop',
+  'entrepreneurship': 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80&fit=crop',
+};
+
+// Category fallbacks
+const catImages = {
+  'Business':          'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80&fit=crop',
+  'Technology':        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80&fit=crop',
+  'Marketing':         'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&q=80&fit=crop',
+  'Finance':           'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80&fit=crop',
+  'Leadership':        'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&q=80&fit=crop',
+  'Career Development':'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80&fit=crop',
+};
+
+function getCourseImage(title, category) {
+  const t = (title || '').toLowerCase();
+  for (const [key, url] of Object.entries(courseImages)) {
+    if (t.includes(key)) return url;
+  }
+  return catImages[category] || 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&q=80&fit=crop';
+}
+
 function renderBrowseGrid(courses) {
   const grid = document.getElementById('browse-grid');
   if (!courses.length) {
@@ -423,8 +469,8 @@ function renderBrowseGrid(courses) {
     const isOwned = owned.includes(String(c._id));
     const pct = isOwned ? ((user.purchasedCourses.find(p => String(p.courseId?._id || p.courseId) === String(c._id))?.progress) || 0) : 0;
     return `<div class="course-card">
-      <div class="course-thumb">
-        ${catEmoji[c.category] || '📖'}
+      <div class="course-thumb" style="padding:0">
+        <img src="${getCourseImage(c.title, c.category)}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentNode.innerHTML+='${catEmoji[c.category]||'📖'}'">
         ${isOwned ? '<span class="course-owned-badge">✓ Owned</span>' : ''}
       </div>
       <div class="course-body">
@@ -469,7 +515,9 @@ function renderMyCourses() {
     const done = pc.completed;
     const cid = String(pc.courseId?._id || pc.courseId);
     return `<div class="my-course-card">
-      <div class="my-course-icon">${catEmoji[cat] || '📖'}</div>
+        <div class="my-course-icon" style="overflow:hidden;padding:0">
+          <img src="${getCourseImage(title, cat)}" alt="${title}" style="width:100%;height:100%;object-fit:cover" onerror="this.outerHTML='<span style=font-size:1.5rem>${catEmoji[cat]||'📖'}</span>'">
+        </div>
       <div class="my-course-info">
         <div class="my-course-title">${title}</div>
         <div class="my-course-cat">${cat}</div>
