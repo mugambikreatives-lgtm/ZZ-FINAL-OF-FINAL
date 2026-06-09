@@ -21,31 +21,28 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session
-app.set('trust proxy', 1);
-// Skip session for public API routes (avoids session store blocking)
+// Session store — created ONCE at startup
+const sessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom',
+  mongoOptions: { serverSelectionTimeoutMS: 5000 },
+  touchAfter: 24 * 3600,
+  autoRemove: 'native',
+  ttl: 24 * 60 * 60
+});
+
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET || 'zenithzoom-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  store: sessionStore,
+  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax' }
+});
+
+// Skip session for public API routes to avoid blocking
 app.use((req, res, next) => {
-  if (req.path.startsWith('/api/resources') || req.path.startsWith('/api/jobs') || req.path === '/api/health') {
-    return next();
-  }
-  session({
-    secret: process.env.SESSION_SECRET || 'zenithzoom-secret-2024',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost/zenithzoom',
-      mongoOptions: { serverSelectionTimeoutMS: 5000 },
-      touchAfter: 24 * 3600,
-      autoRemove: 'native',
-      ttl: 24 * 60 * 60
-    }),
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'lax'
-    }
-  })(req, res, next);
+  const pub = ['/api/resources', '/api/jobs', '/api/health'];
+  if (pub.some(p => req.path.startsWith(p))) return next();
+  sessionMiddleware(req, res, next);
 });
 
 // Passport
@@ -91,6 +88,8 @@ app.get('/cv-builder', (req, res) => res.redirect('/'));
 app.get('/jobs', (req, res) => res.redirect('/'));
 
 // Health check — shows DB status and env vars (safe subset)
+app.get('/api/ping', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+
 app.get('/api/health', (req, res) => {
   const states = ['disconnected','connected','connecting','disconnecting'];
   res.json({
