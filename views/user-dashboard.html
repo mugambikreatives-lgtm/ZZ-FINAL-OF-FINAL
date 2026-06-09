@@ -396,6 +396,12 @@ async function loadCourses() {
     }
   } catch(err) {
     console.error('Load courses error:', err);
+    // Auto-retry once after 3 seconds if DB is warming up
+    if (err.message && (err.message.includes('connected') || err.message.includes('timeout'))) {
+      grid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Connecting to database...</p></div>`;
+      setTimeout(loadCourses, 3000);
+      return;
+    }
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
       <div class="empty-icon">⚠️</div>
       <p style="color:var(--red)">${err.message}</p>

@@ -40,16 +40,9 @@ function getUpload() {
 
 // GET all resources (public)
 router.get('/', async (req, res) => {
-  // Set a hard response timeout of 9 seconds
   const timeout = setTimeout(() => {
-    if (!res.headersSent) res.status(503).json({ success: false, message: 'Request timed out — database is slow. Please retry.' });
-  }, 9000);
-
-  const mongoose = require('mongoose');
-  if (mongoose.connection.readyState !== 1) {
-    clearTimeout(timeout);
-    return res.status(503).json({ success: false, message: 'Database not connected. Check MONGODB_URI env var on Hostinger.' });
-  }
+    if (!res.headersSent) res.status(503).json({ success: false, message: 'Request timed out. Please retry.' });
+  }, 15000);
   try {
     const { category, search } = req.query;
     let query = { isActive: { $ne: false } };
@@ -58,12 +51,12 @@ router.get('/', async (req, res) => {
       { title: new RegExp(search, 'i') },
       { description: new RegExp(search, 'i') }
     ];
-    const resources = await Resource.find(query).select('-filePath').sort('-createdAt').maxTimeMS(8000);
+    const resources = await Resource.find(query).select('-filePath').sort('-createdAt');
     clearTimeout(timeout);
     if (!res.headersSent) res.json({ success: true, resources });
   } catch (err) {
     clearTimeout(timeout);
-    if (!res.headersSent) res.status(500).json({ success: false, message: 'Error fetching resources: ' + err.message });
+    if (!res.headersSent) res.status(500).json({ success: false, message: err.message });
   }
 });
 
