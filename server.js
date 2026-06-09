@@ -38,20 +38,18 @@ const sessionMiddleware = session({
   cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax' }
 });
 
-// Skip session for public API routes to avoid blocking
+// Skip session only for public GET requests (not POST/PATCH/DELETE which need auth)
 app.use((req, res, next) => {
-  const pub = ['/api/resources', '/api/jobs', '/api/health'];
-  if (pub.some(p => req.path.startsWith(p))) return next();
+  const publicGets = ['/api/resources', '/api/jobs', '/api/health', '/api/ping'];
+  if (req.method === 'GET' && publicGets.some(p => req.path.startsWith(p))) return next();
   sessionMiddleware(req, res, next);
 });
 
 // Passport
-const passportInstance = require('passport');
 app.use(passportInstance.initialize());
-// Only run passport.session() for routes that need it (not public API)
 app.use((req, res, next) => {
-  const pub = ['/api/resources', '/api/jobs', '/api/health', '/api/ping'];
-  if (pub.some(p => req.path.startsWith(p))) return next();
+  const publicGets = ['/api/resources', '/api/jobs', '/api/health', '/api/ping'];
+  if (req.method === 'GET' && publicGets.some(p => req.path.startsWith(p))) return next();
   passportInstance.session()(req, res, next);
 });
 
