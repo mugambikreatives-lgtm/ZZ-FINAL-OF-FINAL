@@ -290,4 +290,4 @@ router.get('/google/callback', (req, res, next) => {
   )(req, res, next);
 });
 
-module.exports = { router, authMiddleware };
+module.exports = { router, authMiddleware, passport };
