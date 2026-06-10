@@ -45,7 +45,8 @@ app.use((req, res, next) => {
   sessionMiddleware(req, res, next);
 });
 
-// Passport
+// Passport — imported from routes/auth where it is configured
+const { passport: passportInstance } = require('./routes/auth');
 app.use(passportInstance.initialize());
 app.use((req, res, next) => {
   const publicGets = ['/api/resources', '/api/jobs', '/api/health', '/api/ping'];
