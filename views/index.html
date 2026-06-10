@@ -1066,17 +1066,52 @@ function showPage(name) {
 // ─────────────────────────────────────────────
 // HOME COURSE GRID
 // ─────────────────────────────────────────────
+function getCourseImage(c) {
+  if (c.imageUrl) return c.imageUrl;
+  const catImgs = {
+    'Marketing':         'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c1a4?w=600&q=80&fit=crop',
+    'Technology':        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80&fit=crop',
+    'Finance':           'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80&fit=crop',
+    'Business':          'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80&fit=crop',
+    'Leadership':        'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80&fit=crop',
+    'Career Development':'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&q=80&fit=crop',
+    'Health':            'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop',
+    'Design':            'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80&fit=crop',
+  };
+  const t = (c.title || '').toLowerCase();
+  if (t.includes('photo'))                                    return 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&q=80&fit=crop';
+  if (t.includes('makeup')||t.includes('make-up')||t.includes('beauty')||t.includes('hair')||t.includes('haircare'))
+                                                              return 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80&fit=crop';
+  if (t.includes('web')||t.includes('code')||t.includes('develop')||t.includes('program'))
+                                                              return 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80&fit=crop';
+  if (t.includes('market')||t.includes('brand'))              return 'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c1a4?w=600&q=80&fit=crop';
+  if (t.includes('finance')||t.includes('account')||t.includes('money'))
+                                                              return 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80&fit=crop';
+  if (t.includes('career')||t.includes('cv')||t.includes('job')||t.includes('interview'))
+                                                              return 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&q=80&fit=crop';
+  if (t.includes('leader')||t.includes('manag')||t.includes('team'))
+                                                              return 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80&fit=crop';
+  if (t.includes('entrepren')||t.includes('startup')||t.includes('business'))
+                                                              return 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80&fit=crop';
+  if (t.includes('data')||t.includes('analytics')||t.includes('excel'))
+                                                              return 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80&fit=crop';
+  if (t.includes('design')||t.includes('graphic'))            return 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80&fit=crop';
+  return catImgs[c.category] || 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&fit=crop';
+}
+
 function renderHomeGrid(courses) {
   const grid = document.getElementById('home-course-grid');
   if (!grid) return;
-  const catIcons = { 'Marketing':'📣','Technology':'💻','Finance':'📈','Business':'💼','Leadership':'👥','Career Development':'🚀' };
   if (!courses.length) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#888">No courses in this category yet.</div>';
     return;
   }
   grid.innerHTML = courses.slice(0, 8).map(c => `
     <div class="pop-card" onclick="openPayModal('${c._id}','${c.title.replace(/'/g,"\\'")}',${c.price})">
-      <div class="pop-thumb">${catIcons[c.category] || '📖'}</div>
+      <div class="pop-thumb">
+        <img src="${getCourseImage(c)}" alt="${c.title}" loading="lazy"
+             onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&fit=crop'">
+      </div>
       <div class="pop-card-body">
         <div class="pop-card-cat">${c.category}</div>
         <div class="pop-card-title">${c.title}</div>
