@@ -375,7 +375,18 @@ async function login() {
     const data = await res.json();
     if (data.success) {
       showSuccess('Signed in! Redirecting...');
-      setTimeout(() => window.location = '/dashboard', 600);
+      const params = new URLSearchParams(window.location.search);
+      const next      = params.get('next');
+      const courseId  = params.get('courseId');
+      const courseTitle = params.get('courseTitle');
+      const coursePrice = params.get('coursePrice');
+      let dest = '/dashboard';
+      if (next === 'courses' && courseId) {
+        dest = '/?next=courses&courseId=' + encodeURIComponent(courseId) + '&courseTitle=' + encodeURIComponent(courseTitle) + '&coursePrice=' + coursePrice;
+      } else if (next === 'courses') {
+        dest = '/?next=courses';
+      }
+      setTimeout(() => window.location = dest, 600);
     } else {
       showError(data.message || 'Invalid email or password.');
       setLoading('login', false);
@@ -401,8 +412,19 @@ async function register() {
     });
     const data = await res.json();
     if (data.success) {
-      showSuccess('Account created! Redirecting to your dashboard...');
-      setTimeout(() => window.location = '/dashboard', 800);
+      showSuccess('Account created! Redirecting...');
+      const params = new URLSearchParams(window.location.search);
+      const next      = params.get('next');
+      const courseId  = params.get('courseId');
+      const courseTitle = params.get('courseTitle');
+      const coursePrice = params.get('coursePrice');
+      let dest = '/dashboard';
+      if (next === 'courses' && courseId) {
+        dest = '/?next=courses&courseId=' + encodeURIComponent(courseId) + '&courseTitle=' + encodeURIComponent(courseTitle) + '&coursePrice=' + coursePrice;
+      } else if (next === 'courses') {
+        dest = '/?next=courses';
+      }
+      setTimeout(() => window.location = dest, 800);
     } else {
       showError(data.message || 'Registration failed. Please try again.');
       setLoading('reg', false);
