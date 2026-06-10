@@ -971,8 +971,8 @@ nav { top: 36px; }
       <div style="font-weight:700;font-size:1rem;color:#E8EAED;margin-bottom:6px;">Sign in to purchase</div>
       <div style="font-size:0.85rem;color:#c9d1d9;margin-bottom:20px;line-height:1.5;">You need an account to buy courses.<br>It's free and takes 30 seconds.</div>
       <div style="display:flex;gap:10px;">
-        <a href="/login?next=courses" style="flex:1;padding:11px;border:1.5px solid rgba(255,255,255,0.15);border-radius:50px;color:#E8EAED;font-weight:600;font-size:0.88rem;text-decoration:none;text-align:center;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'">Log In</a>
-        <a href="/login?next=courses#register" style="flex:1;padding:11px;border:none;border-radius:50px;background:#1A73E8;color:white;font-weight:700;font-size:0.88rem;text-decoration:none;text-align:center;">Create Free Account →</a>
+        <a id="gate-login-btn" href="/login?next=courses" style="flex:1;padding:11px;border:1.5px solid rgba(255,255,255,0.15);border-radius:50px;color:#E8EAED;font-weight:600;font-size:0.88rem;text-decoration:none;text-align:center;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'">Log In</a>
+        <a id="gate-register-btn" href="/login?next=courses#register" style="flex:1;padding:11px;border:none;border-radius:50px;background:#1A73E8;color:white;font-weight:700;font-size:0.88rem;text-decoration:none;text-align:center;">Create Free Account →</a>
       </div>
     </div>
 
@@ -1059,7 +1059,7 @@ function showPage(name) {
   const navEl = document.getElementById('nav-' + name);
   if (navEl) navEl.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (name === 'courses' && !allCourses.length) loadCourses();
+  if (name === 'courses') loadCourses();
   if (name === 'jobs' && !allJobs.length) loadJobs();
 }
 
@@ -1406,6 +1406,9 @@ function updatePreview() {
 // ─────────────────────────────────────────────
 // PAYMENT
 // ─────────────────────────────────────────────
+// openPayModal = alias used by the home course grid cards
+function openPayModal(id, title, price) { openResPay(id, price, title); }
+
 function openResPay(id, price, title) {
   currentPayType = 'resource';
   currentResourceId = id;
@@ -1413,6 +1416,12 @@ function openResPay(id, price, title) {
   document.getElementById('pay-modal-amount').textContent = `KES ${price}`;
   document.getElementById('pay-modal-item').textContent = title.toUpperCase();
   resetPayModal();
+  // Embed courseId in login redirect so we can re-open the modal after login
+  const loginBase = '/login?next=courses&courseId=' + encodeURIComponent(id) + '&courseTitle=' + encodeURIComponent(title) + '&coursePrice=' + price;
+  const gL = document.getElementById('gate-login-btn');
+  const gR = document.getElementById('gate-register-btn');
+  if (gL) gL.href = loginBase;
+  if (gR) gR.href = loginBase + '#register';
   document.getElementById('pay-modal').classList.add('open');
   // Check login state async - show gate or form
   checkLoginThenPay();
@@ -1634,6 +1643,22 @@ function escJs(s) {
 // INIT
 updatePreview();
 loadCVPrice();
+
+// After login redirect — auto-open the course payment modal if courseId is in URL
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const courseId    = params.get('courseId');
+  const courseTitle = params.get('courseTitle');
+  const coursePrice = params.get('coursePrice');
+  if (courseId && courseTitle && coursePrice) {
+    // Wait for auth check to complete, then open modal
+    setTimeout(() => openResPay(courseId, Number(coursePrice), courseTitle), 800);
+  }
+  // Also handle ?next=courses to navigate to courses tab
+  if (params.get('next') === 'courses') {
+    setTimeout(() => showPage('courses'), 100);
+  }
+})();
 // Auth nav button
 (async function() {
   try {
