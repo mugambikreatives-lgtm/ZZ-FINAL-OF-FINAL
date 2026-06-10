@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Resource = require('../models/Resource');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'zenithzoom-jwt-2024';
+const JWT_SECRET = process.env.SESSION_SECRET || 'zenithzoom-secret'; // must match routes/auth.js
 
 // Middleware to get current user from session or JWT
 function authMiddleware(req, res, next) {
