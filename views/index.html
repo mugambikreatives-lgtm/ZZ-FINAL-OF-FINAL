@@ -1061,7 +1061,7 @@ function showPage(name) {
   if (navEl) navEl.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'courses') loadCourses();
-  if (name === 'jobs' && !allJobs.length) loadJobs();
+  if (name === 'jobs') loadJobs();
 }
 
 // ─────────────────────────────────────────────
@@ -1225,12 +1225,18 @@ function filterCourses() {
 // JOBS
 // ─────────────────────────────────────────────
 async function loadJobs() {
+  const grid = document.getElementById('job-grid');
+  if (grid) grid.innerHTML = '<div class="empty-state"><div class="spinner"></div><p>Loading opportunities...</p></div>';
   try {
     const r = await fetch('/api/jobs');
+    if (!r.ok) throw new Error('Server error: ' + r.status);
     const d = await r.json();
     allJobs = d.jobs || [];
-    if (!allJobs.length) throw new Error('empty');
-  } catch {
+    if (!allJobs.length) {
+      allJobs = getSampleJobs();
+    }
+  } catch(err) {
+    console.warn('Jobs fetch failed:', err.message, '— using sample jobs');
     allJobs = getSampleJobs();
   }
   renderJobs(allJobs);
